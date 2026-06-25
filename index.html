@@ -1,259 +1,615 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>口语关键句复习闪卡</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>德语学习助手 - 永久收藏版</title>
 <style>
-  body {
+/* ==========================================
+   🎨 CSS 变量：定义浅色和深色主题
+   ========================================== */
+:root {
+    --bg-gradient: linear-gradient(135deg, #f3f0ff, #e5dbff);
+    --text-main: #3b286d;
+    --text-sub: #705da4;
+    --text-card-big: #4338ca;
+    --text-card-small: #6b7280;
+    --btn-bg: rgba(255, 255, 255, 0.6);
+    --btn-color: #5f4bb6;
+    --btn-active-bg: #5f4bb6;
+    --btn-active-color: white;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-hover-bg: rgba(255, 255, 255, 0.95);
+    --card-shadow: 0 4px 14px rgba(147, 130, 219, 0.15);
+    --card-hover-shadow: 0 6px 20px rgba(147, 130, 219, 0.25);
+    --card-border: rgba(255, 255, 255, 0.6);
+    --card-playing-bg: #e0e7ff;
+    --card-playing-border: #6366f1;
+    --star-color: #d1d5db;
+    --star-active-color: #fbbf24;
+
+    /* 💬 聊天对话专属颜色 */
+    --chat-left-bg: rgba(255, 255, 255, 0.95);
+    --chat-right-bg: #e8e5ff;
+    --chat-avatar-bg: #5f4bb6;
+}
+
+[data-theme="dark"] {
+    --bg-gradient: linear-gradient(135deg, #1e1b4b, #311042);
+    --text-main: #f3f4f6;
+    --text-sub: rgba(255, 255, 255, 0.6);
+    --text-card-big: #a5b4fc;
+    --text-card-small: #cbd5e1;
+    --btn-bg: rgba(255, 255, 255, 0.1);
+    --btn-color: #c7d2fe;
+    --btn-active-bg: #6366f1;
+    --btn-active-color: white;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --card-hover-bg: rgba(255, 255, 255, 0.15);
+    --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-playing-bg: rgba(99, 102, 241, 0.35);
+    --card-playing-border: #818cf8;
+    --star-color: rgba(255, 255, 255, 0.2);
+    --star-active-color: #fbbf24;
+
+    /* 💬 聊天对话专属颜色 */
+    --chat-left-bg: rgba(255, 255, 255, 0.08);
+    --chat-right-bg: rgba(95, 75, 182, 0.3);
+    --chat-avatar-bg: #818cf8;
+}
+
+body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    padding: 20px;
-  }
-  h1 {
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+.header { text-align: center; padding: 25px; position: relative; }
+.header p { color: var(--text-sub); margin-top: 5px; }
+
+.theme-toggle {
+    position: absolute; right: 20px; top: 20px; padding: 10px 16px; font-size: 14px;
+    background: var(--btn-bg); color: var(--btn-color); border-radius: 20px; box-shadow: var(--card-shadow);
+}
+
+.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+button {
+    border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; font-size: 15px;
+    background: var(--btn-bg); color: var(--btn-color); transition: 0.2s; box-shadow: var(--card-shadow);
+}
+button:hover { background: var(--card-hover-bg); }
+.tabs button.active { background: var(--btn-active-bg); color: var(--btn-active-color); font-weight: bold; }
+
+.page { display: none; max-width: 1200px; margin: auto; padding: 20px; box-sizing: border-box; }
+.page.show { display: block; }
+
+/* ==========================================
+   🧱 基础网格布局样式 
+   ========================================== */
+.grid-word { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+.grid-word .big { font-size: 1.4rem; font-weight: bold; color: var(--text-card-big); }
+.grid-word .small { font-size: 1rem; margin-top: 8px; color: var(--text-card-small); }
+
+.grid-phrase { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
+.grid-phrase .big { font-size: 1.25rem; font-weight: bold; color: var(--text-card-big); }
+.grid-phrase .small { font-size: 1.05rem; margin-top: 6px; color: var(--text-card-small); }
+
+.grid-sentence { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 15px; }
+.grid-sentence .card { text-align: left; padding: 20px; }
+.grid-sentence .big { font-size: 1.2rem; font-weight: bold; line-height: 1.4; color: var(--text-card-big); }
+.grid-sentence .small { font-size: 1.05rem; margin-top: 8px; color: var(--text-card-small); line-height: 1.4; }
+
+.grid-long-sentence { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 20px; }
+@media (max-width: 600px) { .grid-long-sentence { grid-template-columns: 1fr; } }
+.grid-long-sentence .card { text-align: left; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+.grid-long-sentence .big { font-size: 1.15rem; font-weight: bold; line-height: 1.5; color: var(--text-card-big); border-bottom: 1px dashed var(--card-border); padding-bottom: 8px; padding-right: 25px; }
+.grid-long-sentence .small { font-size: 1.05rem; line-height: 1.6; color: var(--text-card-small); margin: 0; }
+
+/* ==========================================
+   🚨 对话布局 (Dialogue) 
+   ========================================== */
+.grid-dialogue {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;             
+    padding: 10px;
+    box-sizing: border-box;
+}
+.dialogue-row {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+.dialogue-row.left { justify-content: flex-start; }
+.dialogue-row.right { justify-content: flex-end; }
+
+.dialogue-content {
+    display: flex;
+    gap: 14px;
+    max-width: 75%; 
+    align-items: flex-start;
+}
+.dialogue-row.left .dialogue-content { flex-direction: row; }
+.dialogue-row.right .dialogue-content { flex-direction: row-reverse; }
+
+.chat-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--chat-avatar-bg); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 1.1rem; box-shadow: var(--card-shadow);
+    flex-shrink: 0;          
+}
+
+.dialogue-content .card {
+    display: block;
+    width: auto;                  
+    text-align: left;
+    padding: 16px 22px;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+.dialogue-row.left .card { background: var(--chat-left-bg); border-top-left-radius: 4px; }
+.dialogue-row.right .card { background: var(--chat-right-bg); border-top-right-radius: 4px; }
+
+.dialogue-content .card .big { font-size: 1.15rem; font-weight: bold; color: var(--text-main); line-height: 1.5; padding-right: 25px; text-align: left; }
+.dialogue-content .card .small { font-size: 1rem; margin-top: 6px; color: var(--text-card-small); line-height: 1.45; text-align: left; }
+
+/* ==========================================
+   公共卡片与辅助样式
+   ========================================== */
+.card {
+    position: relative;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 24px 18px 18px 18px;
+    border-radius: 18px;
     text-align: center;
-    color: #333;
-  }
-  .card {
-    background: #fff;
-    border-radius: 8px;
-    margin: 10px auto;
-    padding: 15px 20px;
-    max-width: 900px;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-  }
-  .card:hover {
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+}
+.card:hover {
     transform: translateY(-3px);
-  }
-  .sentence {
-    font-size: 18px;
-    font-weight: bold;
-    color: #1a73e8;
-  }
-  .info {
-    margin-top: 10px;
-    display: none;
-    font-size: 16px;
-    color: #555;
-  }
-  .info span {
-    font-weight: bold;
-    color: #333;
-  }
+    background: var(--card-hover-bg);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.star-icon {
+    position: absolute; top: 14px; right: 16px; font-size: 1.1rem;
+    color: var(--star-color); cursor: pointer; transition: transform 0.1s, color 0.2s;
+    user-select: none; z-index: 10;
+}
+.star-icon:hover { transform: scale(1.2); }
+.star-icon.active { color: var(--star-active-color); filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.4)); }
+
+.card.playing {
+    background: var(--card-playing-bg) !important;
+    border-color: var(--card-playing-border) !important;
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: var(--hover-shadow);
+}
+
+.play-panel { text-align: center; margin: 40px; }
+.autoplay-btn { font-size: 16px; padding: 14px 30px; border-radius: 30px; background: #6366f1; color: white; font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
+.autoplay-btn.playing { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+.empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
 </style>
 </head>
 <body>
 
-<h1>口语关键句复习闪卡</h1>
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我想说的短期工作是在德国做外卖骑手，因为这份工作对我来说非常合适。</div>
-  <div class="info"><span>英文表达：</span>The short-term job I would like to talk about is working as a delivery rider in Germany, because it’s quite suitable for me.<br><span>关键概括：</span>外卖兼职 (delivery rider)</div>
+<div class="header">
+    <h1>🇩🇪 德语学习助手</h1>
+    <p>多维交互语言卡片系统</p>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 模式切换</button>
 </div>
 
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">一个原因是这类工作不需要复杂面试。</div>
-  <div class="info"><span>英文表达：</span>One reason is that this kind of job doesn’t require a complicated interview.<br><span>关键概括：</span>容易申请 (easy to get)</div>
+<div class="tabs" id="tabsContainer"></div>
+<div id="pagesContainer"></div>
+
+<div class="play-panel">
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ 自动播放当页</button>
 </div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">另一个原因是它可以帮助我减轻经济压力。</div>
-  <div class="info"><span>英文表达：</span>Another reason is that it can help me relieve my financial pressure.<br><span>关键概括：</span>财务压力 (financial pressure)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">它可以支付我在德国的生活费用，甚至支持我在德国的旅行。</div>
-  <div class="info"><span>英文表达：</span>It can cover my living expenses in Germany, or even support my exploration in Germany.<br><span>关键概括：</span>生活开支 (living expenses)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">去年夏天，我鼓励我的妹妹在暑假做一份临时工作。</div>
-  <div class="info"><span>英文表达：</span>Last summer, I encouraged my young sister to do a temporary job during her summer holidays.<br><span>关键概括：</span>鼓励 (encourage)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">一开始她不愿意，但在我解释了好处之后，她接受了我的建议。</div>
-  <div class="info"><span>英文表达：</span>At first, she was unwilling to do it, but after I explained the advantages, she accepted my advice.<br><span>关键概括：</span>态度变化 (reaction to advice)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">这份临时工作给她提供了提高德语并与当地人交流的机会。</div>
-  <div class="info"><span>英文表达：</span>The temporary job offered her a chance to improve her German and interact with local people.<br><span>关键概括：</span>语言与文化 (language & culture)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">它还帮助她变得更加独立，并在旅行期间管理自己的财务。</div>
-  <div class="info"><span>英文表达：</span>It also helped her become more independent and manage her finances during her trip.<br><span>关键概括：</span>独立与理财 (independence & finances)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我第一次尝试的兴奋活动是在网上与外国人交流。</div>
-  <div class="info"><span>英文表达：</span>The exciting activity I tried for the first time was communicating with a foreigner on an online platform.<br><span>关键概括：</span>语言练习 (language practice)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">在联系外国人之前，我感到紧张和羞愧，但最后我找到了一位和我一样有耐心的人。</div>
-  <div class="info"><span>英文表达：</span>Before connecting with a foreigner, I felt nervous and ashamed, but finally I found someone patient like me.<br><span>关键概括：</span>紧张/耐心 (nervous & patience)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我们克服了紧张，在一起练习语言技能时建立了友谊。</div>
-  <div class="info"><span>英文表达：</span>We overcame our nervousness and developed a friendship while practicing language skills together.<br><span>关键概括：</span>克服/友谊 (overcome & friendship)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我做了几个准备步骤，最后我能够定期和另一位外国人交流。</div>
-  <div class="info"><span>英文表达：</span>I prepared for it in several steps, and finally I could speak with another person regularly.<br><span>关键概括：</span>准备/定期练习 (preparation & regular practice)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">这位外国人的语言水平和我相似，我们彼此耐心理解对方。</div>
-  <div class="info"><span>英文表达：</span>The foreigner’s language level was similar to mine, and we were patient with each other to understand one another.<br><span>关键概括：</span>耐心/理解 (patience & understanding)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我建议妹妹在德国做临时外卖工作，以支付她的生活和旅行费用。</div>
-  <div class="info"><span>英文表达：</span>I suggested my sister do a temporary delivery job in Germany to cover her living and travel expenses.<br><span>关键概括：</span>建议/经济 (advice & financial)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">一开始她不愿意，但在比较其他选项后，她接受了我的建议。</div>
-  <div class="info"><span>英文表达：</span>At first she was unwilling, but after comparing other options, she accepted my advice.<br><span>关键概括：</span>态度变化 (reaction to advice)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">这份工作不需要复杂面试，容易获得，这使它更适合她。</div>
-  <div class="info"><span>英文表达：</span>This job was easy to get without a complicated interview, which made it more suitable for her.<br><span>关键概括：</span>容易申请 (easy to get)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">它还提供了练习德语、与当地人交流并获得宝贵经验的机会。</div>
-  <div class="info"><span>英文表达：</span>It also offered her a chance to practice German, interact with locals, and gain valuable experience.<br><span>关键概括：</span>语言/经验 (language & experience)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">这份工作很灵活，她可以在任何城市工作，在旅行时按小时拿工资。</div>
-  <div class="info"><span>英文表达：</span>It was a flexible job, so she could work in any city and earn an hourly wage while traveling.<br><span>关键概括：</span>灵活性/收入 (flexibility & income)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">她需要克服语言和文化障碍，而这份工作提供了练习德语的机会。</div>
-  <div class="info"><span>英文表达：</span>She needed to overcome language and cultural barriers, and this job offered the opportunity to practice her German.<br><span>关键概括：</span>语言/文化障碍 (language & cultural barriers)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">最终，她变得更独立，管理自己的财务，并在工作期间探索德国城市。</div>
-  <div class="info"><span>英文表达：</span>Ultimately, she became more independent, managed her finances, and explored German cities while working.<br><span>关键概括：</span>独立/探索 (independence & exploration)</div>
-</div>
-
-<!-- Part 3: 领导鼓励员工 -->
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我认为领导可以通过耐心的方式来鼓励员工。</div>
-  <div class="info"><span>英文表达：</span>I think leaders can encourage their employees in a patient way.<br><span>关键概括：</span>领导鼓励 (leader & encouragement)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">保持团队氛围很重要，这样每个成员才能朝同一个目标努力。</div>
-  <div class="info"><span>英文表达：</span>Maintaining a good atmosphere is important, so that every member works toward the same goal.<br><span>关键概括：</span>团队氛围 (team atmosphere)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">这种做法可以帮助员工更好地完成上级分配的任务。</div>
-  <div class="info"><span>英文表达：</span>This can help employees accomplish their leader’s tasks more effectively.<br><span>关键概括：</span>任务完成 (task accomplishment)</div>
-</div>
-
-<!-- Part 3: 父母鼓励孩子 -->
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我认为父母应该在孩子心情不好或动力不足时给予鼓励。</div>
-  <div class="info"><span>英文表达：</span>I think parents should encourage their children when they are feeling low or unmotivated.<br><span>关键概括：</span>父母鼓励 (parental encouragement)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">高昂的情绪和积极的动力可以帮助孩子长期坚持做一件事情。</div>
-  <div class="info"><span>英文表达：</span>Positive mood and high motivation can help children persist in doing something for a long time.<br><span>关键概括：</span>坚持/动力 (motivation & persistence)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">父母的鼓励应经过深思熟虑，避免过于强硬或造成压力。</div>
-  <div class="info"><span>英文表达：</span>Parental encouragement should be thoughtful, avoiding being too forceful or stressful.<br><span>关键概括：</span>正面鼓励 (positive encouragement)</div>
-</div>
-
-<!-- Part 3: 谁更擅长说服 -->
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">有些人比其他人更擅长说服，这取决于他们的性格和经验。</div>
-  <div class="info"><span>英文表达：</span>Some people are better than others at persuading, depending on their personality and experience.<br><span>关键概括：</span>说服能力 (persuasion skill)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">例如老师和医生通常需要耐心地说服学生或患者完成学习或服药。</div>
-  <div class="info"><span>英文表达：</span>For example, teachers and doctors often need to patiently persuade students or patients to study or take their medicine.<br><span>关键概括：</span>职业说服 (professional persuasion)</div>
-</div>
-
-<!-- Part 3: 孩子是否应完全听父母 -->
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我认为孩子不应该完全按照父母的要求去做所有事情，尤其是在他们长大后。</div>
-  <div class="info"><span>英文表达：</span>I think children should not follow everything their parents ask them to do, especially when they grow older.<br><span>关键概括：</span>独立思考 (independent thinking)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">父母的经验有用，但时代不同，方法未必适合年轻一代。</div>
-  <div class="info"><span>英文表达：</span>Parents’ experience can be useful, but the methods may not suit the younger generation due to different times.<br><span>关键概括：</span>代际差异 (generation gap)</div>
-</div>
-
-<!-- Part 3: 雇主鼓励员工 -->
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">雇主可以通过提升员工的动力和改善心情来鼓励他们。</div>
-  <div class="info"><span>英文表达：</span>Employers can encourage their staff by boosting motivation and improving mood.<br><span>关键概括：</span>员工激励 (staff encouragement)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">这不仅能帮助员工完成公司任务，还能缓解他们的压力和焦虑。</div>
-  <div class="info"><span>英文表达：</span>This not only helps employees complete company tasks but also relieves their stress and anxiety.<br><span>关键概括：</span>减压/完成任务 (stress relief & task completion)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">雇主可以通过营造良好的工作环境和认可员工表现来增强动力。</div>
-  <div class="info"><span>英文表达：</span>Employers can also boost motivation by creating a good work environment and recognizing employees’ performance.<br><span>关键概括：</span>工作环境/认可 (work environment & recognition)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">提供适当的奖励和福利也能让员工更加积极投入工作。</div>
-  <div class="info"><span>英文表达：</span>Providing appropriate rewards and benefits can also make employees more engaged.<br><span>关键概括：</span>奖励福利 (rewards & benefits)</div>
-</div>
-<!-- Part 3: 雇主鼓励员工 -->
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">我认为领导者可以通过耐心的方式鼓励员工，维持积极的氛围，并帮助他们有效完成任务。</div>
-  <div class="info"><span>英文：</span>I think leaders can encourage their employees in a patient way to maintain a positive atmosphere and help them complete tasks effectively.<br><span>关键概括：</span>领导/耐心 (leaders & patience)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">父母应该在孩子情绪低落或缺乏动力时鼓励他们，以保持学习或玩耍的高积极性。</div>
-  <div class="info"><span>英文：</span>Parents should encourage their children when they are feeling depressed or unmotivated to maintain high motivation for learning or playing.<br><span>关键概括：</span>父母/鼓励 (parents & encouragement)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-  <div class="sentence">鼓励应该经过深思且积极，否则过于强制或紧迫的建议会让孩子感到疲惫且无效。</div>
-  <div class="info"><span>英文：</span>The encouragement should be thoughtful and positive, otherwise intensive or forced advice may tire children and have no effect.<br><span>关键概括：</span>鼓励/正向 (encouragement & positive)</div>
-</div>
-
-<div class="card" onclick="toggleInfo(this)">
-    <div class="sentence">有些人天生更擅长说服他人，受性格或经验影响，例如教师和医生，他们经常练习说服。</div>
-
-  
-
-<div class="card" onclick="toggleInfo(this)"> <div class="sentence">我有一个朋友自学了视频剪辑，并经常在作品里加入自己挑选的音乐。</div> <div class="info"><span>英文表达：</span>I have a friend who taught himself video editing and often adds music he selects to his projects.<br><span>关键概括：</span>自学/音乐创意 (self-taught & music creativity)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">他的计划能力很强，每次制作视频之前都会先列好详细的步骤。</div> <div class="info"><span>英文表达：</span>He is very organized and always makes a detailed plan before creating a video.<br><span>关键概括：</span>计划能力 (planning skill)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">我很钦佩他的创造力，因为他总能把普通素材变得有趣。</div> <div class="info"><span>英文表达：</span>I really admire his creativity because he can make ordinary footage interesting.<br><span>关键概括：</span>创造力 (creativity)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">他经常分享自己的作品，我也从中学到了很多技巧和灵感。</div> <div class="info"><span>英文表达：</span>He often shares his work, and I have learned many skills and gained inspiration from it.<br><span>关键概括：</span>学习/启发 (learning & inspiration)</div> </div>
-<div class="card" onclick="toggleInfo(this)"> <div class="sentence">我在拍摄短视频时曾发生过一次糗事，最后不小心被朋友录了下来。</div> <div class="info"><span>英文表达：</span>While filming a short video, I had an embarrassing moment that my friend accidentally recorded.<br><span>关键概括：</span>糗事/拍摄 (embarrassing moment & filming)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">这个视频后来被我们分享到社交媒体上，引来了很多笑声和评论。</div> <div class="info"><span>英文表达：</span>Later, we shared the video on social media, which attracted a lot of laughs and comments.<br><span>关键概括：</span>社交媒体/互动 (social media & interaction)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">这种经历让我觉得有趣，也让我不再那么在意小失误。</div> <div class="info"><span>英文表达：</span>This experience was fun and made me less worried about small mistakes.<br><span>关键概括：</span>趣味/放松 (fun & relaxed)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">我喜欢记录日常小事情，因为以后回看会觉得很有趣。</div> <div class="info"><span>英文表达：</span>I enjoy recording small daily events because looking back later can be very amusing.<br><span>关键概括：</span>日常/回顾 (daily life & reflection)</div> </div>
-    <div class="card" onclick="toggleInfo(this)"> <div class="sentence">过年整理家里的老盘子时，我不小心摔碎了一只十几年的盘子。</div> <div class="info"><span>英文表达：</span>While cleaning the old plates at home for the New Year, I accidentally broke a plate that had been there for over ten years.<br><span>关键概括：</span>意外/老物件 (accident & old item)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">我立刻感到很内疚，但家人只是笑着安慰我说没关系。</div> <div class="info"><span>英文表达：</span>I immediately felt guilty, but my family just smiled and reassured me that it was okay.<br><span>关键概括：</span>内疚/安慰 (guilt & reassurance)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">这件事让我意识到，整理家里时要更加小心。</div> <div class="info"><span>英文表达：</span>This incident made me realize that I should be more careful when organizing the house.<br><span>关键概括：</span>教训/注意 (lesson & caution)</div> </div>
-    <div class="card" onclick="toggleInfo(this)"> <div class="sentence">过年购物时，我没仔细核对清单，家人买错了东西，后来向我道歉。</div> <div class="info"><span>英文表达：</span>During New Year shopping, I didn’t carefully check the list, and my family bought the wrong items. Later, they apologized to me.<br><span>关键概括：</span>购物误会/道歉 (shopping mistake & apology)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">我原本有点生气，但看到他们诚恳地道歉，我很快原谅了他们。</div> <div class="info"><span>英文表达：</span>I was a bit upset at first, but seeing their sincere apology, I forgave them quickly.<br><span>关键概括：</span>原谅/诚恳 (forgiveness & sincerity)</div> </div> <div class="card" onclick="toggleInfo(this)"> <div class="sentence">这个经历让我明白，沟通和理解比责备更重要。</div> <div class="info"><span>英文表达：</span>This experience made me realize that communication and understanding are more important than blaming.<br><span>关键概括：</span>反思/理解 (reflection & understanding)</div> </div>
-
 
 <script>
-function toggleInfo(card) {
-  const info = card.querySelector('.info');
-  info.style.display = info.style.display === 'block' ? 'none' : 'block';
+// ==========================================
+// 💡 数据源
+// ==========================================
+const appData = {
+    alphabet: {
+        title: "🔤 字母表",
+		layout: "word",
+        speakType: "key", // 左边的字母本身
+        items: [
+            ["A","a"],["B","be"],["C","ce"],["D","de"],["E","e"],["F","ef"],
+			["G","ge"],["H","ha"],["I","i"],["J","jot"],["K","ka"],["L","el"],
+			["M","em"],["N","en"],["O","o"],["P","pe"],["Q","ku"],["R","er"],
+			["S","es"],["T","te"],["U","u"],["V","fau"],["W","we"],
+			["X","iks"],["Y","ypsilon"],["Z","tsett"],
+			["Ä","ä"],["Ö","ö"],["Ü","ü"],["ß","Eszett"]
+        ]
+    },
+
+	numbers: {
+        title: "🔢 数字",
+        layout: "word",
+        speakType: "value", 
+        items: [
+            // 0 - 10
+            ["0", "null"], ["1", "eins"], ["2", "zwei"], ["3", "drei"], ["4", "vier"],
+            ["5", "fünf"], ["6", "sechs"], ["7", "sieben"], ["8", "acht"], ["9", "neun"], ["10", "zehn"],
+            // 11 - 20
+            ["11", "elf"], ["12", "zwölf"], ["13", "dreizehn"], ["14", "vierzehn"], ["15", "fünfzehn"],
+            ["16", "sechzehn"], ["17", "siebzehn"], ["18", "achtzehn"], ["19", "neunzehn"], ["20", "zwanzig"],
+            // 整十位数与百位
+            ["30", "dreißig"], ["40", "vierzig"], ["50", "fünfzig"], 
+            ["60", "sechzig"], ["70", "siebzig"], ["80", "achtzig"], ["90", "neunzig"],
+            ["100", "hundert"],
+			// 🔥 21 - 29 特例与组合
+			["21", "einundzwanzig"],  // 💡 注意：是 ein- 不是 eins-！
+            ["22", "zweiundzwanzig"],
+            ["23", "dreiundzwanzig"],
+            ["24", "vierundzwanzig"],
+            ["25", "fünfundzwanzig"],
+            ["26", "sechsundzwanzig"], // 💡 这里的 6 保留了 s (sechs)
+            ["27", "siebenundzwanzig"],// 💡 这里的 7 保留了 en (sieben)
+            ["28", "achtundzwanzig"],
+            ["29", "neunundzwanzig"]
+        ]
+    },
+
+    a_words: {
+        title: "🏷️ 高频单词",
+        layout: "phrase",
+        speakType: "key", 
+        items: [
+            ["der Freund", "朋友 (阳性)"], ["die Familie", "家庭 (阴性)"], ["die Ehefrau", "妻子 (阴性)"], 
+            ["die Kinder", "孩子们 (复数)"], ["das Alter", "年龄 (中性)"], ["der Urlaub", "假期 (阳性)"], 
+            ["die Wohnung", "公寓 (阴性)"], ["das Meer", "大海 (中性)"], ["der Wohnraum", "起居室 (阳性)"], 
+            ["die Küche", "厨房 (阴性)"], ["das Bad", "浴室 (中性)"], ["das Formular", "表格 (中性)"], 
+            ["die Lösungen", "答案；解决方案 (复数)"], ["der Antwortbogen", "答题卡 (阳性)"], ["die Anzahl", "数量 (阴性)"], 
+            ["die Person", "人 (阴性)"], ["die Umgebung", "环境；周边 (阴性)"], ["der Bahnhof", "火车站 (阳性)"], 
+            ["die Frau", "女士；妻子 (阴性)"], ["die Freundin", "女朋友 (阴性)"], ["der Satz", "句子 (阳性)"], 
+            ["das Land", "国家 (中性)"], ["der Wohnort", "居住地 (阳性)"], ["die Sprache", "语言 (阴性)"], 
+            ["der Beruf", "职业 (阳性)"], ["das Hobby", "爱好 (中性)"], ["der Prüfer", "考官 (阳性)"], 
+            ["der Kollege", "同事 (阳性)"], ["das Wort", "单词 (中性)"], ["die Prüfungsnummer", "考号 (阴性)"], 
+            ["die Information", "信息 (阴性)"], ["die Wortkarte", "单词卡 (阴性)"], ["das Thema", "主题 (中性)"], 
+            ["der Kandidat", "考生 (阳性)"], ["das Wochenende", "周末 (中性)"], ["der Feierabend", "下班休闲时间 (阳性)"], 
+            ["der Sport", "运动 (阳性)"], ["das Fernsehen", "看电视 (中性)"], ["der Arbeitsplatz", "工作岗位 (阳性)"], 
+            ["die Pause", "休息 (阴性)"], ["die Firma", "公司 (阴性)"], ["der Computer", "电脑 (阳性)"], 
+            ["der Punkt", "分数；点 (阳性)"], ["die Gruppe", "小组 (阴性)"], ["Flugzeug", "飞机 (中性)"], 
+            ["Zug", "火车 (阳性)"], ["Auto", "汽车 (中性)"], ["brauchen", "需要 (及物动词)"], 
+            ["anreisen", "抵达 (不及物动词)"], ["abreisen", "启程 (不及物动词)"], ["besuchen", "拜访 (及物动词)"], 
+            ["abholen", "接人/取物 (及物动词)"], ["fragen", "提问 (及物动词)"], ["antworten", "回答 (不及物动词)"], 
+            ["kontrollieren", "检查；核对 (及物动词)"], ["buchstabieren", "拼写 (及物动词)"]
+        ]
+    },
+    b_phrases: {
+        title: "📂 核心短语/填表",
+        layout: "phrase",
+        speakType: "key", 
+        items: [
+            ["drei Kinder", "三个孩子"], ["Alter der Kinder", "孩子们的年龄"], ["zwei bis sieben Jahre alt", "2 到 7 岁"], 
+            ["Ostsee Urlaub", "波罗的海假期"], ["drei Wochen Urlaub", "三周假期"], ["ruhige Wohnung", "安静的公寓"], 
+            ["am Meer", "在海边"], ["zwei Schlafzimmer", "两间卧室"], ["nach Deutschland kommen", "来德国"], 
+            ["fünf fehlenden Informationen", "5 条缺失的信息"], ["Anzahl der Personen", "人数"], ["davon Kinder", "其中儿童"], 
+            ["Anreise", "抵达；行程 (填表高频)"], ["Abreise", "离开；启程 (填表高频)"], ["Ferienwohnungen", "度假公寓 (复数)"], 
+            ["nächste Woche", "下周"], ["zu Hause sein", "在家"], ["maximal zehn Punkte", "最多 10分"], 
+            ["sich vorstellen", "自我介绍"], ["laut lesen", "大声朗读"], ["maximal", "最多的；最大的 (形容词)"], 
+            ["circa / ca.", "大约；大概 (副词)"], ["Minuten", "分钟 (复数)"]
+        ]
+    },
+    c_sentences: {
+        title: "🗣️ 常用交流句型",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Brauchen Sie eine Küche?", "您需要厨房吗？"],
+            ["Wie reisen Sie an?", "您将如何抵达？"],
+            ["Ich kann dich nicht am Bahnhof abholen.", "我不能去火车站接你。"],
+            ["Du kannst mit dem Bus zu meiner Wohnung kommen.", "你可以坐公交车来我的公寓。"],
+            ["Du kannst mit der U-Bahn zu meiner Wohnung kommen.", "你可以坐地铁来我的公寓。"],
+            ["Meine Frau ist zu Hause.", "我的妻子在家。"],
+            ["Meine Freundin ist zu Hause.", "我的女朋友在家。"],
+            ["Bitte sprechen Sie langsam.", "请您说慢一点。"]
+        ]
+    },
+    d_long_sentences: {
+        title: "🚨 考场指令与求助长句",
+        layout: "long-sentence",
+        speakType: "key",
+        items: [
+            [
+                "vom fünfundzwanzigsten Juni bis zum fünfzehnten Juli", 
+                "从 6 月 25 日到 7 月 15 日（💡 听力与书写考试高频复杂时间结构）"
+            ],
+            [
+                "Füllen Sie das Formular sorgfältig aus.", 
+                "请您仔细地填写这份表格。（💡 考官核心阅读/写作指令）"
+            ],
+            [
+                "Ich kenne das Wort nicht. Was bedeutet das?", 
+                "我不认识这个单词。请问它是什么意思？（💡 口语考试万能求助句型）"
+            ],
+            [
+                "Bitte, wiederholen Sie.", 
+                "请您重复一遍。（💡 没听清考官或搭档说话时的必备礼貌用语）"
+            ]
+        ]
+    },
+    exam_dialogue: {
+        title: "💬 考场互动对话",
+        layout: "dialogue", 
+        speakType: "key",
+        items: [
+            ["Guten Tag! Stellen Sie sich bitte vor.", "你好！请您自我介绍一下。", "left"],
+            ["Guten Tag! Mein Name ist Zhang. Ich komme aus China.", "你好！我名叫张。我来自中国。", "right"],
+            ["Buchstabieren Sie Ihren Familiennamen, bitte.", "请拼写您的姓氏。", "left"],
+            ["Z-H-A-N-G. Und ich wohne jetzt in Berlin.", "Z-H-A-N-G。我目前住在柏林。", "right"],
+            ["Sprechen Sie bitte ein bisschen langsamer.", "请您说得稍微慢一点。", "left"],
+            ["Entschuldigung, ich wiederhole: Ich wohne in Berlin.", "抱歉，我重复一遍：我住在柏林。", "right"]
+        ]
+    }
+};
+
+// ==========================================
+// 核心状态控制中心 (加入 LocalStorage 记忆)
+// ==========================================
+let currentActivePageId = 'review'; 
+let isAutoplayRunning = false;
+let currentPlayIndex = 0;
+
+// 🔒 核心修复：初始化时先从本地存储里读取已收藏的内容，如果没有则为空数组
+let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme === 'dark') document.body.removeAttribute('data-theme');
+    else document.body.setAttribute('data-theme', 'dark');
+}
+
+function speak(text, callback) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "de-DE";
+    if (callback) {
+        u.onend = () => callback();
+        u.onerror = () => callback();
+    }
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+}
+
+function toggleStar(e, pageKey, itemIndex, starEl) {
+    e.stopPropagation(); 
+    const item = appData[pageKey].items[itemIndex];
+    const uniqueId = `${pageKey}-${itemIndex}`;
+    const existingIndex = starredItems.findIndex(x => x.id === uniqueId);
+    
+    if (existingIndex > -1) {
+        starredItems.splice(existingIndex, 1);
+        document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.remove('active'));
+    } else {
+        starredItems.push({
+            id: uniqueId,
+            pageKey: pageKey,
+            layout: appData[pageKey].layout,
+            speakType: appData[pageKey].speakType,
+            data: item
+        });
+        document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.add('active'));
+    }
+    
+    // 💾 核心修复：每次变更收藏状态，实时写入本地浏览器缓存
+    localStorage.setItem('german_helper_stars', JSON.stringify(starredItems));
+    renderReviewPage();
+}
+
+function renderReviewPage() {
+    const reviewGrid = document.getElementById('review-grid');
+    if (!reviewGrid) return;
+    
+    reviewGrid.removeAttribute('class'); 
+    reviewGrid.innerHTML = '';
+    
+    if (starredItems.length === 0) {
+        reviewGrid.innerHTML = `<div class="empty-tip">⭐ 还没有标记重点。点击其他页面卡片上的星星，不熟的内容会同步到这里，刷新也不会丢失哦！</div>`;
+        return;
+    }
+    
+    reviewGrid.className = 'grid-sentence'; 
+    
+    starredItems.forEach((fav) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'grid-sentence'; 
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]}, this)">★</span>
+            <div class='big'>${fav.data[0]}</div>
+            <div class='small'>${fav.data[1]}</div>
+        `;
+        
+        const textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
+        card.onclick = () => {
+            stopAutoplay();
+            speak(textToSpeak);
+        };
+        
+        wrapper.appendChild(card);
+        reviewGrid.appendChild(wrapper);
+    });
+}
+
+// ⏳ 核心修复：页面初次加载时，根据本地存储自动点亮普通页面的小星星
+function syncStarUIFromStorage() {
+    starredItems.forEach(fav => {
+        document.querySelectorAll(`.star-${fav.id}`).forEach(el => el.classList.add('active'));
+    });
+}
+
+function startAutoplay() {
+    const activePage = document.getElementById(`page-${currentActivePageId}`);
+    const cards = activePage.querySelectorAll('.card');
+    
+    if (currentPlayIndex >= cards.length || cards.length === 0) {
+        stopAutoplay();
+        return;
+    }
+
+    cards.forEach(c => c.classList.remove('playing'));
+    const currentCard = cards[currentPlayIndex];
+    
+    if (currentCard.parentElement.classList.contains('empty-tip') || currentCard.classList.contains('empty-tip')) {
+        stopAutoplay();
+        return;
+    }
+    
+    currentCard.classList.add('playing');
+    currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    let textToSpeak = "";
+    if (currentActivePageId === 'review') {
+        const fav = starredItems[currentPlayIndex];
+        textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
+    } else {
+        const pageConfig = appData[currentActivePageId];
+        const itemData = pageConfig.items[currentPlayIndex];
+        textToSpeak = pageConfig.speakType === 'key' ? itemData[0] : itemData[1];
+    }
+
+    speak(textToSpeak, () => {
+        if (!isAutoplayRunning) return;
+        currentPlayIndex++;
+        setTimeout(() => {
+            if (isAutoplayRunning) startAutoplay();
+        }, 1400); 
+    });
+}
+
+function stopAutoplay() {
+    isAutoplayRunning = false;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
+    const btn = document.getElementById('autoPlayBtn');
+    btn.innerHTML = "▶️ 自动播放当页";
+    btn.classList.remove('playing');
+}
+
+function toggleAutoPlay() {
+    if (isAutoplayRunning) {
+        stopAutoplay();
+    } else {
+        isAutoplayRunning = true;
+        currentPlayIndex = 0;
+        const btn = document.getElementById('autoPlayBtn');
+        btn.innerHTML = "⏹️ 停止自动播放";
+        btn.classList.add('playing');
+        startAutoplay();
+    }
+}
+
+// ==========================================
+// 初始化 DOM 渲染引擎
+// ==========================================
+const tabsContainer = document.getElementById('tabsContainer');
+const pagesContainer = document.getElementById('pagesContainer');
+
+const reviewBtn = document.createElement('button');
+reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点复习"; reviewBtn.className = "active";
+reviewBtn.onclick = () => switchPage('review');
+tabsContainer.appendChild(reviewBtn);
+
+const reviewPageDiv = document.createElement('div');
+reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
+const reviewGridDiv = document.createElement('div');
+reviewGridDiv.id = 'review-grid';
+reviewPageDiv.appendChild(reviewGridDiv);
+pagesContainer.appendChild(reviewPageDiv);
+
+Object.keys(appData).forEach((key) => {
+    const pageConfig = appData[key];
+    
+    const btn = document.createElement('button');
+    btn.id = `btn-${key}`; btn.innerHTML = pageConfig.title;
+    btn.onclick = () => switchPage(key);
+    tabsContainer.appendChild(btn);
+
+    const pageDiv = document.createElement('div');
+    pageDiv.id = `page-${key}`; pageDiv.className = 'page';
+    
+    const gridDiv = document.createElement('div');
+    const layoutStyle = pageConfig.layout || 'word';
+    gridDiv.className = `grid-${layoutStyle}`;
+
+    pageConfig.items.forEach((item, itemIndex) => {
+        if (layoutStyle === 'dialogue') {
+            const direction = item[2] || 'left'; 
+            // 🐱 🐶 完美融入猫狗趣味头像逻辑
+            const avatarTxt = direction === 'left' ? '😼' : '🐶';
+            
+            const row = document.createElement('div');
+            row.className = `dialogue-row ${direction}`;
+            
+            row.innerHTML = `
+                <div class="dialogue-content">
+                    <div class="chat-avatar">${avatarTxt}</div>
+                    <div class="card">
+                        <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                        <div class='big'>${item[0]}</div>
+                        <div class='small'>${item[1]}</div>
+                    </div>
+                </div>
+            `;
+            
+            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
+            row.querySelector('.card').onclick = () => {
+                stopAutoplay();
+                speak(textToSpeak);
+            };
+            gridDiv.appendChild(row);
+            
+        } else {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                <div class='big'>${item[0]}</div>
+                <div class='small'>${item[1]}</div>
+            `;
+            
+            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
+            card.onclick = () => {
+                stopAutoplay();
+                speak(textToSpeak);
+            };
+            gridDiv.appendChild(card);
+        }
+    });
+
+    pageDiv.appendChild(gridDiv);
+    pagesContainer.appendChild(pageDiv);
+});
+
+// ⚡ 启动渲染与星星同步
+renderReviewPage();
+syncStarUIFromStorage();
+
+function switchPage(pageId) {
+    stopAutoplay();
+    currentActivePageId = pageId;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('show');
+    document.getElementById(`btn-${pageId}`).classList.add('active');
 }
 </script>
 
 </body>
 </html>
-
