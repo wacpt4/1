@@ -375,7 +375,15 @@ function toggleTheme() {
 }
 
 function speak(text, callback) {
-    const u = new SpeechSynthesisUtterance(text);
+    let cleanedText = text;
+    
+    // 🌟 只针对单个大写字母（包括德语变音Ä、Ö、Ü），强行转为小写
+    if (text.length === 1 && text === text.toUpperCase()) {
+        cleanedText = text.toLowerCase();
+    }
+
+    const u = new SpeechSynthesisUtterance(cleanedText);
+    
     u.lang = "de-DE";
     if (callback) {
         u.onend = () => callback();
