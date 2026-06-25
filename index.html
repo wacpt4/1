@@ -521,19 +521,75 @@ const appData = {
             ]
         ]
     },
-    exam_dialogue: {
-        title: "💬 考场互动对话",
+dialogues_all: {
+        title: "💬 Nico",
         layout: "dialogue", 
         speakType: "key",
         items: [
-            ["Guten Tag! Stellen Sie sich bitte vor.", "你好！请您自我介绍一下。", "left"],
-            ["Guten Tag! Mein Name ist Zhang. Ich komme aus China.", "你好！我名叫张。我来自中国。", "right"],
-            ["Buchstabieren Sie Ihren Familiennamen, bitte.", "请拼写您的姓氏。", "left"],
-            ["Z-H-A-N-G. Und ich wohne jetzt in Berlin.", "Z-H-A-N-G。我目前住在柏林。", "right"],
-            ["Sprechen Sie bitte ein bisschen langsamer.", "请您说得稍微慢一点。", "left"],
-            ["Entschuldigung, ich wiederhole: Ich wohne in Berlin.", "抱歉，我重复一遍：我住在柏林。", "right"]
+            // --- Dialogue 1: Formal Office ---
+            ["Frau: Guten Morgen, Herr Müller, wie geht es Ihnen?", "Woman: Good morning, Mr. Müller, how are you?", "left"],
+            ["Mann: Guten Morgen, Frau Schneider. Danke, gut! Und Ihnen?", "Man: Good morning, Ms. Schneider. Fine, thanks! And you?", "right"],
+            
+            // --- Dialogue 2: Formal Business ---
+            ["Mann: Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
+            ["Frau: Guten Tag! Wie geht es Ihnen?", "Woman: Good day! How are you?", "left"],
+            ["Mann: Sehr gut, danke. Und Ihnen?", "Man: Very well, thanks. And you?", "right"],
+            
+            // --- Dialogue 3: Family ---
+            ["Mann: Hey, Lena! Na, wie geht’s?", "Man: Hey, Lena! So, how's it going?", "right"],
+            ["Frau: Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
+            
+            // --- Dialogue 4: Friends ---
+            ["Mann: Hallo, Sarah. Wie geht’s dir?", "Man: Hello, Sarah. How are you?", "right"],
+            ["Frau: Hi, Tom! Super, danke. Und dir?", "Woman: Hi, Tom! Great, thanks. And you?", "left"],
+            
+            // --- Dialogue 5: Nico & Emma (The Bag) ---
+            ["Emma: Oh, schön!", "Emma: Oh, beautiful!", "left"],
+            ["Nico: Hm?", "Nico: Hm?", "right"],
+            ["Emma: Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
+            ["Nico: Entschuldigung? Schön?", "Nico: Excuse me? Beautiful?", "right"],
+            ["Emma: Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
+            ["Lisa: Emma, komm jetzt! Entschuldigung!", "Lisa: Emma, come now! Excuse me!", "left"],
+            ["Nico: Adalbert-Stifter-Straße ...", "Nico: Adalbert-Stifter Street ...", "right"],
+			
+			
+			["Lisa: Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
+            ["Emma: Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+            ["Lisa: Hallo. Also: Hallo, wie heißt du?", "Lisa: Hello. So: Hello, what's your name?", "left"],
+            ["Nico: Hallo, ich heiße Nico. Und wie heißt du?", "Nico: Hello, my name is Nico. And what's your name?", "right"],
+            ["Lisa: Ich heiße Lisa.", "Lisa: My name is Lisa.", "left"],
+            ["Emma: Nein, du heißt Nico.", "Emma: No, your name is Nico.", "left"],
+            ["Lisa: Das ist Emma. Emma spinnt gerade.", "Lisa: This is Emma. Emma is being silly right now.", "left"],
+            ["Emma: Ich … heiße … Ey!", "Emma: My... name... is... Hey!", "left"],
+            ["Lisa: Emma!", "Lisa: Emma!", "left"],
+            ["Emma: Aber jetzt ist das „N“ weg! Das war Nico!", "Emma: But now the 'N' is gone! That was Nico!", "left"],
+            ["Nico: Ich?", "Nico: Me?", "right"],
+            ["Lisa: Moment, bitte. Ich muss noch kurz tanken.", "Lisa: Just a moment, please. I need to fill up the tank real quick.", "left"],
+            ["Nico: Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
+			
+			
+			["Lisa: Wie ist die Hausnummer, Emma? 38 oder 83?", "Lisa: What's the house number, Emma? 38 or 83?", "left"],
+            ["Emma: Moment… 11.", "Emma: Wait... 11.", "left"],
+            ["Lisa: Ah, ja. Dann sind wir richtig hier.", "Lisa: Ah, yes. Then we are in the right place here.", "left"],
+            ["Nico: Da.", "Nico: There.", "right"],
+            ["Emma: Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
+            ["Nico: Wie viele?", "Nico: How many?", "right"],
+            ["Emma: Das sind 31 Zahlen.", "Emma: That makes 31 numbers.", "left"],
+            ["Nico: 31 …", "Nico: 31...", "right"],
+            ["Emma: Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
+            ["Nico: Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
+            ["Emma: Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: Six, seven, eighth, nine, ten, eleven, twelve.", "left"],
+            ["Nico: Sechs, sieben, acht, neun, zehn, elf, zwölf. Was ist das?", "Nico: Six, seven, eighth, nine, ten, eleven, twelve. What is this?", "right"],
+            ["Emma: Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
+            ["Nico: Geburtstag?", "Nico: Birthday?", "right"],
+            ["Emma: Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
+            ["Nico: Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
+            ["LISA: Ja, und das hier ist ein Geschenk.", "LISA: Yes, and this here is a gift.", "left"],
+            ["Emma: Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
+            ["Nico: Tschüss, Emma!", "Nico: Bye, Emma!", "right"],
         ]
-    }
+    },
+
 };
 
 // ==========================================
