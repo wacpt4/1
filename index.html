@@ -382,6 +382,18 @@ function speak(text, callback) {
         cleanedText = text.toLowerCase();
     }
 
+	// 2. 🌟 针对德语变音符号 Ä、Ö、Ü 独立出现时的特殊拦截
+    // 苹果系统看到大写变音也喜欢加“großes”，我们单独卡死它们，直接转为小写
+    if (cleanedText === 'Ä') cleanedText = 'ä';
+    if (cleanedText === 'Ö') cleanedText = 'ö';
+    if (cleanedText === 'Ü') cleanedText = 'ü';
+    
+    // 3. 🌟 针对 ß（Eszett）独立出现时的特殊拦截
+    // 因为很多时候系统不知道怎么单读 ß，我们可以直接让它读它在字母表里的名字 "esszett"
+    if (cleanedText === 'ß' || cleanedText === 'ẞ') {
+        cleanedText = 'esszett';
+    }
+	
     const u = new SpeechSynthesisUtterance(cleanedText);
     
     u.lang = "de-DE";
