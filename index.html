@@ -206,19 +206,15 @@ button:hover { background: var(--card-hover-bg); }
 
 <div class="header">
     <h1>🇩🇪 德语学习助手</h1>
-    <p>卡片分类</p>
+    <p>A1</p>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-</div>
-	
-<div class="play-panel">
-    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ Auto Play</button>
 </div>
 	
 <div class="tabs" id="tabsContainer"></div>
 <div id="pagesContainer"></div>
 
 <div class="play-panel">
-    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ Auto Play</button>
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ 自动播放</button>
 </div>
 
 <script>
@@ -510,7 +506,7 @@ function stopAutoplay() {
     speechSynthesis.cancel();
     document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
     const btn = document.getElementById('autoPlayBtn');
-    btn.innerHTML = "▶️ Auto Play";
+    btn.innerHTML = "▶️ 自动播放";
     btn.classList.remove('playing');
 }
 
@@ -521,7 +517,7 @@ function toggleAutoPlay() {
         isAutoplayRunning = true;
         currentPlayIndex = 0;
         const btn = document.getElementById('autoPlayBtn');
-        btn.innerHTML = "⏹️ Stop";
+        btn.innerHTML = "⏹️ 停止播放";
         btn.classList.add('playing');
         startAutoplay();
     }
