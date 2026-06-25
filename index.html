@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>德语学习助手 - 永久收藏版</title>
+<title>德语学习助手</title>
 <style>
 /* ==========================================
    🎨 CSS 变量：定义浅色和深色主题
@@ -206,15 +206,15 @@ button:hover { background: var(--card-hover-bg); }
 
 <div class="header">
     <h1>🇩🇪 德语学习助手</h1>
-    <p>多维交互语言卡片系统</p>
-    <button class="theme-toggle" onclick="toggleTheme()">🌓 模式切换</button>
+    <p>卡片分类</p>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Switch</button>
 </div>
 
 <div class="tabs" id="tabsContainer"></div>
 <div id="pagesContainer"></div>
 
 <div class="play-panel">
-    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ 自动播放当页</button>
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ Auto Play</button>
 </div>
 
 <script>
@@ -498,7 +498,7 @@ function stopAutoplay() {
     speechSynthesis.cancel();
     document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
     const btn = document.getElementById('autoPlayBtn');
-    btn.innerHTML = "▶️ 自动播放当页";
+    btn.innerHTML = "▶️ Auto Play";
     btn.classList.remove('playing');
 }
 
@@ -509,7 +509,7 @@ function toggleAutoPlay() {
         isAutoplayRunning = true;
         currentPlayIndex = 0;
         const btn = document.getElementById('autoPlayBtn');
-        btn.innerHTML = "⏹️ 停止自动播放";
+        btn.innerHTML = "⏹️ Stop";
         btn.classList.add('playing');
         startAutoplay();
     }
@@ -522,7 +522,7 @@ const tabsContainer = document.getElementById('tabsContainer');
 const pagesContainer = document.getElementById('pagesContainer');
 
 const reviewBtn = document.createElement('button');
-reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点复习"; reviewBtn.className = "active";
+reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
 reviewBtn.onclick = () => switchPage('review');
 tabsContainer.appendChild(reviewBtn);
 
