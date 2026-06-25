@@ -196,26 +196,56 @@ button:hover { background: var(--card-hover-bg); }
     box-shadow: var(--hover-shadow);
 }
 
-.play-panel { text-align: center; margin: 40px; }
-.autoplay-btn { font-size: 16px; padding: 14px 30px; border-radius: 30px; background: #6366f1; color: white; font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
-.autoplay-btn.playing { background: #ef4444; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+/* ==========================================
+   🚀 核心修改：左上角高透明悬浮播放面板
+   ========================================== */
+.play-panel { 
+    position: fixed; 
+    left: 20px; 
+    top: 20px; 
+    z-index: 9999; 
+}
+.autoplay-btn { 
+    font-size: 14px; 
+    padding: 10px 18px; 
+    border-radius: 20px; 
+    background: #6366f1; 
+    color: white; 
+    font-weight: bold; 
+    letter-spacing: 0.5px; 
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    opacity: 0.35;                   /* 🌟 核心：默认高度半透明，完全不影响视线 */
+    transition: opacity 0.2s, transform 0.2s, background 0.2s;
+}
+.autoplay-btn:hover { 
+    opacity: 1.0;                    /* 🌟 鼠标悬停时恢复清晰 */
+    transform: scale(1.05);
+}
+.autoplay-btn.playing { 
+    background: #ef4444; 
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
+    opacity: 0.8;                    /* 🌟 正在播放时维持较高可见度，提醒正在运行 */
+}
+.autoplay-btn.playing:hover {
+    opacity: 1.0;
+}
 .empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
 </style>
 </head>
 <body>
+
+<div class="play-panel">
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">🚀</button>
+</div>
 
 <div class="header">
     <h1>🇩🇪 德语学习助手</h1>
     <p>A1</p>
     <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
 </div>
-	
+    
 <div class="tabs" id="tabsContainer"></div>
 <div id="pagesContainer"></div>
-
-<div class="play-panel">
-    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ 自动播放</button>
-</div>
 
 <script>
 // ==========================================
@@ -224,41 +254,37 @@ button:hover { background: var(--card-hover-bg); }
 const appData = {
     alphabet: {
         title: "🔤 字母表",
-		layout: "word",
-        speakType: "key", // 左边的字母本身
+        layout: "word",
+        speakType: "key", 
         items: [
             ["A","a"],["B","be"],["C","ce"],["D","de"],["E","e"],["F","ef"],
-			["G","ge"],["H","ha"],["I","i"],["J","jot"],["K","ka"],["L","el"],
-			["M","em"],["N","en"],["O","o"],["P","pe"],["Q","ku"],["R","er"],
-			["S","es"],["T","te"],["U","u"],["V","fau"],["W","we"],
-			["X","iks"],["Y","ypsilon"],["Z","tsett"],
-			["Ä","ä"],["Ö","ö"],["Ü","ü"],["ß","Eszett"]
+            ["G","ge"],["H","ha"],["I","i"],["J","jot"],["K","ka"],["L","el"],
+            ["M","em"],["N","en"],["O","o"],["P","pe"],["Q","ku"],["R","er"],
+            ["S","es"],["T","te"],["U","u"],["V","fau"],["W","we"],
+            ["X","iks"],["Y","ypsilon"],["Z","tsett"],
+            ["Ä","ä"],["Ö","ö"],["Ü","ü"],["ß","Eszett"]
         ]
     },
 
-	numbers: {
+    numbers: {
         title: "🔢 数字",
         layout: "word",
         speakType: "value", 
         items: [
-            // 0 - 10
             ["0", "null"], ["1", "eins"], ["2", "zwei"], ["3", "drei"], ["4", "vier"],
             ["5", "fünf"], ["6", "sechs"], ["7", "sieben"], ["8", "acht"], ["9", "neun"], ["10", "zehn"],
-            // 11 - 20
             ["11", "elf"], ["12", "zwölf"], ["13", "dreizehn"], ["14", "vierzehn"], ["15", "fünfzehn"],
             ["16", "sechzehn"], ["17", "siebzehn"], ["18", "achtzehn"], ["19", "neunzehn"], ["20", "zwanzig"],
-            // 整十位数与百位
             ["30", "dreißig"], ["40", "vierzig"], ["50", "fünfzig"], 
             ["60", "sechzig"], ["70", "siebzig"], ["80", "achtzig"], ["90", "neunzig"],
             ["100", "hundert"],
-			// 🔥 21 - 29 特例与组合
-			["21", "einundzwanzig"],  // 💡 注意：是 ein- 不是 eins-！
+            ["21", "einundzwanzig"],  
             ["22", "zweiundzwanzig"],
             ["23", "dreiundzwanzig"],
             ["24", "vierundzwanzig"],
             ["25", "fünfundzwanzig"],
-            ["26", "sechsundzwanzig"], // 💡 这里的 6 保留了 s (sechs)
-            ["27", "siebenundzwanzig"],// 💡 这里的 7 保留了 en (sieben)
+            ["26", "sechsundzwanzig"], 
+            ["27", "siebenundzwanzig"],
             ["28", "achtundzwanzig"],
             ["29", "neunundzwanzig"]
         ]
@@ -365,7 +391,6 @@ let currentActivePageId = 'review';
 let isAutoplayRunning = false;
 let currentPlayIndex = 0;
 
-// 🔒 核心修复：初始化时先从本地存储里读取已收藏的内容，如果没有则为空数组
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
 
 function toggleTheme() {
@@ -382,15 +407,13 @@ function speak(text, callback) {
         cleanedText = text.toLowerCase();
     }
 
-	// 2. 🌟 针对德语变音符号 Ä、Ö、Ü 独立出现时的特殊拦截
+    // 🌟 针对德语变音符号 Ä、Ö、Ü 独立出现时的特殊拦截
     if (cleanedText === 'ä' || cleanedText === 'Ä') cleanedText = 'eh';
     if (cleanedText === 'ö' || cleanedText === 'Ö') cleanedText = 'öh';
     if (cleanedText === 'ü' || cleanedText === 'Ü') cleanedText = 'üh';
     if (cleanedText === 'ß' || cleanedText === 'ẞ') cleanedText = 'esszett';
     
-	
     const u = new SpeechSynthesisUtterance(cleanedText);
-    
     u.lang = "de-DE";
     if (callback) {
         u.onend = () => callback();
@@ -420,7 +443,6 @@ function toggleStar(e, pageKey, itemIndex, starEl) {
         document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.add('active'));
     }
     
-    // 💾 核心修复：每次变更收藏状态，实时写入本地浏览器缓存
     localStorage.setItem('german_helper_stars', JSON.stringify(starredItems));
     renderReviewPage();
 }
@@ -462,7 +484,6 @@ function renderReviewPage() {
     });
 }
 
-// ⏳ 核心修复：页面初次加载时，根据本地存储自动点亮普通页面的小星星
 function syncStarUIFromStorage() {
     starredItems.forEach(fav => {
         document.querySelectorAll(`.star-${fav.id}`).forEach(el => el.classList.add('active'));
@@ -513,7 +534,7 @@ function stopAutoplay() {
     speechSynthesis.cancel();
     document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
     const btn = document.getElementById('autoPlayBtn');
-    btn.innerHTML = "▶️ 自动播放";
+    btn.innerHTML = "🚀";
     btn.classList.remove('playing');
 }
 
@@ -524,7 +545,7 @@ function toggleAutoPlay() {
         isAutoplayRunning = true;
         currentPlayIndex = 0;
         const btn = document.getElementById('autoPlayBtn');
-        btn.innerHTML = "⏹️ 停止播放";
+        btn.innerHTML = "💥";
         btn.classList.add('playing');
         startAutoplay();
     }
@@ -566,7 +587,6 @@ Object.keys(appData).forEach((key) => {
     pageConfig.items.forEach((item, itemIndex) => {
         if (layoutStyle === 'dialogue') {
             const direction = item[2] || 'left'; 
-            // 🐱 🐶 完美融入猫狗趣味头像逻辑
             const avatarTxt = direction === 'left' ? '😼' : '🐶';
             
             const row = document.createElement('div');
@@ -612,7 +632,6 @@ Object.keys(appData).forEach((key) => {
     pagesContainer.appendChild(pageDiv);
 });
 
-// ⚡ 启动渲染与星星同步
 renderReviewPage();
 syncStarUIFromStorage();
 
