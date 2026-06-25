@@ -291,6 +291,157 @@ const appData = {
         ]
     },
 
+// --- 1. 数字基础 (0-19) ---
+    numbers_basic: {
+        title: "🔢 Basic Numbers (0-19)",
+        layout: "word",
+        speakType: "key", 
+        items: [
+            ["null", "0 (Zero)"], ["eins", "1 (One)"], ["zwei", "2 (Two)"], ["drei", "3 (Three)"], ["vier", "4 (Four)"], 
+            ["fünf", "5 (Five)"], ["sechs", "6 (Six)"], ["sieben", "7 (Seven)"], ["acht", "8 (Eight)"], ["neun", "9 (Nine)"], 
+            ["zehn", "10 (Ten)"], ["elf", "11 (Eleven)"], ["zwölf", "12 (Twelve)"], ["dreizehn", "13 (Thirteen)"], 
+            ["vierzehn", "14 (Fourteen)"], ["fünfzehn", "15 (Fifteen)"], ["sechzehn", "16 (Sixteen)"], 
+            ["siebzehn", "17 (Seventeen)"], ["achtzehn", "18 (Eighteen)"], ["neunzehn", "19 (Nineteen)"]
+        ]
+    },
+
+    // --- 2. 高阶数字与序数词 ---
+    numbers_advanced: {
+        title: "🔢 Big Numbers & Ordinals",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["zwanzig", "20 (Twenty)"], ["einundzwanzig", "21 (Twenty-one)"], ["dreißig", "30 (Thirty)"], ["vierzig", "40 (Forty)"],
+            ["fünfzig", "50 (Fifty)"], ["sechzig", "60 (Sixty)"], ["siebzig", "70 (Seventy)"], ["achtzig", "80 (Eighty)"],
+            ["neunzig", "90 (Ninety)"], ["hundert", "100 (One hundred)"], ["hunderteins", "101 (One hundred and one)"], ["zweihundert", "200 (Two hundred)"],
+            ["tausend", "1,000 (One thousand)"], ["eine Million", "1,000,000 (One million)"], ["eine Milliarde", "1,000,000,000 (One billion)"],
+            ["erste", "1st (First)"], ["zweite", "2nd (Second)"], ["dritte", "3rd (Third)"], ["vierte", "4th (Fourth)"]
+        ]
+    },
+
+    // --- 3. 日期与年份表达 ---
+    date_expressions: {
+        title: "📅 Dates & Years",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["ein halb", "A half (1/2)"],
+            ["ein Viertel", "A quarter (1/4)"],
+            ["neunzehnhundertneunundneunzig", "The year 1999"],
+            ["zweitausendvierzehn", "The year 2014"],
+            ["heute ist der erste März", "Today is March 1st"],
+            ["Berlin, zwölfter Vierter zweitausendzwei", "Berlin, April 12th 2002"]
+        ]
+    },
+
+    // --- 4. 时间与时钟 ---
+    uhrzeit: {
+        title: "🕒 Time & Clock",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["null Uhr drei", "12:03 AM / 00:03"],
+            ["sieben Uhr fünfzehn", "7:15 AM / 07:15"],
+            ["dreizehn Uhr siebzehn", "1:17 PM / 13:17"],
+            ["vierundzwanzig Uhr", "12:00 AM / Midnight"],
+            ["ein Uhr", "1 o'clock"],
+            ["fünf Minuten vor eins", "Five minutes to one"],
+            ["fünf Minuten nach eins", "Five minutes past one"],
+            ["Viertel vor zwei", "Quarter to two"],
+            ["Viertel nach zwei", "Quarter past two"],
+            ["halb drei", "Half past two (literally: half three)"]
+        ]
+    },
+
+    // --- 5. 时间计量与星期 ---
+    zeitangaben: {
+        title: "⏳ Time Units & Weekdays",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["die Sekunde", "The second"], ["die Minute", "The minute"], ["die Stunde", "The hour"],
+            ["der Tag", "The day"], ["die Woche", "The week"], ["das Jahr", "The year"],
+            ["der Wochentag", "The weekday"], ["das Wochenende", "The weekend"], ["am Wochenende", "At the weekend"],
+            ["der Montag", "Monday"], ["der Dienstag", "Tuesday"], ["der Mittwoch", "Wednesday"],
+            ["der Donnerstag", "Thursday"], ["der Freitag", "Friday"], ["der Samstag", "Saturday"],
+            ["der Sonntag", "Sunday"]
+        ]
+    },
+
+    // --- 6. 一天时间段与月份 ---
+    tageszeiten_monate: {
+        title: "🌅 Dayparts & Months",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Morgen", "The morning"], ["der Vormittag", "The forenoon / morning"], ["der Mittag", "The noon / midday"],
+            ["der Nachmittag", "The afternoon"], ["der Abend", "The evening"], ["die Nacht", "The night"],
+            ["der Januar", "January"], ["der Februar", "February"], ["der März", "March"],
+            ["der April", "April"], ["der Mai", "May"], ["der Juni", "June"],
+            ["der Juli", "July"], ["der August", "August"], ["der September", "September"],
+            ["der Oktober", "October"], ["der November", "November"], ["der Dezember", "December"]
+        ]
+    },
+
+    // --- 7. 季节、货币与度量衡 ---
+    jahreszeiten_masse: {
+        title: "❄️ Seasons & Measures",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Frühling", "Spring"], ["der Sommer", "Summer"], ["der Herbst", "Autumn / Fall"], ["der Winter", "Winter"],
+            ["ein Euro hundert Cent", "1 Euro = 100 Cents"],
+            ["ein Meter", "One meter (1 m)"], ["ein Zentimeter", "One centimeter (1 cm)"], ["ein Meter fünfzehn", "One meter fifteen (1.15 m)"],
+            ["zweihundert Kilometer", "Two hundred kilometers (200 km)"], ["ein Quadratmeter", "One square meter (1 m²)"],
+            ["ein Prozent", "One percent (1 %)"], ["ein Liter", "One liter (1 l)"], ["ein Gramm", "One gram (1 g)"],
+            ["ein Pfund", "One pound / 500 grams"], ["ein Kilo", "One kilogram (1 kg)"],
+            ["ein Grad unter Null", "One degree below zero (-1°)"],
+            ["minus ein Grad", "Minus one degree (-1°)"],
+            ["vier Grad über Null", "Four degrees above zero (+4°)"],
+            ["plus vier Grad", "Plus four degrees (+4°)"]
+        ]
+    },
+
+    // --- 8. 国家与国籍 (🌟 完整拆分男/女词卡) ---
+    countries: {
+        title: "🌍 Countries & Nationalities",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["Deutschland", "Germany"], 
+            ["deutsch", "German (adjective)"],
+            ["der Deutsche", "German man"], 
+            ["die Deutsche", "German woman"],
+            ["Europa", "Europe"], 
+            ["Europäer", "European man / people"], 
+            ["europäisch", "European (adjective)"],
+            ["die Türkei", "Turkey"], 
+            ["der Türke", "Turkish man"], 
+            ["die Türkin", "Turkish woman"], 
+            ["türkisch", "Turkish (adjective)"],
+            ["Finnland", "Finland"], 
+            ["der Finne", "Finnish man"], 
+            ["die Finnin", "Finnish woman"], 
+            ["finnisch", "Finnish (adjective)"],
+            ["Mexiko", "Mexico"], 
+            ["der Mexikaner", "Mexican man"], 
+            ["die Mexikanerin", "Mexican woman"], 
+            ["mexikanisch", "Mexican (adjective)"]
+        ]
+    },
+
+    // --- 9. 颜色与方位 ---
+    colors_directions: {
+        title: "🎨 Colors & Directions",
+        layout: "word",
+        speakType: "key",
+        items: [
+            ["schwarz", "Black"], ["weiß", "White"], ["grau", "Grey"], ["rot", "Red"],
+            ["blau", "Blue"], ["gelb", "Yellow"], ["grün", "Green"], ["braun", "Brown"],
+            ["der Norden", "The North"], ["der Süden", "The South"], ["der Westen", "The West"], ["der Osten", "The East"]
+        ]
+    },
+
     a_words: {
         title: "🏷️ 高频单词",
         layout: "phrase",
