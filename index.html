@@ -207,9 +207,13 @@ button:hover { background: var(--card-hover-bg); }
 <div class="header">
     <h1>🇩🇪 德语学习助手</h1>
     <p>卡片分类</p>
-    <button class="theme-toggle" onclick="toggleTheme()">🌓 Switch</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
 </div>
-
+	
+<div class="play-panel">
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶️ Auto Play</button>
+</div>
+	
 <div class="tabs" id="tabsContainer"></div>
 <div id="pagesContainer"></div>
 
