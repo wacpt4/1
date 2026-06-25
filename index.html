@@ -197,7 +197,7 @@ button:hover { background: var(--card-hover-bg); }
 }
 
 /* ==========================================
-   🚀 核心修改：左上角高透明悬浮播放面板
+   🚀 核心修改：左上角悬浮播放面板
    ========================================== */
 .play-panel { 
     position: fixed; 
@@ -214,17 +214,18 @@ button:hover { background: var(--card-hover-bg); }
     font-weight: bold; 
     letter-spacing: 0.5px; 
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-    opacity: 0.35;                   /* 🌟 核心：默认高度半透明，完全不影响视线 */
+    opacity: 1.0;                   /* 🌟 核心：默认高度，完全不影响视线 */
     transition: opacity 0.2s, transform 0.2s, background 0.2s;
 }
 .autoplay-btn:hover { 
-    opacity: 1.0;                    /* 🌟 鼠标悬停时恢复清晰 */
+    opacity: 1.0;    	/* 🌟 鼠标悬停时恢复清晰 */
+	background: #4f46e5;
     transform: scale(1.05);
 }
 .autoplay-btn.playing { 
     background: #ef4444; 
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
-    opacity: 0.8;                    /* 🌟 正在播放时维持较高可见度，提醒正在运行 */
+    opacity: 1.0;                    /* 🌟 正在播放时维持较高可见度，提醒正在运行 */
 }
 .autoplay-btn.playing:hover {
     opacity: 1.0;
@@ -235,7 +236,7 @@ button:hover { background: var(--card-hover-bg); }
 <body>
 
 <div class="play-panel">
-    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">🚀</button>
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶</button>
 </div>
 
 <div class="header">
@@ -534,7 +535,7 @@ function stopAutoplay() {
     speechSynthesis.cancel();
     document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
     const btn = document.getElementById('autoPlayBtn');
-    btn.innerHTML = "🚀";
+    btn.innerHTML = "▶";
     btn.classList.remove('playing');
 }
 
@@ -545,7 +546,7 @@ function toggleAutoPlay() {
         isAutoplayRunning = true;
         currentPlayIndex = 0;
         const btn = document.getElementById('autoPlayBtn');
-        btn.innerHTML = "💥";
+        btn.innerHTML = "⏸";
         btn.classList.add('playing');
         startAutoplay();
     }
