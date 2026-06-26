@@ -524,6 +524,123 @@ const appData = {
 // ========================================================
 // 💡 A1 电影剧本级别全量对话卡片（精简去噪 + 德英对照版）
 // ========================================================
+food_restaurant: {
+        title: "🍏 Food, Drink & Restaurant",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            // --- Fruits & Vegetables ---
+            ["der Apfel", "apple"],
+            ["die Äpfel", "apples (plural)"],
+            ["die Birne", "pear"],
+            ["die Birnen", "pears (plural)"],
+            ["die Tomate", "tomato"],
+            ["die Tomaten", "tomatoes (plural)"],
+            ["der Salat", "salad / lettuce"],
+            ["das Obst", "fruit"],
+
+            // --- Bakery & Staples ---
+            ["das Brot", "bread"],
+            ["die Brote", "breads (plural)"],
+            ["das Brötchen", "bread roll"],
+            ["die Brötchen", "bread rolls (plural)"],
+            ["die Butter", "butter"],
+            ["das Öl", "oil"],
+
+            // --- Meat & Fish ---
+            ["das Fleisch", "meat"],
+            ["der Schinken", "ham"],
+            ["die Schinken", "hams (plural)"],
+            ["der Fisch", "fish"],
+            ["die Fische", "fishes (plural)"],
+            ["das Hähnchen", "chicken"],
+            ["die Hähnchen", "chickens (plural)"],
+
+            // --- Drinks & Beverages ---
+            ["das Bier", "beer"],
+            ["der Kaffee", "coffee"],
+            ["der Tee", "tea"],
+            ["der Saft", "juice"],
+            ["trinken", "to drink"],
+            ["die Flasche", "bottle"],
+            ["die Flaschen", "bottles (plural)"],
+
+            // --- Sweets, Sides & Seasonings ---
+            ["der Kuchen", "cake"],
+            ["die Kuchen", "cakes (plural)"],
+            ["die Pommes frites", "french fries (plural)"],
+            ["das Salz", "salt"],
+            ["bitter", "bitter"],
+
+            // --- Dining & Body Sensations ---
+            ["der Appetit", "appetite"],
+            ["der Hunger", "hunger"],
+            ["der Durst", "thirst"],
+            ["das Café", "café"],
+            ["das Essen", "food / meal"],
+            ["essen", "to eat"],
+            ["schmecken", "to taste"],
+            ["grillen", "to grill / barbecue"],
+            ["die Speisekarte", "menu"],
+
+            // --- Household & General ---
+            ["der Kühlschrank", "refrigerator"],
+            ["die Lebensmittel", "groceries / food (plural)"]
+        ]
+    },
+	
+	food_chat: {
+        title: "💬 Kochen in der Küche",
+        layout: "dialogue", 
+        speakType: "key",
+        items: [
+            // --- Scene 1: Hunger and checking the fridge ---
+            ["Ich habe Hunger.", "Nico: I am hungry.", "right"],
+            ["Hast du auch Appetit?", "Nico: Do you also have an appetite?", "right"],
+            ["Ja, ich habe großen Hunger!", "Lisa: Yes, I am very hungry!", "left"],
+            ["Was haben wir im Kühlschrank?", "Lisa: What do we have in the refrigerator?", "left"],
+            ["Mal sehen, wo sind die Lebensmittel?", "Nico: Let's see, where are the groceries?", "right"],
+            ["Hier ist die Butter.", "Nico: Here is the butter.", "right"],
+            ["Und hier ist das Öl.", "Nico: And here is the oil.", "right"],
+
+            // --- Scene 2: Checking Fruits and Vegetables ---
+            ["Haben wir auch Gemüse und Obst?", "Lisa: Do we have vegetables and fruit too?", "left"],
+            ["Ja, hier ist eine Tomate.", "Nico: Yes, here is a tomato.", "right"],
+            ["Und ich sehe eine Birne.", "Nico: And I see a pear.", "right"],
+            ["Gibt es auch einen Apfel?", "Lisa: Is there also an apple?", "left"],
+            ["Nein, wir haben keinen Apfel.", "Nico: No, we don't have an apple.", "right"],
+            ["Aber der Salat hier ist frisch.", "Nico: But the salad here is fresh.", "right"],
+
+            // --- Scene 3: Deciding on the Main Course ---
+            ["Möchtest du Fleisch essen?", "Lisa: Would you like to eat meat?", "left"],
+            ["Hier ist noch Schinken.", "Lisa: There is still some ham here.", "left"],
+            ["Ich mag keinen Schinken.", "Nico: I don't like ham.", "right"],
+            ["Können wir das Hähnchen grillen?", "Nico: Can we grill the chicken?", "right"],
+            ["Gute Idee! Wir grillen das Hähnchen.", "Lisa: Good idea! We'll grill the chicken.", "left"],
+            ["Und dazu machen wir Pommes frites.", "Lisa: And we'll make french fries with it.", "left"],
+            ["Super! Brauchen wir noch Salz?", "Nico: Super! Do we still need salt?", "right"],
+            ["Ja, gib mir bitte das Salz.", "Lisa: Yes, please give me the salt.", "left"],
+
+            // --- Scene 4: Thirst and Drinks ---
+            ["Ich habe jetzt auch Durst.", "Nico: I am thirsty now too.", "right"],
+            ["Möchtest du ein Bier trinken?", "Lisa: Would you like to drink a beer?", "left"],
+            ["Nein danke, ich trinke lieber einen Saft.", "Nico: No thanks, I prefer to drink a juice.", "right"],
+            ["Hier ist eine Flasche Wasser für dich.", "Lisa: Here is a bottle of water for you.", "left"],
+            ["Ich trinke einen Kaffee.", "Lisa: I'll drink a coffee.", "left"],
+            ["Oder vielleicht einen Tee?", "Nico: Or maybe a tea?", "right"],
+
+            // --- Scene 5: Evaluation and Dessert ---
+            ["Das Essen riecht gut.", "Nico: The food smells good.", "right"],
+            ["Wie schmeckt es dir?", "Lisa: How does it taste to you?", "left"],
+            ["Es schmeckt sehr gut!", "Nico: It tastes very good!", "right"],
+            ["Der Salat ist nicht bitter.", "Nico: The salad is not bitter.", "right"],
+            ["Möchtest du noch ein Brötchen?", "Lisa: Would you like another bread roll?", "left"],
+            ["Nein danke, ich bin satt.", "Nico: No thanks, I'm full.", "right"],
+            ["Aber wir haben noch Kuchen!", "Lisa: But we still have cake!", "left"],
+            ["Schön, dann gehen wir später ins Café.", "Nico: Nice, then we'll go to the café later.", "right"]
+        ]
+    },
+
 
     dialogues_all: {
         title: "💬 Nico's Weg",
