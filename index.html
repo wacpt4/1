@@ -521,38 +521,82 @@ const appData = {
             ]
         ]
     },
-dialogues_all: {
-        title: "💬 Nico",
+// ========================================================
+// 💡 A1 电影剧本级别全量对话卡片（精简去噪 + 德英对照版）
+// ========================================================
+
+    dialogues_all: {
+        title: "💬 Nico's Weg",
         layout: "dialogue", 
         speakType: "key",
         items: [
-// --- Dialogue 1: Formal Office ---
+            // --- Scene 1: Formal Greetings (Office & Business) ---
             ["Guten Morgen, Herr Müller, wie geht es Ihnen?", "Woman: Good morning, Mr. Müller, how are you?", "left"],
             ["Guten Morgen, Frau Schneider. Danke, gut! Und Ihnen?", "Man: Good morning, Ms. Schneider. Fine, thanks! And you?", "right"],
-            
-            // --- Dialogue 2: Formal Business ---
+            ["Guten Morgen, Herr Müller, wie geht es Ihnen?", "Woman: Good morning, Mr. Müller, how are you?", "left"],
+            ["Guten Morgen, Frau Schneider. Danke, gut! Und Ihnen?", "Man: Good morning, Ms. Schneider. Fine, thanks! And you?", "right"],
             ["Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
             ["Guten Tag! Wie geht es Ihnen?", "Woman: Good day! How are you?", "left"],
             ["Sehr gut, danke. Und Ihnen?", "Man: Very well, thanks. And you?", "right"],
-            
-            // --- Dialogue 3: Family ---
+
+            // --- Scene 2: Informal Greetings (Family & Friends) ---
             ["Hey, Lena! Na, wie geht’s?", "Man: Hey, Lena! So, how's it going?", "right"],
             ["Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
-            
-            // --- Dialogue 4: Friends ---
             ["Hallo, Sarah. Wie geht’s dir?", "Man: Hello, Sarah. How are you?", "right"],
             ["Hi, Tom! Super, danke. Und dir?", "Woman: Hi, Tom! Great, thanks. And you?", "left"],
-            
-            // --- Dialogue 5: Nico & Emma (The Bag) ---
+
+            // --- Scene 3: The Beautiful Bag ---
             ["Oh, schön!", "Emma: Oh, beautiful!", "left"],
             ["Hm?", "Nico: Hm?", "right"],
             ["Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
             ["Entschuldigung? Schön?", "Nico: Excuse me? Beautiful?", "right"],
             ["Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
             ["Emma, komm jetzt! Entschuldigung!", "Lisa: Emma, come now! Excuse me!", "left"],
-            ["Adalbert-Stifter-Straße ...", "Nico: Adalbert-Stifter Street ...", "right"],
-            
-            // --- Dialogue 6: The Introduction ---
+            ["Adalbert-Stifter-Straße – Hallo!", "Nico: Adalbert-Stifter Street – Hello!", "right"],
+
+            // --- Scene 4: The Taxi & Meeting Plans ---
+            ["Mist!", "Emma: Shoot!", "left"],
+            ["Ja, ich bin gut angekommen. Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: Yes, I arrived safely. You can leave the documents for the meeting at the hotel.", "right"],
+            ["Cool! Noch mal!", "Emma: Cool! One more time!", "left"],
+            ["Ins Zentrum bitte. Zum Königshof.", "Man: To the city center, please. To the Königshof.", "right"],
+            ["Ins Zentrum, zum Königshof. Ins Restaurant Königshof oder zum Hotel Königshof?", "Taxi Driver: To the city center, to the Königshof. To the Königshof restaurant or to the Königshof hotel?", "left"],
+            ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
+            ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
+            ["Hey, stopp!", "Nico: Hey, stop!", "right"],
+
+            // --- Scene 5: Goodbyes at the Station ---
+            ["Tschüss, Martina. Gute Reise!", "Man: Goodbye, Martina. Have a good trip!", "left"],
+            ["Mach’s gut, Herbert. Bis bald!", "Woman: Take care, Herbert. See you soon!", "right"],
+            ["Tschüss!", "Man: Bye!", "left"],
+            ["Auf Wiedersehen, Herr Tillmanns. Gute Reise!", "Woman: Goodbye, Mr. Tillmanns. Have a good trip!", "left"],
+            ["Danke schön! Auf Wiedersehen, Frau Scholl.", "Man: Thank you very much! Goodbye, Ms. Scholl.", "right"],
+
+            // --- Scene 6: Offering Help & Looking for Yara ---
+            ["Alles okay? Brauchst du Hilfe? Hilfe, help? Do you need help?", "Lisa: Everything okay? Do you need help? Help, help? Do you need help?", "left"],
+            ["Ja! Hilfe!", "Nico: Yes! Help!", "right"],
+            ["Wo ist die Tasche?", "Lisa: Where is the bag?", "left"],
+            ["Die Tasche ist … gone … in the ... Taxi!", "Nico: The bag is... gone... in the... taxi!", "right"],
+            ["Die Tasche ist weg in dem Taxi? Wohin willst du? Wohin? Willst du ins Zentrum?", "Lisa: The bag is gone in the taxi? Where do you want to go? Where? Do you want to go to the city center?", "left"],
+            ["Zentrum, ja!", "Nico: Center, yes!", "right"],
+            ["Yara.", "Nico: Yara.", "right"],
+            ["Wer ist Yara?", "Lisa: Who is Yara?", "left"],
+            ["Meine ... aunt?", "Nico: My... aunt?", "right"],
+            ["Deine Tante?", "Lisa: Your aunt?", "left"],
+            ["Nicht schlecht! Du willst zu deiner Tante? Zu Yara? Hast du die Adresse? Adresse: Straße, Hausnummer?", "Lisa: Not bad! You want to go to your aunt? To Yara? Do you have the address? Address: street, house number?", "left"],
+            ["Andel … Adelschiffstraße?", "Nico: Andel... Adelschiff Street?", "right"],
+            ["Die kenn ich nicht … Komm, wir helfen dir!", "Lisa: I don't know that one... Come on, we'll help you!", "left"],
+            ["Yippie!", "Emma: Yippee!", "left"],
+
+            // --- Scene 7: Emma Explains Her Family ---
+            ["Emma! Mein Name ist Emma! Und das ist meine Tante.", "Emma: Emma! My name is Emma! And this is my aunt.", "left"],
+            ["Deine Mama?", "Nico: Your mom?", "right"],
+            ["Nein, Lisa ist nicht meine Mama. Sie ist meine Tante. Meine Mama ... fliegt nach Amerika. Sie arbeitet da. Bitte!", "Emma: No, Lisa is not my mom. She is my aunt. My mom... is flying to America. She works there. Here you go!", "left"],
+            ["Danke.", "Nico: Thank you.", "right"],
+            ["Nico. Mein Name ist Nico.", "Nico: Nico. My name is Nico.", "right"],
+            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+            ["Hallo, Emma.", "Nico: Hello, Emma.", "right"],
+
+            // --- Scene 8: The Introduction Confusion at the Gas Station ---
             ["Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
             ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
             ["Hallo. Also: Hallo, wie heißt du?", "Lisa: Hello. So: Hello, what's your name?", "left"],
@@ -564,59 +608,33 @@ dialogues_all: {
             ["Emma!", "Lisa: Emma!", "left"],
             ["Aber jetzt ist das „N“ weg! Das war Nico!", "Emma: But now the 'N' is gone! That was Nico!", "left"],
             ["Ich?", "Nico: Me?", "right"],
-            ["Moment, bitte. Ich muss noch kurz tanken.", "Lisa: Just a moment, please. I need to fill up the tank real quick.", "left"],
+            ["Moment bitte. Ich muss noch kurz tanken.", "Lisa: Just a moment, please. I need to fill up the tank real quick.", "left"],
+
+            // --- Scene 9: Catching the Taxi Driver ---
             ["Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
-            
-            // --- Dialogue 7: Counting Numbers ---
-            ["Wie ist die Hausnummer, Emma? 38 oder 83?", "Lisa: What's the house number, Emma? 38 or 83?", "left"],
-            ["Moment… 11.", "Emma: Wait... 11.", "left"],
-            ["Ah, ja. Dann sind wir richtig hier.", "Lisa: Ah, yes. Then we are in the right place here.", "left"],
-            ["Da.", "Nico: There.", "right"],
-            ["Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
-            ["Wie viele?", "Nico: How many?", "right"],
-            ["Das sind 31 Zahlen.", "Emma: Das makes 31 numbers.", "left"],
-            ["31 …", "Nico: 31...", "right"],
-            ["Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
-            ["Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
-            ["Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: Six, seven, eight, nine, ten, eleven, twelve.", "left"],
-            ["Sechs, sieben, acht, neun, zehn, elf, zwölf. Was ist das?", "Nico: Six, seven, eight, nine, ten, eleven, twelve. What is this?", "right"],
-            ["Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
-            ["Geburtstag?", "Nico: Birthday?", "right"],
-            ["Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
-            ["Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
-            ["Ja, und das hier ist ein Geschenk.", "Lisa: Yes, and this here is a gift.", "left"],
-            ["Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
-            ["Tschüss, Emma!", "Nico: Bye, Emma!", "right"],
-			
-			// --- Dialogue 8: The Chasing & Lost Bag ---
-            ["Hallo! Mist!", "Emma: Hello! Shoot!", "left"],
-            ["Ja, ich bin gut angekommen. Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: Yes, I arrived safely. You can leave the documents for the meeting at the hotel.", "right"],
-            ["Cool! Noch mal!", "Emma: Cool! One more time!", "left"],
-            ["Ins Zentrum bitte. Zum Königshof.", "Man: To the city center, please. To the Königshof.", "right"],
-            ["Ins Zentrum, zum Königshof. Ins Restaurant Königshof oder zum Hotel Königshof?", "Taxi Driver: To the city center, to the Königshof. To the Königshof restaurant or to the Königshof hotel?", "left"],
-            ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
-            ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
-            ["Hey, stopp!", "Nico: Hey, stop!", "right"],
-            ["Nico!", "Lisa: Nico!", "left"],
-            ["Stopp!", "Nico: Stop!", "right"],
+            ["Nico! Stopp!", "Lisa & Nico: Nico! Stop!", "left"],
             ["Sag mal, spinnst du? Was ist denn?", "Taxi Driver: Hey, are you crazy? What's going on?", "left"],
             ["Die Tasche!", "Nico: The bag!", "right"],
             ["Oh, oh …", "Emma: Oh, oh...", "left"],
-            ["Die Tasche? Welche Tasche?", "Taxi Driver: The bag? Which bag?", "left"],
-            ["Warte, Emma!", "Lisa: Wait, Emma!", "left"],
-            ["Die … Die Tasche in there!", "Nico: The... The bag in there!", "right"],
+            ["Die Tasche? Welche Tasche? Warte, Emma!", "Taxi Driver & Lisa: The bag? Which bag? Wait, Emma!", "left"],
+            ["Die … die Tasche in there!", "Nico: The... the bag in there!", "right"],
             ["Da ist keine Tasche.", "Taxi Driver: There is no bag there.", "left"],
             ["Hallo, ich bin Lisa Brunner. Das ist Nico. Nico sucht seine Tasche.", "Lisa: Hello, I am Lisa Brunner. This is Nico. Nico is looking for his bag.", "left"],
             ["Und?", "Taxi Driver: And?", "left"],
             ["Ist Nicos Tasche in Ihrem Taxi?", "Lisa: Is Nico's bag in your taxi?", "left"],
             ["Nicos Tasche? Nein. Die Tasche ist nicht im Taxi.", "Taxi Driver: Nico's bag? No. The bag is not in the taxi.", "left"],
-            ["Nein. … Wo?", "Nico: No. ... Where?", "right"],
-            ["Keine Ahnung, wo deine Tasche ist. Hier ist die Tasche nicht.", "Taxi Driver: No idea where your bag is. The bag is not here.", "left"],
+            ["Nein. Wo?", "Nico: No. Where?", "right"],
+            ["Keine Ahnung, wo deine Tasche is. Hier ist die Tasche nicht.", "Taxi Driver: No idea where your bag is. The bag is not here.", "left"],
             ["Komm, wir suchen die Tasche! Suchen. Komm, Nico!", "Lisa: Come on, let's look for the bag! Search. Come on, Nico!", "left"],
-            ["7773344 … 7773344. Tasche verloren.", "Nico: 7773344... 7773344. Lost bag.", "right"],
-            ["Wir machen kurz Werbung und dann wollen wir wissen, wen ihr sucht! Ruft an!", "Host: We'll take a quick commercial break and then we want to know who you are looking for! Call us!", "left"],
+
+            // --- Scene 10: Meeting Max ---
+            ["Hallo, Lisa!", "Max: Hello, Lisa!", "left"],
+            ["Hallo, Max, wie geht es dir?", "Lisa: Hello, Max, how are you?", "left"],
+            ["Super. Und dir?", "Max: Great. And you?", "left"],
+            ["Auch gut, danke.", "Lisa: Also good, thanks.", "left"]
         ]
-    },
+    }
+
 
 };
 
