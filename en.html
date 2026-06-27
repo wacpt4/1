@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>高级英语学习助手 (C1)</title>
+<style>
+/* ==========================================
+   🎨 CSS 变量：定义浅色和深色主题
+   ========================================== */
+:root {
+    --bg-gradient: linear-gradient(135deg, #f3f0ff, #e5dbff);
+    --text-main: #3b286d;
+    --text-sub: #705da4;
+    --text-card-big: #4338ca;
+    --text-card-small: #6b7280;
+    --btn-bg: rgba(255, 255, 255, 0.6);
+    --btn-color: #5f4bb6;
+    --btn-active-bg: #5f4bb6;
+    --btn-active-color: white;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-hover-bg: rgba(255, 255, 255, 0.95);
+    --card-shadow: 0 4px 14px rgba(147, 130, 219, 0.15);
+    --card-hover-shadow: 0 6px 20px rgba(147, 130, 219, 0.25);
+    --card-border: rgba(255, 255, 255, 0.6);
+    --card-playing-bg: #e0e7ff;
+    --card-playing-border: #6366f1;
+    --star-color: #d1d5db;
+    --star-active-color: #fbbf24;
+
+    /* 💬 聊天对话专属颜色 */
+    --chat-left-bg: rgba(255, 255, 255, 0.95);
+    --chat-right-bg: #e8e5ff;
+    --chat-avatar-bg: #5f4bb6;
+}
+
+[data-theme="dark"] {
+    --bg-gradient: linear-gradient(135deg, #1e1b4b, #311042);
+    --text-main: #f3f4f6;
+    --text-sub: rgba(255, 255, 255, 0.6);
+    --text-card-big: #a5b4fc;
+    --text-card-small: #cbd5e1;
+    --btn-bg: rgba(255, 255, 255, 0.1);
+    --btn-color: #c7d2fe;
+    --btn-active-bg: #6366f1;
+    --btn-active-color: white;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --card-hover-bg: rgba(255, 255, 255, 0.15);
+    --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-playing-bg: rgba(99, 102, 241, 0.35);
+    --card-playing-border: #818cf8;
+    --star-color: rgba(255, 255, 255, 0.2);
+    --star-active-color: #fbbf24;
+
+    /* 💬 聊天对话专属颜色 */
+    --chat-left-bg: rgba(255, 255, 255, 0.08);
+    --chat-right-bg: rgba(95, 75, 182, 0.3);
+    --chat-avatar-bg: #818cf8;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+.header { text-align: center; padding: 25px; position: relative; }
+.header p { color: var(--text-sub); margin-top: 5px; }
+
+.theme-toggle {
+    position: absolute; right: 20px; top: 20px; padding: 10px 16px; font-size: 14px;
+    background: var(--btn-bg); color: var(--btn-color); border-radius: 20px; box-shadow: var(--card-shadow);
+}
+
+.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+button {
+    border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; font-size: 15px;
+    background: var(--btn-bg); color: var(--btn-color); transition: 0.2s; box-shadow: var(--card-shadow);
+}
+button:hover { background: var(--card-hover-bg); }
+.tabs button.active { background: var(--btn-active-bg); color: var(--btn-active-color); font-weight: bold; }
+
+.page { display: none; max-width: 1200px; margin: auto; padding: 20px; box-sizing: border-box; }
+.page.show { display: block; }
+
+/* ==========================================
+   🧱 网格布局样式
+   ========================================== */
+.grid-word { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+.grid-word .big { font-size: 1.3rem; font-weight: bold; color: var(--text-card-big); }
+.grid-word .small { font-size: 0.95rem; margin-top: 8px; color: var(--text-card-small); }
+
+.grid-phrase { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; }
+.grid-phrase .big { font-size: 1.2rem; font-weight: bold; color: var(--text-card-big); }
+.grid-phrase .small { font-size: 1rem; margin-top: 6px; color: var(--text-card-small); }
+
+.grid-sentence { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 15px; }
+.grid-sentence .card { text-align: left; padding: 20px; }
+.grid-sentence .big { font-size: 1.15rem; font-weight: bold; line-height: 1.4; color: var(--text-card-big); }
+.grid-sentence .small { font-size: 0.98rem; margin-top: 8px; color: var(--text-card-small); line-height: 1.4; }
+
+.grid-long-sentence { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 20px; }
+@media (max-width: 600px) { .grid-long-sentence { grid-template-columns: 1fr; } }
+.grid-long-sentence .card { text-align: left; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+.grid-long-sentence .big { font-size: 1.15rem; font-weight: bold; line-height: 1.5; color: var(--text-card-big); border-bottom: 1px dashed var(--card-border); padding-bottom: 8px; padding-right: 25px; }
+.grid-long-sentence .small { font-size: 0.98rem; line-height: 1.6; color: var(--text-card-small); margin: 0; }
+
+/* ==========================================
+   🚨 对话布局 (Dialogue)
+   ========================================== */
+.grid-dialogue { display: flex; flex-direction: column; gap: 20px; width: 100%; padding: 10px; box-sizing: border-box; }
+.dialogue-row { display: flex; width: 100%; box-sizing: border-box; margin-bottom: 5px; }
+.dialogue-row.left { justify-content: flex-start; }
+.dialogue-row.right { justify-content: flex-end; }
+.dialogue-content { display: flex; gap: 14px; max-width: 75%; align-items: flex-start; }
+.dialogue-row.left .dialogue-content { flex-direction: row; }
+.dialogue-row.right .dialogue-content { flex-direction: row-reverse; }
+
+.chat-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--chat-avatar-bg); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 1.1rem; box-shadow: var(--card-shadow); flex-shrink: 0;
+}
+
+.dialogue-content .card { display: block; width: auto; text-align: left; padding: 16px 22px; border-radius: 20px; box-sizing: border-box; }
+.dialogue-row.left .card { background: var(--chat-left-bg); border-top-left-radius: 4px; }
+.dialogue-row.right .card { background: var(--chat-right-bg); border-top-right-radius: 4px; }
+.dialogue-content .card .big { font-size: 1.1rem; font-weight: bold; color: var(--text-main); line-height: 1.5; padding-right: 25px; text-align: left; }
+.dialogue-content .card .small { font-size: 0.95rem; margin-top: 6px; color: var(--text-card-small); line-height: 1.45; text-align: left; }
+
+/* ==========================================
+   公共卡片与辅助样式
+   ========================================== */
+.card {
+    position: relative; background: var(--card-bg); backdrop-filter: blur(10px);
+    padding: 24px 18px 18px 18px; border-radius: 18px; text-align: center; cursor: pointer;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: var(--card-shadow); border: 1px solid var(--card-border);
+}
+.card:hover { transform: translateY(-3px); background: var(--card-hover-bg); box-shadow: var(--card-hover-shadow); }
+
+.star-icon {
+    position: absolute; top: 14px; right: 16px; font-size: 1.1rem;
+    color: var(--star-color); cursor: pointer; transition: transform 0.1s, color 0.2s; user-select: none; z-index: 10;
+}
+.star-icon:hover { transform: scale(1.2); }
+.star-icon.active { color: var(--star-active-color); filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.4)); }
+
+.card.playing {
+    background: var(--card-playing-bg) !important; border-color: var(--card-playing-border) !important;
+    transform: scale(1.02) translateY(-1px); box-shadow: var(--hover-shadow);
+}
+
+.play-panel { position: fixed; left: 20px; top: 20px; z-index: 9999; }
+.autoplay-btn {
+    font-size: 14px; padding: 10px 18px; border-radius: 20px; background: #6366f1; color: white;
+    font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); transition: all 0.2s;
+}
+.autoplay-btn:hover { background: #4f46e5; transform: scale(1.05); }
+.autoplay-btn.playing { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+.empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+
+<div class="play-panel">
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶</button>
+</div>
+
+<div class="header">
+    <h1>🇬🇧 高级英语学习助手</h1>
+    <p>Advanced Level (C1) • British Accent Mode</p>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+</div>
+    
+<div class="tabs" id="tabsContainer"></div>
+<div id="pagesContainer"></div>
+
+<script>
+// ==========================================
+// 💡 C1 级别高阶数据源 (含英音特化、星座模块)
+// ==========================================
+const appData = {
+    // --- 1. 星座与性格特质 (Zodiac Signs) ---
+    zodiac_signs: {
+        title: "✨ 星座与性格特质",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Aries is known for being fiercely independent and assertive.", "白羊座以极具独立精神和坚定自信而闻名。"],
+            ["Taurus possesses an innate sense of determination and practicality.", "金牛座拥有一种天生的果断与务实感。"],
+            ["Gemini exhibits a highly versatile and intellectually curious nature.", "双子座展现出极具多才多艺和充满求知欲的天性。"],
+            ["Cancer is profoundly empathetic and intensely protective of loved ones.", "巨蟹座具有极深的共情能力，且对所爱之人保护欲极强。"],
+            ["Leo radiates charisma, coupled with a naturally magnanimous spirit.", "狮子座散发着魅力，并伴随着一种天生宽宏大量的精神。"],
+            ["Virgo approach life with meticulous attention to detail and analytical prowess.", "处女座以对细节的严谨关注和分析深度来对待生活。"],
+            ["Libra functions as a natural diplomat, perpetually seeking equilibrium.", "天秤座扮演着天生外交官的角色，永远在寻找平衡。"],
+            ["Scorpio is characterized by their intense focus and inscrutable demeanor.", "天蝎座的特点是极度专注和高深莫测的神态。"],
+            ["Sagittarius harbors an unquenchable thirst for exploration and philosophy.", "射手座对探索和哲学怀有无法遏制的渴望。"],
+            ["Capricorn exemplifies unwavering discipline and far-reaching ambition.", "摩羯座是不懈自律和远大抱负的典范。"],
+            ["Aquarius values non-conformity and eccentric, pioneering ideas.", "水瓶座看重特立独行以及古怪、开创性的想法。"],
+            ["Pisces is inherently intuitive, often navigating the world via vivid imagination.", "双鱼座天生具有直觉，常常通过丰富的想象力来感知世界。"]
+        ]
+    },
+
+    // --- 2. C1 核心高级高频学术/职场词汇 ---
+    c1_vocabulary: {
+        title: "💎 C1 核心学术词汇",
+        layout: "word",
+        speakType: "key",
+        items: [
+            ["Anomalous", "异常的、反常的 (Deviating from what is normal)"],
+            ["Capricious", "反复无常的、任性的 (Fickle; changing unpredictably)"],
+            ["Epistemic", "知识的、认识论的 (Relating to knowledge)"],
+            ["Obfuscate", "故意使模糊、混淆 (To deliberately make unclear)"],
+            ["Pernicious", "有害的、恶性的 (Having a harmful effect in a subtle way)"],
+            ["Scrutinise", "仔细检查 (To examine very thoroughly - 英式拼写)"],
+            ["Ubiquitous", "无所不在的 (Present, appearing, or found everywhere)"]
+        ]
+    },
+
+    // --- 3. 高级修辞与复杂表达 ---
+    advanced_expressions: {
+        title: "📊 学术与宏观论述表达",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Notwithstanding the initial setbacks, the project yielded substantial dividends.", "尽管起初遭受挫折，该项目最终还是带来了巨大的回报。"],
+            ["This phenomenon is inextricably linked to socioeconomic disparities.", "这一现象与社会经济差异有着千丝万缕的联系。"],
+            ["The paradigm shift in technology necessitates a re-evaluation of ethical frameworks.", "技术的范式转变需要我们对伦理框架进行重新评估。"]
+        ]
+    },
+
+    // --- 4. C1 考场长句与严谨学术思辨 ---
+    d_long_sentences: {
+        title: "🚨 题库长难句与论证结构",
+        layout: "long-sentence",
+        speakType: "key",
+        items: [
+            [
+                "While proponents argue that the implementation of artificial intelligence mitigates human error, detractors remain deeply skeptical of its algorithmic biases.", 
+                "尽管支持者认为人工智能的实施减少了人为失误，但反对者对其算法偏见依然深表怀疑。（💡 C1写作经典对立论证句型）"
+            ],
+            [
+                "The findings inadvertently shed light on the convoluted mechanisms underlying climate change, thereby invalidating previous presuppositions.", 
+                "这些发现无意中阐明了气候变化背后复杂的机制，从而推翻了先前的假设。（💡 学术报告/听力高难因果链）"
+            ]
+        ]
+    },
+
+    // --- 5. 商务/学术研讨高级对话 ---
+    dialogues_all: {
+        title: "💬 研讨会与高端谈判思辨",
+        layout: "dialogue", 
+        speakType: "key",
+        items: [
+            ["With all due respect, your premise completely overlooks the impending fiscal constraints.", "Speaker A: 恕我直言，您的前提完全忽视了即将来临的财政限制。", "left"],
+            ["I take your point, however, the long-term yields will invariably outweigh these transient deficits.", "Speaker B: 我明白您的意思，然而，长期收益必然会超过这些暂时的赤字。", "right"],
+            ["That assertion is contingent upon the assumption that the market remains receptive to innovation.", "Speaker A: 这一断言取决于市场对创新保持接受度的假设。", "left"],
+            ["Precisely, and our empirical data overwhelmingly substantiates that very propensity.", "Speaker B: 正是如此，而我们的经验数据绝大多数都证实了这一倾向。", "right"]
+        ]
+    }
+};
+
+// ==========================================
+// 核心状态控制中心
+// ==========================================
+let currentActivePageId = 'review'; 
+let isAutoplayRunning = false;
+let currentPlayIndex = 0;
+
+let starredItems = JSON.parse(localStorage.getItem('c1_english_helper_stars')) || [];
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme === 'dark') document.body.removeAttribute('data-theme');
+    else document.body.setAttribute('data-theme', 'dark');
+}
+
+function speak(text, callback) {
+    let cleanedText = text;
+    if (text.length === 1 && text === text.toUpperCase()) {
+        cleanedText = text.toLowerCase();
+    }
+    
+    const u = new SpeechSynthesisUtterance(cleanedText);
+    u.lang = "en-GB"; // 🌟 核心：强制切换为英式英语（British English）发音引擎
+    
+    if (callback) {
+        u.onend = () => callback();
+        u.onerror = () => callback();
+    }
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+}
+
+function toggleStar(e, pageKey, itemIndex, starEl) {
+    e.stopPropagation(); 
+    const item = appData[pageKey].items[itemIndex];
+    const uniqueId = `${pageKey}-${itemIndex}`;
+    const existingIndex = starredItems.findIndex(x => x.id === uniqueId);
+    
+    if (existingIndex > -1) {
+        starredItems.splice(existingIndex, 1);
+        document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.remove('active'));
+    } else {
+        starredItems.push({
+            id: uniqueId,
+            pageKey: pageKey,
+            layout: appData[pageKey].layout,
+            speakType: appData[pageKey].speakType,
+            data: item
+        });
+        document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.add('active'));
+    }
+    
+    localStorage.setItem('c1_english_helper_stars', JSON.stringify(starredItems));
+    renderReviewPage();
+}
+
+function renderReviewPage() {
+    const reviewGrid = document.getElementById('review-grid');
+    if (!reviewGrid) return;
+    
+    reviewGrid.removeAttribute('class'); 
+    reviewGrid.innerHTML = '';
+    
+    if (starredItems.length === 0) {
+        reviewGrid.innerHTML = `<div class="empty-tip">⭐ 还没有标记高难内容。点击卡片上的星星，不熟练的C1句型和星座词汇会同步到这里。</div>`;
+        return;
+    }
+    
+    reviewGrid.className = 'grid-sentence'; 
+    
+    starredItems.forEach((fav) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'grid-sentence'; 
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]}, this)">★</span>
+            <div class='big'>${fav.data[0]}</div>
+            <div class='small'>${fav.data[1]}</div>
+        `;
+        
+        const textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
+        card.onclick = () => {
+            stopAutoplay();
+            speak(textToSpeak);
+        };
+        
+        wrapper.appendChild(card);
+        reviewGrid.appendChild(wrapper);
+    });
+}
+
+function syncStarUIFromStorage() {
+    starredItems.forEach(fav => {
+        document.querySelectorAll(`.star-${fav.id}`).forEach(el => el.classList.add('active'));
+    });
+}
+
+function startAutoplay() {
+    const activePage = document.getElementById(`page-${currentActivePageId}`);
+    const cards = activePage.querySelectorAll('.card');
+    
+    if (currentPlayIndex >= cards.length || cards.length === 0) {
+        stopAutoplay();
+        return;
+    }
+
+    cards.forEach(c => c.classList.remove('playing'));
+    const currentCard = cards[currentPlayIndex];
+    
+    if (currentCard.parentElement.classList.contains('empty-tip') || currentCard.classList.contains('empty-tip')) {
+        stopAutoplay();
+        return;
+    }
+    
+    currentCard.classList.add('playing');
+    currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    let textToSpeak = "";
+    if (currentActivePageId === 'review') {
+        const fav = starredItems[currentPlayIndex];
+        textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
+    } else {
+        const pageConfig = appData[currentActivePageId];
+        const itemData = pageConfig.items[currentPlayIndex];
+        textToSpeak = pageConfig.speakType === 'key' ? itemData[0] : itemData[1];
+    }
+
+    speak(textToSpeak, () => {
+        if (!isAutoplayRunning) return;
+        currentPlayIndex++;
+        setTimeout(() => {
+            if (isAutoplayRunning) startAutoplay();
+        }, 1600); // C1句子较长，稍微增加了间隔时间
+    });
+}
+
+function stopAutoplay() {
+    isAutoplayRunning = false;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
+    const btn = document.getElementById('autoPlayBtn');
+    btn.innerHTML = "▶";
+    btn.classList.remove('playing');
+}
+
+function toggleAutoPlay() {
+    if (isAutoplayRunning) {
+        stopAutoplay();
+    } else {
+        isAutoplayRunning = true;
+        currentPlayIndex = 0;
+        const btn = document.getElementById('autoPlayBtn');
+        btn.innerHTML = "⏸";
+        btn.classList.add('playing');
+        startAutoplay();
+    }
+}
+
+// ==========================================
+// 初始化 DOM 渲染引擎
+// ==========================================
+const tabsContainer = document.getElementById('tabsContainer');
+const pagesContainer = document.getElementById('pagesContainer');
+
+const reviewBtn = document.createElement('button');
+reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点难点"; reviewBtn.className = "active";
+reviewBtn.onclick = () => switchPage('review');
+tabsContainer.appendChild(reviewBtn);
+
+const reviewPageDiv = document.createElement('div');
+reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
+const reviewGridDiv = document.createElement('div');
+reviewGridDiv.id = 'review-grid';
+reviewPageDiv.appendChild(reviewGridDiv);
+pagesContainer.appendChild(reviewPageDiv);
+
+Object.keys(appData).forEach((key) => {
+    const pageConfig = appData[key];
+    
+    const btn = document.createElement('button');
+    btn.id = `btn-${key}`; btn.innerHTML = pageConfig.title;
+    btn.onclick = () => switchPage(key);
+    tabsContainer.appendChild(btn);
+
+    const pageDiv = document.createElement('div');
+    pageDiv.id = `page-${key}`; pageDiv.className = 'page';
+    
+    const gridDiv = document.createElement('div');
+    const layoutStyle = pageConfig.layout || 'word';
+    gridDiv.className = `grid-${layoutStyle}`;
+
+    pageConfig.items.forEach((item, itemIndex) => {
+        if (layoutStyle === 'dialogue') {
+            const direction = item[2] || 'left'; 
+            const avatarTxt = direction === 'left' ? '🇬🇧' : '👔';
+            
+            const row = document.createElement('div');
+            row.className = `dialogue-row ${direction}`;
+            
+            row.innerHTML = `
+                <div class="dialogue-content">
+                    <div class="chat-avatar">${avatarTxt}</div>
+                    <div class="card">
+                        <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                        <div class='big'>${item[0]}</div>
+                        <div class='small'>${item[1]}</div>
+                    </div>
+                </div>
+            `;
+            
+            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
+            row.querySelector('.card').onclick = () => {
+                stopAutoplay();
+                speak(textToSpeak);
+            };
+            gridDiv.appendChild(row);
+            
+        } else {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                <div class='big'>${item[0]}</div>
+                <div class='small'>${item[1]}</div>
+            `;
+            
+            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
+            card.onclick = () => {
+                stopAutoplay();
+                speak(textToSpeak);
+            };
+            gridDiv.appendChild(card);
+        }
+    });
+
+    pageDiv.appendChild(gridDiv);
+    pagesContainer.appendChild(pageDiv);
+});
+
+renderReviewPage();
+syncStarUIFromStorage();
+
+function switchPage(pageId) {
+    stopAutoplay();
+    currentActivePageId = pageId;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('show');
+    document.getElementById(`btn-${pageId}`).classList.add('active');
+}
+</script>
+
+</body>
+</html>
