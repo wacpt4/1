@@ -188,7 +188,7 @@ button:hover { background: var(--card-hover-bg); }
 const appData = {
     // --- 1. 星座与性格特质 (Zodiac Signs) ---
     zodiac_signs: {
-        title: "✨ 星座与性格特质",
+        title: "✨ 星座",
         layout: "sentence",
         speakType: "key",
         items: [
@@ -209,61 +209,367 @@ const appData = {
 
     // --- 2. C1 核心高级高频学术/职场词汇 ---
     c1_vocabulary: {
-        title: "💎 C1 核心学术词汇",
+        title: "💎 GRE",
         layout: "word",
         speakType: "key",
         items: [
-            ["Anomalous", "异常的、反常的 (Deviating from what is normal)"],
-            ["Capricious", "反复无常的、任性的 (Fickle; changing unpredictably)"],
-            ["Epistemic", "知识的、认识论的 (Relating to knowledge)"],
-            ["Obfuscate", "故意使模糊、混淆 (To deliberately make unclear)"],
-            ["Pernicious", "有害的、恶性的 (Having a harmful effect in a subtle way)"],
-            ["Scrutinise", "仔细检查 (To examine very thoroughly - 英式拼写)"],
-            ["Ubiquitous", "无所不在的 (Present, appearing, or found everywhere)"]
+            ["unassuming", "谦逊的、不装腔作势的 (modest)"],
+            ["fictions", "虚构、编造的事物 (inventions)"],
+            ["obviate", "消除、排除 (remove; prevent)"],
+            ["resist", "抵抗、抵制 (withstand)"],
+            ["audacious", "大胆的、鲁莽的 (striking; daring)"],
+            ["striking", "显著的、引人注目的 (pronounced)"],
+            ["momentary", "短暂的、瞬息的 (evanescent)"],
+            ["succumb to", "屈服于、向...妥协 (yield to)"],
+            ["improve", "改善、提高 (support)"],
+            ["punctuated", "被不时打断的 (intermittent)"],
+            ["precarious", "危险的、不稳固的 (perilous)"],
+            ["plethora", "过剩、过多 (profusion)"],
+            ["superficial", "肤浅的、粗略的 (sketchy)"],
+            ["strip away", "剥离、除去 (remove)"],
+            ["meet", "满足、符合 (fulfill)"],
+            ["condign", "相当的、应得的（多指惩罚）(appropriate)"],
+            ["altruistic", "利他的、无私的 (benevolent)"],
+            ["pressing", "紧迫的、急迫的 (exigent)"],
+            ["anathema", "令人极其讨厌的事物 (repellent)"],
+            ["abstracted from", "从...中抽离出来的 (divorced from)"],
+            ["enthralled", "被迷住的、被吸引的 (captivated)"],
+            ["respected", "受人尊敬的 (venerable)"],
+            ["proscribed", "被禁止的 (disallow)"],
+            ["combine", "结合、融合 (meld)"],
+            ["feigned", "虚假的、伪造的 (FALSE)"],
+            ["foreswear", "发誓放弃 (renounce)"],
+            ["manifest", "明显的、显现的 (obvious)"],
+            ["speculative", "推测的、凭空想象的 (conjectural)"],
+            ["proponent", "支持者、拥护者 (defender)"],
+            ["concede", "承认、让步 (acknowledge)"],
+            ["burgeoning", "迅速发展的、蓬勃生长的 (expansion)"],
+            ["complicated", "复杂的、棘手的 (knotty)"]
         ]
     },
 
     // --- 3. 高级修辞与复杂表达 ---
-    advanced_expressions: {
-        title: "📊 学术与宏观论述表达",
+	interest_vs_employability: {
+        title: "📊兴趣 VS 就业",
         layout: "sentence",
         speakType: "key",
         items: [
-            ["Notwithstanding the initial setbacks, the project yielded substantial dividends.", "尽管起初遭受挫折，该项目最终还是带来了巨大的回报。"],
-            ["This phenomenon is inextricably linked to socioeconomic disparities.", "这一现象与社会经济差异有着千丝万缕的联系。"],
-            ["The paradigm shift in technology necessitates a re-evaluation of ethical frameworks.", "技术的范式转变需要我们对伦理框架进行重新评估。"]
+            // 1. 开头段 (Introduction)
+            ["future employability", "未来的就业能力"],
+            ["studying subjects of personal interest", "学习个人感兴趣的科目"],
+            ["more beneficial in the long run", "从长远来看更有利"],
+            
+            // 2. 主体段 1 (Body 1: 支持兴趣)
+            ["lead to better academic and long-term outcomes", "带来更好的学术和长期成果"],
+            ["demonstrate stronger motivation and perseverance", "展现出更强的动力和毅力"],
+            ["acquire deeper subject knowledge", "习得更深层的学科知识"],
+            ["achieve long-term career development", "实现长期的职业发展"],
+            ["contributes to a more diversified talent structure in society", "有助于社会形成更多元化的人才结构"],
+            ["benefits cultural and industrial development", "有利于文化和产业发展"],
+            ["cultural and creative industries may become underdeveloped", "文化和创意产业可能会发展不足"],
+            ["require a wide range of skills and perspectives", "需要广泛的技能和视角"],
+            ["foster innovation and support cultural diversity", "促进创新并支持 cultural 多样性"],
+            
+            // 3. 主体段 2 (Body 2: 反方就业)
+            ["a rational decision in many cases", "在许多情况下是一个理性的决定"],
+            ["offer more stable job opportunities", "提供更稳定的就业机会"],
+            ["face limited job markets and intense competition", "面临有限的就业市场和激烈的竞争"],
+            ["leads to clearer career pathways", "带来更明确的职业路径"],
+            ["prioritise financial security and stable employment", "优先考虑经济安全和稳定就业"],
+            ["require significant training costs and long-term investment", "需要高昂的培训成本和长期投资"],
+            ["access to resources and professional networks", "获得资源和专业人脉的机会"],
+            ["strongly influence career outcomes", "强烈地影响职业结果"],
+            ["practical considerations play a key role", "现实/实际的考虑起到了关键作用"],
+            ["choose more employment-oriented disciplines", "选择更以就业为导向的学科"],
+            
+            // 4. 结尾段 (Conclusion)
+            ["while both approaches have their merits", "尽管两种方法都有其优点"],
+            ["enhances individual motivation and achievement", "增强个人的动力和成就感"],
+            ["contributes to a more balanced and innovative society", "有助于建立一个更平衡、更具创新性的社会"]
+        ]
+    },
+	
+	gap_year_vs_university: {
+        title: "🎓间隔年 VS 直接读大学",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            // 1. 开头段 (Introduction)
+            ["go to university immediately after high school", "高中毕业后立即上大学"],
+            ["take a gap year", "度过一个间隔年"],
+            ["beneficial, although it also has certain drawbacks", "是有利的，尽管它也有一定的缺点"],
+            
+            // 2. 主体段 1 (Body 1: 支持 Gap Year)
+            ["provide students with valuable real-world experience", "为学生提供宝贵的现实世界经验"],
+            ["gain exposure to society beyond academic learning", "在学术学习之外接触、了解社会"],
+            ["develop practical skills", "培养实用技能"],
+            ["use this period to earn money for further studies", "利用这段时间赚钱供以后深造"],
+            ["become more mature and better prepared for university life", "变得更成熟，为大学生活做好更好的准备"],
+            ["broaden students’ perspectives and global awareness", "开阔学生的视野和全球意识"],
+            ["participate in international programs", "参与国际项目"],
+            ["improve language ability and cross-cultural understanding", "提高语言能力和跨-cultural理解"],
+            ["strengthen adaptability and planning skills", "增强适应能力和规划能力"],
+            ["contribute to more well-rounded personal development", "有助于更全面的个人发展"],
+            
+            // 3. 主体段 2 (Body 2: 反对 Gap Year)
+            ["have negative effects on academic continuity", "对学术连贯性产生负面影响"],
+            ["lose academic momentum and forget essential knowledge", "失去学习势头并遗忘核心知识"],
+            ["find it difficult to readjust to structured learning environments", "发现自己很难重新适应有规律的/结构化的学习环境"],
+            ["reduce academic efficiency", "降低学习效率"],
+            ["delay graduation and negatively affect academic performance", "延迟毕业并对学术表现产生负面影响"],
+            ["uncertainty in long-term educational and career planning", "长期教育和职业规划中的不确定性"],
+            ["lose direction or motivation for further study", "失去进一步深造的方向或动力"],
+            ["abandoning higher education altogether", "彻底放弃高等教育"],
+            ["not fully recognise gap-year experiences", "未能完全认可间隔年的经历"],
+            ["create risks for students’ future academic progression", "为学生未来的学术进阶带来风险"],
+            
+            // 4. 结尾段 (Conclusion)
+            ["if carefully planned", "如果经过精心规划"],
+            ["manage potential risks effectively", "有效地管理潜在风险"]
+        ]
+    },
+    money_and_success: {
+        title: "💰金钱等于成功吗？",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            // 1. 开头段 (Introduction)
+            ["regarded as the main indicator of success", "被视为成功的主要指标"],
+            ["financial wealth is not the best measure of success", "经济财富并不是衡量成功的最佳标准"],
+            ["defined in a more diverse and balanced way", "以更多元、更平衡的方式去定义"],
+            
+            // 2. 主体段 1 (Body 1: 支持——钱的重要性)
+            ["determining a person’s level of success", "决定一个人的成功水平"],
+            ["provides access to high-quality education", "提供接受高质量教育的途径"],
+            ["requires substantial tuition fees", "需要昂贵的学费"],
+            ["achieve a higher standard of living", "获得更高的生活水准"],
+            ["closely linked to access to resources", "与获取资源的能力紧密相关"],
+            ["significantly improve both material conditions and life satisfaction", "显著改善物质条件和生活满意度"],
+            ["reflect economic influence", "反映经济影响力"],
+            ["contributes to investment, innovation and economic growth", "促进投资、创新和经济增长"],
+            ["expand their social networks and opportunities", "扩大他们的社交网络和机遇"],
+            ["an important indicator of practical success", "现实成功的一个重要指标"],
+            
+            // 3. 主体段 2 (Body 2: 反对——多元标准)
+            ["measured by money alone", "仅由金钱来衡量"],
+            ["a multidimensional concept", "一个多维度的概念"],
+            ["personal qualities such as perseverance, optimism and resilience", "诸如坚持、乐观和韧性等个人品质"],
+            ["achieving long-term goals", "实现长期目标"],
+            ["maintaining good physical and mental health", "保持良好的身心健康"],
+            ["a form of success in itself", "其本身就是一种成功"],
+            ["happiness and life satisfaction play a crucial role", "幸福感和生活满意度起着至关重要的作用"],
+            ["in a broader sense", "在更广泛的意义上"],
+            ["a narrow focus on money", "狭隘地聚焦于金钱"],
+            ["lead to negative social consequences", "导致负面的社会后果"],
+            ["defined purely in financial terms", "纯粹用经济术语（金钱）来定义"],
+            ["become overly materialistic", "变得过度物质主义"],
+            ["reduce social trust and weaken interpersonal relationships", "降低社会信任并削弱人际关系"],
+            ["neglect personal well-being and moral values", "忽视个人福祉和道德价值"],
+            ["create a less balanced and less humane society", "创造一个缺乏平衡、缺乏人情味的社会"],
+            
+            // 4. 结尾段 (Conclusion)
+            ["a more comprehensive definition of success", "一个更全面的成功定义"],
+            ["equally important for long-term well-being", "对长期的幸福安康同样重要"]
         ]
     },
 
-    // --- 4. C1 考场长句与严谨学术思辨 ---
-    d_long_sentences: {
-        title: "🚨 题库长难句与论证结构",
-        layout: "long-sentence",
+	ielts_speaking_part1: {
+        title: "💬 Teachers, Parks & Hometown",
+        layout: "dialogue",
         speakType: "key",
         items: [
-            [
-                "While proponents argue that the implementation of artificial intelligence mitigates human error, detractors remain deeply skeptical of its algorithmic biases.", 
-                "尽管支持者认为人工智能的实施减少了人为失误，但反对者对其算法偏见依然深表怀疑。（💡 C1写作经典对立论证句型）"
-            ],
-            [
-                "The findings inadvertently shed light on the convoluted mechanisms underlying climate change, thereby invalidating previous presuppositions.", 
-                "这些发现无意中阐明了气候变化背后复杂的机制，从而推翻了先前的假设。（💡 学术报告/听力高难因果链）"
-            ]
+            // --- PART 1 | Teachers ---
+            ["Do you have a favourite teacher?", " ", "left"],
+            ["Yeah, I did. My favourite was actually my swimming instructor when I was a kid.", "[注] 'Yeah, I did' 比单纯回答 'Yes' 更地道。用 'actually' 增加语气转折。", "right"],
+            ["He was incredibly supportive and had heaps of patience, especially when he was correcting my posture or helping me get a handle on my breath control.", "[注] [搭配] 'heaps of patience' (无数的耐心), 'get a handle on' (掌握/控制)。[语法] 过去进行时 'when he was correcting...' 表示过去动作发生的背景。", "right"],
+            
+            ["Do you want to be a teacher in the future?", " ", "left"],
+            ["To be honest, not really. Teaching isn't really my thing.", "[注] 'To be honest' 常用于委婉否定。'not really' 弱化语气。'not my thing' 极地道地表示“不是我的菜/我不感兴趣”。", "right"],
+            ["I’m actually planning to try my luck in the tech industry first, as that’s what I’m most passionate about right now.", "[注] [搭配] 'try my luck' (碰运气/闯一闯)。[语法] 'as' 引导原因状语从句，替代常用的 'because'；'what' 引导宾语从句。", "right"],
+            
+            ["Do you have a teacher from your past that you still remember?", " ", "left"],
+            ["Oh, absolutely. I can still vividly remember my childhood swimming coach.", "[注] 'Oh, absolutely' 是非常自然的口语肯定回应。[搭配] 'vividly remember' 属于高频高分搭配 (Collocation)。", "right"],
+            ["He just had this really encouraging way about him, and the breathing techniques he taught me are things I still use to this day.", "[注] [搭配] 'have a way about someone' (某人身上特有的某种气质/方式), 'to this day' (时至今日)。[语法] 'he taught me' 为省略关系代词的定语从句，修饰 techniques。", "right"],
+            
+            ["Are you still in touch with your primary school teachers?", " ", "left"],
+            ["No, not at all, unfortunately. I packed up and moved away right after I graduated, so I didn’t really manage to keep in touch with any of them.", "[注] 'No, not at all' (完全没有)。[搭配] 'pack up' (打包/收拾行李)。[语法] 'manage to do' 表示“设法做成某事”，暗示过程有难度。", "right"],
+            
+            ["In what way has your favourite teacher helped you?", " ", "left"],
+            ["He was a massive help when it came to building my confidence in the water.", "[注] [搭配] 'a massive help' 替代 'very helpful'。'when it comes to' (当提到/涉及到某事)，后接动名词 building。", "right"],
+            ["He’d always take his time to fix my swimming posture and guide me through breath control, which completely cured my fear of deep water.", "[注] [搭配] 'take one's time' (不慌不忙/花时间)。[语法] 'He'd' 为 'He would'，在此表示过去常常（过去习惯）；'which' 引导非限制性定语从句修饰前面整件事。", "right"],
+
+            // --- PART 1 | Parks ---
+            ["Did you like going to parks as a child?", " ", "left"],
+            ["Yeah, I used to love it. My absolute favourite thing to do was flying kites.", "[注] [搭配] 'My absolute favourite thing' (我绝对最喜欢的事)，程度副词用得很地道。[语法] 'used to' 表示过去常常（现在已不这样）。", "right"],
+            ["I remember thinking I would need to run flat out across the grass just to make the kite go higher and higher into the sky.", "[注] [搭配] 'run flat out' (全速奔跑/拼命跑)。[语法] 'higher and higher' 比较级重叠表示“越来越...”。", "right"],
+            
+            ["Do you still like going to parks now?", " ", "left"],
+            ["Definitely. These days, it’s mostly for walking my dog.", "[注] 'Definitely' 用于利落的回应。'These days' 替代 'now'，使口语更自然。", "right"],
+            ["I always look for parks with wide-open lawns and small ponds so my dog can roll around on the grass, have a quick swim, and then dry off in the sun.", "[注] [搭配] 'roll around' (打滚), 'dry off' (晒干/擦干)。[语法] 并列谓语结构 (roll..., have..., and then dry...) 层次清晰。", "right"],
+            
+            ["Would you like to see more parks in your city?", " ", "left"],
+            ["Yeah, that’d be brilliant. Even though we’ve got a decent amount of green spaces, more parks would give people—especially pet owners and kids—a bit more breathing room to just unwind.", " [注] [搭配] 'that'd be brilliant' (那太棒了，英式地道口语), 'breathing room' (喘息空间/放松余地), 'unwind' 极佳的日常减压表达。[语法] 'Even though' 引导让步状语从句。", "right"],
+            
+            ["Are there any parks you want to go to in the future?", " ", "left"],
+            ["Yes, actually. There’s a brand-new dog park that’s just opened up nearby.", "[注] [搭配] 'brand-new' (崭新的), 'open up' 指店铺或设施开业、开放。[语法] 这是一个典型的 There be 句型后接定语从句。", "right"],
+            ["It’s a massive hot spot on social media right now, so I’m keen to check it out sometime this month, provided the weather stays nice.", "[注] [搭配] 'hot spot' (网红打卡地/热点), 'be keen to' (渴望/很想做某事), 'check it out' (去看看/去拔草)。[语法] 'provided (that)' 充当连词，表示“只要/在...条件下”，是很好的高分条件状语表达。", "right"],
+
+            // --- PART 1 | Hometown ---
+            ["Where is your hometown?", " ", "left"],
+            ["My hometown is Shenzhen, which is situated right in the south of China.", "[注] [搭配] 'situated right in...' 使得方位描述比单纯用 located 更高级、精准。[语法] 'which' 引导非限制性定语从句。", "right"],
+            
+            ["Can you describe your hometown a little bit? / What kind of place is it?", " ", "left"],
+            ["It’s a massive international hub for technology and trade.", "[注] [搭配] 'international hub for...' (某个领域的国际中心/枢纽)，属于高级语料搭配。", "right"],
+            ["What’s crazy is that just a few decades ago, it was basically just a tiny fishing village, but nowadays it’s a bustling, modern metropolis.", "[注] [搭配] 'What’s crazy is that...' 用于引出令人惊讶的事实, 'bustling metropolis' (繁华的大都市)。[语法] 主语从句引导核心反差事实。", "right"],
+            
+            ["How long have you lived there?", " ", "left"],
+            ["I've actually lived there my entire life, so I've seen firsthand just how fast the city has grown.", "[注] [搭配] 'my entire life' 替代 'all my life', 'see firsthand' (亲眼目睹/亲身经历)。[语法] 现在完成时 'I've lived' 和 'I've seen' 强调从过去持续到现在的状态及带来的结果。", "right"],
+            
+            ["What is one of the best things about living there?", " ", "left"],
+            ["To be fair, the sheer convenience is hard to beat.", "[注] [搭配] 'To be fair' (说句公道话/老实说), 'sheer convenience' (极大的便利/绝对的便利), 'hard to beat' (无可比拟/难以超越)。", "right"],
+            ["For example, it’s so easy to order food or groceries and have them show up at your doorstep in minutes.", "[注] [搭配] 'at your doorstep' (送达上门/近在咫尺)。[语法] 使役动词 'have sth do/show up' 结构。", "right"],
+            ["Plus, there’s always so much going on, so it’s the perfect place to build a career.", "[注] [搭配] 'so much going on' (热闹/活动丰富/充满机遇), 'build a career' (发展职业生涯)。", "right"],
+            
+            ["Is there anything you dislike about it?", " ", "left"],
+            ["If I had to pick something, it’d be the ridiculous housing prices.", "[注] [搭配] 'If I had to pick something' 常用于回答不喜欢或刁钻问题的开场, 'ridiculous' (离谱的/荒谬的)。[语法] 虚拟语气 'had to... it'd be...' 表示假设挑一个。", "right"],
+            ["It’s getting tougher and tougher to settle down, especially for younger people and newbies to the city, even if they have a well-paid job.", "[注] [搭配] 'settle down' (定居/落户), 'newbies to the city' (城市新人/新移民)。[语法] 'tougher and tougher' (越来越难)；'even if' 引导让步状语从句。", "right"],
+            ["Also, it gets packed during rush hour—it's almost impossible not to bump into people on the streets.", "[注] [搭配] 'gets packed' (挤满了人), 'rush hour' (上下班高峰期), 'bump into' (撞上/偶遇)。[语法] 双重否定 'impossible not to' 表强调。", "right"],
+            
+            ["Do you know many people who live nearby?", " ", "left"],
+            ["Yeah, quite a few. Since my family is based here, I’m pretty familiar with a lot of the people in our local neighborhood.", "[注] [搭配] 'quite a few' (不少/挺多), 'be based here' (根基在这里/安家在这里), 'be pretty familiar with' (对...非常熟悉)。", "right"],
+            
+            ["Do you have any relatives who still live in your hometown? Why/Why not?", " ", "left"],
+            ["Yes, pretty much all of my relatives live here.", "[注] [搭配] 'pretty much all' (几乎全部)，地道程度远超 'almost all'。", "right"],
+            ["It’s great because staying close to family means we can look out for each other, and it also saves me a fortune on rent since I don’t have to live alone.", "[注] [搭配] 'look out for each other' (互相照顾/照料), 'save a fortune on' (省下一大笔钱)。[语法] 动名词短语 'staying close to family' 作主语。", "right"],
+            
+            ["Do you often go back to visit your hometown? Why/Why not?", " ", "left"],
+            ["Well, since I'm living here at the moment, I don't need to travel back.", "[注] 'Well' 用作语气填充词，争取思考时间。[搭配] 'at the moment' 替代 'now' 更加自然。[语法] 'since' 引导原因从句。", "right"],
+            ["But it’s brilliant because I can stay close to my family, save on rent, and fully make the most of all the career opportunities the city has to offer.", "[注] [搭配] 'fully make the most of' (充分利用/尽情享受)。[语法] 'the city has to offer' 作为定语从句修饰 opportunities，省略了关系代词。", "right"]
         ]
     },
-
-    // --- 5. 商务/学术研讨高级对话 ---
-    dialogues_all: {
-        title: "💬 研讨会与高端谈判思辨",
-        layout: "dialogue", 
+    ielts_speaking_review: {
+        title: "💬 Music, Jokes & Comedy",
+        layout: "dialogue",
         speakType: "key",
         items: [
-            ["With all due respect, your premise completely overlooks the impending fiscal constraints.", "Speaker A: 恕我直言，您的前提完全忽视了即将来临的财政限制。", "left"],
-            ["I take your point, however, the long-term yields will invariably outweigh these transient deficits.", "Speaker B: 我明白您的意思，然而，长期收益必然会超过这些暂时的赤字。", "right"],
-            ["That assertion is contingent upon the assumption that the market remains receptive to innovation.", "Speaker A: 这一断言取决于市场对创新保持接受度的假设。", "left"],
-            ["Precisely, and our empirical data overwhelmingly substantiates that very propensity.", "Speaker B: 正是如此，而我们的经验数据绝大多数都证实了这一倾向。", "right"]
+            // --- 🎵 Music ---
+            ["Do you like music?", " ", "left"],
+            ["Yes, I do. Music is a big part of my social life.", "[注] [搭配] 'a big part of my social life' (社交生活的重要组成部分)，完美展示词汇的多样性。", "right"],
+            ["In China, many people enjoy going to KTV with friends.", " [注] [搭配] 'going to KTV' 属于符合中国文化背景的地道日常表达。", "right"],
+            ["We sing together, have a blast, and create great memories. That's one of the main reasons I enjoy music so much.", "[注] [搭配] 'have a blast' (玩得很痛快/尽情狂欢), 'create great memories' (创造美好回忆)。[语法] 'one of the + 可数名词复数' 结构。", "right"],
+            
+            ["Did you have music lessons at school?", " ", "left"],
+            ["Yes, I did. However, music was only a small part of the curriculum.", "[注] [搭配] 'part of the curriculum' (课程体系的一部分)，比单纯用 'lessons' 显得更有学术和词汇深度。", "right"],
+            ["Most of our time was spent on core subjects like math, science, and Chinese because we needed to prepare for important exams.", "[注] [搭配] 'core subjects' (核心科目), 'prepare for' (为...做准备)。[语法] 被动语态 'time was spent on...' 结构。", "right"],
+            
+            ["Did you enjoy singing as a child?", " ", "left"],
+            ["Yes. My mother told me that when I was little, I loved singing cartoon theme songs. I would sing them all the time.", "[注] [搭配] 'when I was little' (当我小时候), 'cartoon theme songs' (动画片主题曲)。[语法] 'would' 表示过去常常做的动作。", "right"],
+            
+            ["Do you still sing now?", " ", "left"],
+            ["Yes, I do. Whenever I play music, I naturally sing along.", "[注] [搭配] 'sing along' (跟着唱/合唱)。[语法] 'Whenever' 引导时间状语从句，表达“每当...的时候”。", "right"],
+            ["I especially enjoy singing when I'm alone or taking a shower because it's relaxing.", "[注] [搭配] 'take a shower' (洗澡), 'relaxing' 形容事物让人放松。[语法] 'enjoy doing sth' 固搭。", "right"],
+
+            // --- 😂 Jokes & Humor ---
+            ["Do you like telling jokes?", " ", "left"],
+            ["Yes, but I'm still trying to improve. Sometimes I need to plan my jokes in advance rather than making them up spontaneously.", "[注] [搭配] 'in advance' (提前), 'rather than' (而不是...), 'spontaneously' (自发地/即兴地)。[语法] 'trying to do' (努力做某事)。", "right"],
+            
+            ["How do you prepare a joke?", " ", "left"],
+            ["I usually structure it in my head beforehand and think about the timing and punchline.", "[注] [搭配] 'structure it in my head' (在脑海中组织), 'beforehand' (事前的/预先), 'punchline' (笑话的包袱/点睛之笔)。", "right"],
+            ["That helps me deliver it more naturally.", "[注] [搭配] 'deliver a joke' (讲笑话/抖包袱)，是专门针对梗或笑话的动词搭配。[语法] 'help sb do sth' 结构。", "right"],
+            
+            ["Do you have friends who are good at telling jokes?", " ", "left"],
+            ["Yes, I do. Some of my friends are naturally funny.", "[注] [搭配] 'naturally funny' (天生幽默/自带笑点)，副词修饰形容词的极佳口语组合。", "right"],
+            ["They always bring a great vibe to the group and make everyone feel relaxed.", "[注] [搭配] 'bring a great vibe to...' (为...带来很好的氛围)。[语法] 使役动词 'make sb do sth'（后接动词原形）。", "right"],
+            
+            ["Do you joke around with friends?", " ", "left"],
+            ["Yes, quite often. I think joking around is a great way to bring people closer and make everyone feel comfortable.", "[注] [搭配] 'joke around' (开玩笑/打闹), 'bring people closer' (拉近人们的距离)。[语法] 动名词短语 'joking around' 作主语。", "right"],
+            
+            ["Do you mind being joked about?", " ", "left"],
+            ["Not really. I'm pretty easygoing, and I don't mind as long as it's all in good fun.", "[注] [搭配] 'easygoing' (随和的/好说话的), 'all in good fun' (纯粹为了好玩/开个善意的玩笑)。[语法] 'as long as' 引导条件状语从句（只要...）。", "right"],
+
+            // --- 📺 Comedy Shows ---
+            ["Do you watch comedy shows?", " ", "left"],
+            ["Sometimes. There are a few popular comedy shows in China that invite famous comedians to compete and perform together.", "[注] [搭配] 'comedy show' (喜剧节目), 'comedian' (喜剧演员)。[语法] 定语从句 'that invite...' 修饰 shows。", "right"],
+            ["They're entertaining and help people relax.", "[注] [搭配] 'entertaining' (极具娱乐性的/好玩的)，比单纯用 interesting 更贴合电视节目属性。", "right"]
         ]
-    }
+    },
+	
+	ielts_speaking_part2: {
+        title: "💬 Headphones, Music",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            // --- PART 1 | Headphones ---
+            ["Do you use headphones?", " ", "left"],
+            ["Yes, quite often. I usually wear headphones when I'm studying English, listening to podcasts, or watching videos online.", "[注] 基础高频句型，使用 'when' 引导时间状语从句，多排比动作让口语流利度（Fluency）瞬间拉满。", "right"],
+            
+            ["How often do you wear headphones?", " ", "left"],
+            ["Almost every day. I spend at least one or two hours using them, especially when I'm practicing listening or speaking English.", "[注] [搭配] 'spend time doing sth' (花时间做某事)。'especially when...' 完美引出具体备考场景，给考官展示细节。", "right"],
+            
+            ["Do you think headphones are useful?", " ", "left"],
+            ["Definitely. They help me focus better and block out background noise, especially when I'm studying in a noisy environment.", "[注] [搭配] 'block out background noise' (隔绝背景噪音), 'focus better' (更好地集中注意力)。短语直接切中核心痛点。", "right"],
+            
+            ["Are headphones popular in your country?", " ", "left"],
+            ["Absolutely. They're extremely popular, especially among young people. Many people use them while commuting, working out, or studying.", "[注] [搭配] 'while commuting' (在上下班/上下学通勤时), 'working out' (健身/运动)。展示了极强的日常场景表达力。", "right"],
+            
+            ["In what situations should people not wear headphones?", " ", "left"],
+            ["I think people should avoid wearing headphones when they're crossing the street or riding a bicycle because it can be dangerous if they can't hear what's happening around them.", "[注] [搭配] 'avoid wearing' (避免佩戴/avoid后接动名词)。[语法] 'if' 引导条件状语从句 + 'what' 引导宾语从句，双重从句拉高语法分。", "right"],
+
+            // --- PART 1 | Music ---
+            ["Do you like music?", " ", "left"],
+            ["Yes, I do. Music is a big part of my daily life, and I listen to it whenever I want to relax or improve my mood.", "[注] [搭配] 'a big part of my daily life' (我日常生活的重要组成部分), 'improve my mood' (改善/提升我的情绪)。[语法] 'whenever' 引导让步状语从句。", "right"],
+            
+            ["What kinds of music do you listen to?", " ", "left"],
+            ["I mainly listen to pop music and relaxing instrumental music. Sometimes I also listen to background music while studying.", "[注] [搭配] 'relaxing instrumental music' (让人放松的纯音乐/乐器音乐), 'background music' (背景音乐)。用词准确到位。", "right"],
+            
+            ["Do you prefer sad or happy music?", " ", "left"],
+            ["I definitely prefer happy music because it makes me feel more energetic and positive.", "[注] [搭配] 'feel more energetic and positive' (感到更有活力和积极)。[语法] 使役动词 'make sb do sth' 结构。", "right"],
+            
+            ["Does happy music make you feel more excited?", " ", "left"],
+            ["Yes, absolutely. It can instantly improve my mood and give me more motivation, especially when I'm feeling tired.", "[注] [搭配] 'instantly improve' (瞬间改善), 'give me more motivation' (给我更多动力)。副词 instantly 用得非常地道。", "right"],
+            
+            ["Have you taken any music classes?", " ", "left"],
+            ["Not really. I've never received formal music training, but I enjoy listening to music in my free time.", "[注] [搭配] 'receive formal music training' (接受系统/正规的音乐训练), 'in my free time' (在我的空闲时间)。", "right"],
+            
+            ["Do you listen to music while doing other things?", " ", "left"],
+            ["Yes, quite often. I usually listen to music while exercising, walking, or doing simple tasks.", "[注] [搭配] 'doing simple tasks' (做简单琐碎的任务)。[语法] 'while doing' 属于伴随状语的时间省去结构，口语极其高频。", "right"]
+        ]
+    },
+    ielts_speaking_review1: {
+        title: "💬 Core Vocab",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            // --- 🎨 Art & Creativity ---
+            ["How does art education benefit children?", " ", "left"],
+            ["Drawing allows children to develop self-expression and creativity, expanding their imagination from an early age.", "[注] [搭配] 'self-expression' (自我表达), 'expand one's imagination' (展开/丰富想象力)。[语法] 现在分词 'expanding' 作伴随状语。", "right"],
+            ["It provides a strong creative foundation that modern technology or AI cannot fully replicate.", "[注] [搭配] 'creative foundation' (创造力基础)。[语法] 'that' 引导定语从句修饰 foundation，句型十分高级。", "right"],
+            
+            ["What do you think about AI-generated artwork?", " ", "left"],
+            ["AI has democratized creativity, allowing ordinary people to bring their ideas to life without professional skills.", "[注] [搭配] 'democratize creativity' (让创造力普及化/去门槛化), 'bring ideas to life' (将想法化为现实/赋予想法生命)。", "right"],
+
+            // --- 😌 Stress & Mental Health ---
+            ["How do people in your country usually handle study or work pressure?", " ", "left"],
+            ["Many employees and students feel overwhelmed by heavy workloads and tight deadlines nowadays.", "[注] [搭配] 'feel overwhelmed by pressure' (在压力下感到不堪重负), 'heavy workloads' (繁重的工作量), 'tight deadlines' (紧迫的截止日期)。", "right"],
+            ["Spending time on hobbies allows them to decompress after a long day and recharge both mentally and physically.", "[注] [搭配] 'decompress after a long day' (在一整天的劳累后减压/抽气放松), 'recharge both mentally and physically' (身心双重充电)。", "right"],
+            ["For many people, dynamic or creative activities can serve as a form of mindfulness and provide a healthy outlet for stress.", "[注] [搭配] 'serve as a form of mindfulness' (充当一种正念体验), 'provide a healthy outlet for stress' (为压力提供一个健康的宣泄渠道)。", "right"],
+
+            // --- 🐘 Animals & Environment ---
+            ["What impressed you most about the animal rescue video you watched?", " ", "left"],
+            ["The rescued animals were sent to a large sanctuary that closely resembles their natural habitat.", "[注] [搭配] 'animal sanctuary' (动物保护区/避难所), 'recreate/resemble a natural habitat' (还原/酷似自然栖息地)。", "right"],
+            ["The organization heavily focuses on the rehabilitation of injured wildlife and protects global animal welfare.", "[注] [搭配] 'rehabilitation of injured wildlife' (受伤野生动物的康复/恢复), 'protect animal welfare' (保护动物福利)。", "right"],
+            ["It inspired me to support wildlife conservation and help give these animals a second chance at life.", "[注] [搭配] 'support wildlife conservation' (支持野生动物保护), 'give someone a second chance at life' (给予...新生/第二次生命)。", "right"],
+
+            // --- 🏙️ Society & Economy ---
+            ["Why does Hong Kong have relatively few stray animals?", " ", "left"],
+            ["Hong Kong has strict animal welfare laws, and public awareness of environmental and animal protection has increased significantly.", "[注] [搭配] 'animal welfare laws' (动物保护法), 'raise/improve public awareness' (提高公众意识)。", "right"],
+            ["Many stray animals are taken to shelters and put up for adoption, creating a safer environment.", "[注] [搭配] 'stray animals' (流浪动物), 'put up for adoption' (等待领养)。[语法] 被动语态连用结构。", "right"],
+            
+            ["Is shopping still important for the city's development?", " ", "left"],
+            ["Yes. Tourism generated by shopping contributes significantly to the local economy and supports the retail industry.", "[注] [搭配] 'contribute to the local economy' (对当地经济做出贡献), 'support the retail industry' (支持零售业)。", "right"],
+            ["Hong Kong still attracts millions of tourists with its selection of luxury brands and its vibrant atmosphere.", "[注] [搭配] 'luxury brands' (奢侈品牌), 'enjoy a vibrant atmosphere' (享受充满活力的氛围)。", "right"]
+        ]
+    },
 };
 
 // ==========================================
