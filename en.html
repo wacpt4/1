@@ -594,7 +594,7 @@ function speak(text, callback) {
     }
     
     const u = new SpeechSynthesisUtterance(cleanedText);
-    u.lang = "en-GB"; // 🌟 核心：强制切换为英式英语（British English）发音引擎
+    u.lang = "en-US"; // 🌟 核心：强制切换为英式英语（British English）发音引擎
     
     if (callback) {
         u.onend = () => callback();
