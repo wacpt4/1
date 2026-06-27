@@ -1,1 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gothic Memory - 暮色记忆翻牌</title>
+    <style>
+        /* 哥特暗黑风核心样式 */
+        :root {
+            --bg-color: #0d0c10;
+            --gothic-red: #580000;
+            --gothic-bright-red: #a30000;
+            --text-color: #dcd1c4;
+            --card-back: #1a151b;
+            --gold-border: #8c7247;
+            --player1-color: #a30000;
+            --player2-color: #1a6f8a; /* 幽灵蓝 */
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle, #241414 0%, #0d0c10 100%);
+            color: var(--text-color);
+            font-family: 'Cinzel', 'Georgia', 'Noto Serif SC', serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 2px double var(--gold-border);
+            padding-bottom: 10px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--gothic-bright-red);
+            text-shadow: 2px 2px 4px #000, 0 0 15px var(--gothic-red);
+            letter-spacing: 4px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
+
+        /* 输入与配置区域 */
+        .input-section {
+            background: rgba(20, 15, 20, 0.85);
+            border: 1px solid var(--gold-border);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--gold-border);
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        
+        label:first-child {
+            margin-top: 0;
+        }
+
+        /* 模式选择按钮区域 */
+        .mode-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 5px;
+        }
+
+        .mode-btn {
+            background: #151115;
+            border: 1px solid #443333;
+            color: #887766;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.selected {
+            background: var(--gothic-red);
+            color: #fff;
+            border-color: var(--gold-border);
+            box-shadow: 0 0 10px var(--gothic-bright-red);
+        }
+
+        /* 词库库存区域样式 */
+        .inventory-vault {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border: 1px solid #332222;
+            border-radius: 4px;
+        }
+
+        .vault-tag {
+            background: #1c141a;
+            border: 1px solid var(--gold-border);
+            color: var(--text-color);
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .vault-tag:hover {
+            background: var(--gothic-red);
+            color: #fff;
+            box-shadow: 0 0 6px var(--gothic-bright-red);
+        }
+        
+        .vault-tag.custom-tag {
+            border-color: #6a5acd; /* 紫罗兰色代表自定义暂存 */
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #080608;
+            border: 1px solid #443333;
+            color: #fff;
+            padding: 10px;
+            font-family: monospace;
+            resize: vertical;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--gothic-bright-red);
+            box-shadow: 0 0 8px var(--gothic-red);
+        }
+
+        .action-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            color: var(--text-color);
+            border: 1px solid var(--gold-border);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--gothic-red), #300);
+            flex: 2;
+        }
+
+        .start-btn:hover {
+            background: linear-gradient(135deg, var(--gothic-bright-red), var(--gothic-red));
+            color: #fff;
+            box-shadow: 0 0 12px var(--gothic-bright-red);
+        }
+
+        .store-btn {
+            background: #1d1a22;
+            font-size: 0.85rem;
+            flex: 1;
+            border-color: #554455;
+        }
+
+        .store-btn:hover {
+            background: #342d3d;
+            border-color: var(--gold-border);
+        }
+
+        /* 游戏数据面板 - 防抖布局 */
+        .stats-panel {
+            font-size: 1.1rem;
+            color: var(--gold-border);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+            height: 110px; 
+        }
+
+        .players-scoreboard {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            border: 1px dashed #443333;
+            padding: 5px; 
+        }
+
+        .player-score {
+            flex: 1;
+            text-align: center;
+            padding: 8px 10px;
+            border: 1px solid transparent; 
+            color: #776655;
+            transition: background-color 0.25s, color 0.25s, box-shadow 0.25s;
+        }
+
+        .player-score.active-p1 {
+            color: #fff;
+            background: var(--gothic-red);
+            border-color: var(--gold-border);
+            box-shadow: 0 0 12px var(--gothic-bright-red);
+        }
+
+        .player-score.active-p2 {
+            color: #fff;
+            background: #113f4f;
+            border-color: var(--player2-color);
+            box-shadow: 0 0 12px var(--player2-color);
+        }
+
+        .turn-announcer {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 3px #000;
+            height: 28px; 
+            line-height: 28px;
+        }
+
+        /* 游戏网格区 */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            width: 100%;
+            perspective: 1000px;
+        }
+
+        /* 卡牌基础样式 */
+        .card {
+            height: 160px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.6);
+            border: 2px solid var(--gold-border);
+        }
+
+        .card-back {
+            background: var(--card-back);
+            background-image: 
+                linear-gradient(45deg, #2a0000 25%, transparent 25%), 
+                linear-gradient(-45deg, #2a0000 25%, transparent 25%),
+                radial-gradient(circle, var(--gothic-red) 10%, transparent 60%);
+            background-size: 20px 20px, 20px 20px, 100% 100%;
+            color: var(--gothic-red);
+        }
+
+        .card-back::after {
+            content: "♠";
+            font-size: 2rem;
+            opacity: 0.3;
+            color: var(--gold-border);
+        }
+
+        .card-front {
+            background: #1c181a;
+            color: #e0d5c1;
+            transform: rotateY(180deg);
+            word-break: break-word;
+            font-size: 0.95rem;
+            border-color: var(--gothic-red);
+        }
+
+        /* 匹配色彩 */
+        .card.matched-single .card-front {
+            border-color: #2e6f40;
+            background: #111e14;
+            color: #8fbc8f;
+            box-shadow: 0 0 10px rgba(46, 111, 64, 0.5);
+        }
+
+        .card.matched-p1 .card-front {
+            border-color: var(--gothic-bright-red);
+            background: #250909;
+            color: #ffb3b3;
+            box-shadow: 0 0 10px rgba(163, 0, 0, 0.5);
+        }
+
+        .card.matched-p2 .card-front {
+            border-color: var(--player2-color);
+            background: #091c25;
+            color: #b3ecff;
+            box-shadow: 0 0 10px rgba(26, 111, 138, 0.5);
+        }
+        
+        .card.matched-single, .card.matched-p1, .card.matched-p2 {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* 胜利宣告 */
+        .victory-message {
+            display: none;
+            text-align: center;
+            color: #fff;
+            font-size: 2rem;
+            animation: pulse 2s infinite;
+            text-shadow: 0 0 10px var(--gothic-bright-red);
+            margin-top: 20px;
+            background: rgba(15, 10, 15, 0.9);
+            padding: 30px;
+            border: 2px double var(--gold-border);
+            border-radius: 4px;
+        }
+
+        .winner-display {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MEMENTO MORI</h1>
+        <p style="color: #665; font-size: 0.8rem; letter-spacing: 2px; margin-top: 5px;">暮色记忆 · 灵魂宿命契约</p>
+    </header>
+
+    <div class="container">
+        <!-- 配置输入区 -->
+        <div class="input-section" id="setup-area">
+            <label>选择契约模式：</label>
+            <div class="mode-selector">
+                <button class="mode-btn selected" id="btn-single" onclick="selectMode('single')">独行者仪式 (单人)</button>
+                <button class="mode-btn" id="btn-double" onclick="selectMode('double')">宿命对决 (双人)</button>
+            </div>
+            
+            <label>记忆库存：</label>
+            <div class="inventory-vault" id="inventory-vault">
+                <!-- 预设词库 -->
+                <span class="vault-tag" onclick="loadPreset('memento')">🕯️ 暮色原罪</span>
+                <span class="vault-tag" onclick="loadPreset('vampire')">🩸 血族新娘</span>
+                <span class="vault-tag" onclick="loadPreset('alchemy')">🧪 禁忌炼金</span>
+                <span class="vault-tag" onclick="loadPreset('witch')">👁️ 猎巫审判</span>
+            </div>
+            
+            <label for="pair-input">注入/编辑记忆：</label>
+            <div class="textarea-container">
+                <textarea id="pair-input" placeholder="Vampire:吸血鬼&#10;Castle:古堡&#10;Gothic:哥特&#10;Raven:渡鸦&#10;Coffin:棺椁&#10;Midnight:午夜&#10;Phantom:幽灵"></textarea>
+            </div>
+            
+            <div class="action-group">
+                <button class="btn store-btn" onclick="saveToVault()">存入暂存库</button>
+                <button class="btn start-btn" onclick="startGame()">开启仪式</button>
+            </div>
+        </div>
+
+        <!-- 状态监控栏 -->
+        <div class="stats-panel" id="stats-panel">
+            <div class="turn-announcer" id="turn-announcer">✦ 独行者的仪式时间 ✦</div>
+            <div class="players-scoreboard">
+                <div class="player-score" id="p1-score-box">红魔之魂 (P1): <span id="p1-score">0</span></div>
+                <div class="player-score" id="p2-score-box" style="display: none;">蓝幽之魂 (P2): <span id="p2-score">0</span></div>
+            </div>
+            <div style="font-size: 0.85rem; color: #554;">仪式总步数: <span id="step-count">0</span></div>
+        </div>
+
+        <!-- 游戏区域 -->
+        <div class="game-grid" id="game-grid"></div>
+
+        <!-- 胜利提示 -->
+        <div class="victory-message" id="victory-msg">
+            <div class="winner-display" id="winner-name">✦ 仪式完成 ✦</div>
+            <div style="font-size: 1.2rem; color: var(--gold-border);" id="final-stats">得分情况</div>
+            <button class="btn start-btn" onclick="resetGame()" style="margin-top: 25px; width: auto; display: inline-block;">再次召唤命运</button>
+        </div>
+    </div>
+
+    <script>
+        // 内置库存词库数据
+        const presets = {
+			memento: "null:0 (Zero)\neins:1 (One)\nzwei:2 (Two)\ndrei:3 (Three)\nvier:4 (Four)\nfünf:5 (Five)\nsechs:6 (Six)\nsieben:7 (Seven)\nacht:8 (Eight)\nneun:9 (Nine)\nzehn:10 (Ten)\nelf:11 (Eleven)\nzwölf:12 (Twelve)",
+            vampire: "Rose:荆棘玫瑰\nFang:致命尖牙\nBlood:纯黑盟誓\nBat:夜幕蝙蝠\nShroud:深红裹尸布\nMoonlight:苍白月影",
+            alchemy: "Gold:贤者之石\nMercury:流体水银\nSulfur:深渊硫磺\nElixir:不老泉水\nHomunculus:瓶中人偶\nTransmute:等价交换",
+            witch: "Spell:禁忌咒言\nCauldron:诡秘女巫釜\nTarot:命运塔罗\nCurse:至暗诅咒\nEclipse:红月蚀日\nMirror:真理之镜"
+        };
+
+        // 用户自定义库存计数
+        let customVaultCount = 0;
+        const customPresets = {};
+
+        let gameMode = 'single'; 
+        let cardsData = [];
+        let flippedCards = [];
+        let totalPairs = 0;
+        let matchedPairs = 0;
+        let steps = 0;
+        let isLockBoard = false;
+        
+        let currentPlayer = 1; 
+        let p1Score = 0;
+        let p2Score = 0;
+
+        // 页面加完毕后默认载入第一个
+        window.onload = function() {
+            loadPreset('memento');
+        };
+
+        // 从库存中读取词对
+        function loadPreset(key) {
+            const textarea = document.getElementById('pair-input');
+            if (presets[key]) {
+                textarea.value = presets[key];
+            } else if (customPresets[key]) {
+                textarea.value = customPresets[key];
+            }
+        }
+
+        // 将当前输入的词对“作为新库存”保存
+        function saveToVault() {
+            const text = document.getElementById('pair-input').value.trim();
+            if (!text) {
+                alert("空中无物，无法凝聚成库存碎片。");
+                return;
+            }
+            
+            customVaultCount++;
+            const key = 'custom_' + customVaultCount;
+            customPresets[key] = text;
+
+            // 获取前4个字作为标签缩略名
+            const firstLine = text.split('\n')[0] || "自定义";
+            const shortName = firstLine.substring(0, 6) + "...";
+
+            // 动态在库存库创建新标签
+            const vault = document.getElementById('inventory-vault');
+            const newTag = document.createElement('span');
+            newTag.className = 'vault-tag custom-tag';
+            newTag.innerText = `🔮 暂存-${customVaultCount}(${shortName})`;
+            newTag.onclick = function() { loadPreset(key); };
+            
+            vault.appendChild(newTag);
+        }
+
+        function selectMode(mode) {
+            gameMode = mode;
+            document.getElementById('btn-single').classList.toggle('selected', mode === 'single');
+            document.getElementById('btn-double').classList.toggle('selected', mode === 'double');
+        }
+
+        function startGame() {
+            const rawText = document.getElementById('pair-input').value.trim();
+            if(!rawText) {
+                alert("请输入或从库存选择词对后再开启仪式。");
+                return;
+            }
+            const lines = rawText.split('\n');
+            cardsData = [];
+            let idCounter = 0;
+
+            lines.forEach(line => {
+                const parts = line.split(/[:：]/);
+                if (parts.length >= 2) {
+                    const val1 = parts[0].trim();
+                    const val2 = parts[1].trim();
+                    if (val1 && val2) {
+                        const pairId = idCounter++;
+                        cardsData.push({ id: pairId, text: val1 });
+                        cardsData.push({ id: pairId, text: val2 });
+                    }
+                }
+            });
+
+            if (cardsData.length === 0) {
+                alert('未检测到有效格式。格式需为：“英文:中文”，每行一组。');
+                return;
+            }
+
+            totalPairs = cardsData.length / 2;
+            matchedPairs = 0;
+            steps = 0;
+            p1Score = 0;
+            p2Score = 0;
+            currentPlayer = 1;
+            
+            document.getElementById('setup-area').style.display = 'none';
+            document.getElementById('stats-panel').style.display = 'flex';
+            document.getElementById('victory-msg').style.display = 'none';
+            
+            if (gameMode === 'single') {
+                document.getElementById('p2-score-box').style.display = 'none';
+                document.getElementById('p1-score-box').innerHTML = `已找到: <span id="p1-score">0</span> / ${totalPairs} 对`;
+            } else {
+                document.getElementById('p2-score-box').style.display = 'block';
+                document.getElementById('p1-score-box').innerHTML = `红魔之魂 (P1): <span id="p1-score">0</span> 对`;
+                document.getElementById('p2-score-box').innerHTML = `蓝幽之魂 (P2): <span id="p2-score">0</span> 对`;
+            }
+            
+            updateScoreboard();
+            shuffle(cardsData);
+            renderBoard();
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function renderBoard() {
+            const grid = document.getElementById('game-grid');
+            grid.innerHTML = '';
+            cardsData.forEach((cardInfo) => {
+                const cardEl = document.createElement('div');
+                cardEl.classList.add('card');
+                cardEl.dataset.pairId = cardInfo.id;
+                cardEl.innerHTML = `
+                    <div class="card-face card-back"></div>
+                    <div class="card-face card-front">${cardInfo.text}</div>
+                `;
+                cardEl.addEventListener('click', flipCard);
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function flipCard() {
+            if (isLockBoard) return;
+            if (this.classList.contains('flipped') || this.className.includes('matched-')) return;
+
+            this.classList.add('flipped');
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                steps++;
+                document.getElementById('step-count').innerText = steps;
+                isLockBoard = true; 
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            const isMatch = card1.dataset.pairId === card2.dataset.pairId;
+
+            if (isMatch) {
+                if (gameMode === 'single') {
+                    card1.classList.add('matched-single');
+                    card2.classList.add('matched-single');
+                    p1Score++;
+                } else {
+                    const matchClass = currentPlayer === 1 ? 'matched-p1' : 'matched-p2';
+                    card1.classList.add(matchClass);
+                    card2.classList.add(matchClass);
+                    if (currentPlayer === 1) p1Score++; else p2Score++;
+                }
+                
+                matchedPairs++;
+                updateScoreboard();
+                
+                setTimeout(() => {
+                    resetTurn(false); 
+                }, 400);
+
+                if (matchedPairs === totalPairs) {
+                    setTimeout(endGame, 800);
+                }
+            } else {
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    resetTurn(true); 
+                }, 1200); 
+            }
+        }
+
+        function resetTurn(switchPlayer) {
+            flippedCards = [];
+            isLockBoard = false;
+            if (switchPlayer && gameMode === 'double') {
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                updateScoreboard();
+            }
+        }
+
+        function updateScoreboard() {
+            document.getElementById('p1-score').innerText = p1Score;
+            if (gameMode === 'double') document.getElementById('p2-score').innerText = p2Score;
+            
+            const p1Box = document.getElementById('p1-score-box');
+            const p2Box = document.getElementById('p2-score-box');
+            const announcer = document.getElementById('turn-announcer');
+
+            if (gameMode === 'single') {
+                p1Box.className = 'player-score active-p1';
+                announcer.innerText = '✦ 独行者的仪式时间 ✦';
+                announcer.style.color = 'var(--gold-border)';
+            } else {
+                if (currentPlayer === 1) {
+                    p1Box.className = 'player-score active-p1';
+                    p2Box.className = 'player-score';
+                    announcer.innerText = '✦ 审判轮转：红魔之魂的回合 ✦';
+                    announcer.style.color = 'var(--gothic-bright-red)';
+                } else {
+                    p1Box.className = 'player-score';
+                    p2Box.className = 'player-score active-p2';
+                    announcer.innerText = '✦ 审判轮转：蓝幽之魂的回合 ✦';
+                    announcer.style.color = 'var(--player2-color)';
+                }
+            }
+        }
+
+        function endGame() {
+            document.getElementById('stats-panel').style.display = 'none';
+            const winnerNameEl = document.getElementById('winner-name');
+            const finalStatsEl = document.getElementById('final-stats');
+            
+            if (gameMode === 'single') {
+                winnerNameEl.innerText = '✦ 仪式圆满结束 ✦';
+                winnerNameEl.style.color = 'var(--gold-border)';
+                finalStatsEl.innerHTML = `你成功唤醒了所有记忆！<br>总共耗费了 ${steps} 步博弈。`;
+            } else {
+                let winnerText = '';
+                if (p1Score > p2Score) {
+                    winnerText = '💀 红魔之魂 斩获了最终胜利 💀';
+                    winnerNameEl.style.color = 'var(--gothic-bright-red)';
+                } else if (p2Score > p1Score) {
+                    winnerText = '⚰️ 蓝幽之魂 掌控了最终命运 ⚰️';
+                    winnerNameEl.style.color = 'var(--player2-color)';
+                } else {
+                    winnerText = '⚖️ 灵魂均等 难分伯仲（平局） ⚖️';
+                    winnerNameEl.style.color = 'var(--gold-border)';
+                }
+                winnerNameEl.innerText = winnerText;
+                finalStatsEl.innerHTML = `红魔得分: ${p1Score} 对 | 蓝幽得分: ${p2Score} 对<br>总对决步数: ${steps} 步`;
+            }
+            document.getElementById('victory-msg').style.display = 'block';
+        }
+
+        function resetGame() {
+            document.getElementById('game-grid').innerHTML = '';
+            document.getElementById('setup-area').style.display = 'block';
+            document.getElementById('stats-panel').style.display = 'none';
+            document.getElementById('victory-msg').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
