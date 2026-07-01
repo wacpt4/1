@@ -1,0 +1,1195 @@
+<!DOCTYPE html> 
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>GRE</title>
+
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(135deg, #eef2f7, #f9fbfd);
+  margin: 0;
+  padding: 24px;
+}
+
+h2 { text-align: center; margin-bottom: 6px; }
+
+.mode-tip {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 18px;
+}
+
+#quiz-container {
+  max-width: 920px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.question-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.sentence {
+  font-size: 16px;
+  line-height: 1.65;
+  margin-bottom: 8px;
+}
+
+.target-word {
+  display: inline-block;
+  padding: 4px 10px;
+  border: 2px dashed #b0b8c4;
+  border-radius: 6px;
+  background: #f8fafc;
+  font-weight: 600;
+  margin: 0 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.target-word[data-filled] {
+  background: #d0e4ff;
+  border-color: #4a90e2;
+}
+
+.target-word[data-filled]:hover::after {
+  content: attr(data-filled);
+  position: absolute;
+  top: -28px;
+  left: 0;
+  background: #4a90e2;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.target-word.correct {
+  background: #e6f6ec;
+  border-color: #2ecc71;
+}
+
+.target-word.error {
+  background: #fdecea;
+  border-color: #e74c3c;
+}
+
+.answer-row {
+  font-size: 14px;
+  margin-top: 6px;
+  display: flex;
+  gap: 12px;
+}
+
+.correct-answer { color: #2ecc71; font-weight: 600; }
+.user-answer { color: #e74c3c; font-weight: 600; }
+
+.wrong-badge {
+  position: absolute;
+  bottom: 15px;
+  right: 14px;
+  font-size: 12px;
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px;
+  background: #f1f4f8;
+  border-radius: 14px;
+}
+
+.word {
+  padding: 6px 14px;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid #ccd3dd;
+  cursor: grab;
+}
+
+.word.dragging { opacity: 0.5; }
+
+.buttons {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.jump-input {
+  width: 70px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  background: #4a90e2;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.secondary { background: #6c757d; }
+button.warn { background: #d9771f; }
+button.soft-warn { background: #38a169; }
+
+#result {
+  text-align: center;
+  font-size: 16px;
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.page-info {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* ⭐ 收藏按钮 */
+.question-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sentence {
+  flex: 1;
+}
+
+/* ⭐ 右侧固定 */
+.star-btn {
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 17px;
+  opacity: 0.35;
+  transition: 0.2s;
+  margin-top: 0.8px;
+}
+
+/* 悬停更明显 */
+.star-btn:hover {
+  opacity: 0.7;
+}
+
+/* 激活状态 */
+.star-btn.active {
+  color: gold;
+  opacity: 1;
+}
+</style>
+</head>
+
+<body>
+
+<h2>GRE 六选二同义词</h2>
+<div class="mode-tip" id="modeTip">📘 练习模式</div>
+
+<div id="quiz-container"></div>
+<div class="page-info" id="pageInfo"></div>
+
+<div class="buttons">
+  <button id="prevBtn" class="secondary">上一页</button>
+  <button id="nextBtn" class="secondary">下一页</button>
+
+  <input id="jumpInput" class="jump-input" placeholder="页码">
+  <button id="jumpBtn" class="secondary">跳转</button>
+
+  <button id="submitBtn">提交</button>
+  <button id="redoBtn" class="warn">重做错题</button>
+  <button id="clearWrongBtn" class="soft-warn">清空错题</button>
+
+  <!-- ⭐ 新增 -->
+  <button id="favModeBtn" class="secondary">⭐ 收藏页</button>
+  <button id="allModeBtn" class="secondary">📘 返回题库</button>
+</div>
+
+<div id="result"></div>
+
+<script>
+
+/* 🔊 朗读 */
+function speak(text){
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";
+  utter.rate = 0.95;
+  speechSynthesis.speak(utter);
+}
+
+/* ========= 题库 ========= */
+const ALL_QUESTIONS = [
+/* ========= P1 ========= */
+  { "sentence": "Despite his impressive achievements, he remained **modest**.", "answer": "unassuming" },
+  { "sentence": "The novel blurred the line between reality and **inventions**.", "answer": "fictions" },
+  { "sentence": "New regulations may **resist** the need for further intervention.", "answer": "obviate" },
+  { "sentence": "Her **striking** proposal challenged conventional wisdom.", "answer": "audacious" },
+  { "sentence": "There was a **pronounced** difference between the two theories.", "answer": "striking" },
+  { "sentence": "The feeling of relief was **evanescent**, fading within minutes.", "answer": "momentary" },
+  { "sentence": "Many small firms eventually **yield to** market pressures.", "answer": "succumb to" },
+  { "sentence": "The new policy aims to **support** economic stability.", "answer": "improve" },
+  { "sentence": "Her speech was **intermittent**, filled with long pauses.", "answer": "punctuated" },
+  { "sentence": "The country’s economic position remains **perilous**.", "answer": "precarious" },
+  { "sentence": "There is a **profusion** of data available on this topic.", "answer": "plethora" },
+  { "sentence": "His analysis was dismissed as **sketchy** and lacking depth.", "answer": "superficial" },
+  { "sentence": "The study seeks to **remove** irrelevant variables.", "answer": "strip away" },
+  { "sentence": "The punishment was hardly **condign** given the severity of the crime.", "answer": "meet" },
+  { "sentence": "Her **benevolent** actions earned her widespread admiration.", "answer": "altruistic" },
+  { "sentence": "There is an **exigent** need for immediate reform.", "answer": "pressing" },
+  { "sentence": "Such blatant corruption is **repellent** to ethical governance.", "answer": "anathema" },
+  { "sentence": "The theory is largely **divorced from** empirical evidence.", "answer": "abstracted from" },
+  { "sentence": "The audience was completely **captivated** by the performance.", "answer": "enthralled" },
+  { "sentence": "He is a **venerable** scholar in the field of linguistics.", "answer": "respected" },
+  { "sentence": "The law seeks to **disallow** certain harmful practices.", "answer": "proscribe" },
+  { "sentence": "The artist skillfully **meld**s traditional and modern styles.", "answer": "combine" },
+  { "sentence": "His apology seemed **FALSE** and insincere.", "answer": "feigned" },
+  { "sentence": "She decided to **renounce** her previous claims.", "answer": "foreswear" },
+  { "sentence": "The underlying problem soon became **obvious**.", "answer": "manifest" },
+  { "sentence": "His argument is largely **conjectural** and lacks evidence.", "answer": "speculative" },
+  { "sentence": "He is a strong **defender** of environmental policies.", "answer": "proponent" },
+  { "sentence": "She had to **acknowledge** the validity of the criticism.", "answer": "concede" },
+  { "sentence": "The company is experiencing rapid **expansion**.", "answer": "burgeoning" },
+  { "sentence": "The issue is highly **knotty** and difficult to resolve.", "answer": "complicated" },
+  { "sentence": "This technology has become **outmoded**.", "answer": "obsolete" },
+  { "sentence": "The disease is **native** to tropical regions.", "answer": "endemic" },
+  { "sentence": "His argument is **specious**, appearing valid but actually flawed.", "answer": "spurious" },
+  { "sentence": "They are primarily concerned with **economic** matters.", "answer": "pecuniary" },
+  { "sentence": "She will not **tolerate** any form of dishonesty.", "answer": "brook" },
+  { "sentence": "He is a highly **discerning** critic.", "answer": "perceptive" },
+  { "sentence": "Such an outcome seems highly **unlikely**.", "answer": "improbable" },
+  { "sentence": "His remarks were **acerbic** and deeply critical.", "answer": "caustic" },
+  { "sentence": "The complex instructions left him **confounded**.", "answer": "flummoxed" },
+  { "sentence": "Prolonged inactivity can lead to **lethargy**.", "answer": "somnolence" },
+  { "sentence": "Young artists often **emulate** established masters.", "answer": "imitate" },
+  { "sentence": "The design is highly **convoluted** and difficult to follow.", "answer": "intricate" },
+  { "sentence": "The object remained **inert** throughout the experiment.", "answer": "stationary" },
+  { "sentence": "The scandal exposed widespread **duplicity**.", "answer": "fraud" },
+  { "sentence": "He chose to **ignore** the criticism entirely.", "answer": "dismiss" },
+  { "sentence": "The policy is considered **archaic** in modern society.", "answer": "antediluvian" },
+  { "sentence": "The project reflects a clear sense of **design**.", "answer": "purposefulness" },
+  { "sentence": "Early signs may **prefigure** future developments.", "answer": "anticipate" },
+  { "sentence": "Resources are **inadequate** to meet demand.", "answer": "scarce" },
+  { "sentence": "The material is valued for its **suppleness**.", "answer": "flexibility" },
+  { "sentence": "The company plans to **strip** itself of non-core assets.", "answer": "divest" },
+  { "sentence": "The evidence is **meager** and unconvincing.", "answer": "insufficient" },
+  { "sentence": "He felt **constrained** by social expectations.", "answer": "inhibited" },
+  { "sentence": "The text is clear and **readable**.", "answer": "intelligible" },
+  { "sentence": "Her style is highly **idiosyncratic**.", "answer": "distinct" },
+  /* ========= P2 ========= */
+  { "sentence": "He chose to **neglect** his duties, leaving others to manage the crisis.", "answer": "forsake" },
+{ "sentence": "The sudden drop in data was an **anomaly** that puzzled researchers.", "answer": "aberration" },
+{ "sentence": "She was **reluctant** to accept the offer despite its advantages.", "answer": "unwilling" },
+{ "sentence": "It would be **foolish** to ignore such clear evidence.", "answer": "simple" },
+{ "sentence": "The professor sought to **illuminate** the complexities of the theory.", "answer": "clarify" },
+{ "sentence": "Her enthusiasm remained **unbated** even after repeated failures.", "answer": "undiminished" },
+{ "sentence": "Only experts can **discern** subtle differences in style.", "answer": "detect" },
+{ "sentence": "He worked hard to **hone** his analytical skills.", "answer": "enhance" },
+{ "sentence": "The summit proved **inaccessible** due to extreme weather conditions.", "answer": "insurmountable" },
+{ "sentence": "His actions were driven purely by **self-interest**.", "answer": "opportunism" },
+{ "sentence": "The advertisement tried to **seduce** consumers with false promises.", "answer": "beguile" },
+{ "sentence": "Her rise to **prominence** was swift and unexpected.", "answer": "salience" },
+{ "sentence": "Diplomatic relations depend on mutual **civility**.", "answer": "comity" },
+{ "sentence": "Known for being **laconic**, he rarely spoke more than necessary.", "answer": "taciturn" },
+{ "sentence": "Unexpected delays continued to **stymie** the project.", "answer": "hinder" },
+{ "sentence": "Further debate seemed **futile** given the lack of consensus.", "answer": "fruitless" },
+{ "sentence": "The earthquake was a national **calamity**.", "answer": "disaster" },
+{ "sentence": "This issue is **perennial** and resurfaces every year.", "answer": "long-standing" },
+{ "sentence": "The species’ **persistence** surprised scientists.", "answer": "survival" },
+{ "sentence": "The report was full of **disinformation** intended to mislead.", "answer": "mendacity" },
+{ "sentence": "Rigid rules can **shackle** innovation.", "answer": "stifle" },
+{ "sentence": "The dictator was known for his **vile** behavior.", "answer": "base" },
+{ "sentence": "His intentions were **manifest** to everyone present.", "answer": "self-evident" },
+{ "sentence": "The evidence was **artificial** and not authentic.", "answer": "spurious" },
+{ "sentence": "Her performance was **superlative**.", "answer": "praiseworthy" },
+{ "sentence": "His act of **self-sacrifice** inspired many.", "answer": "altruism" },
+{ "sentence": "The proposal received widespread **approbation**.", "answer": "adulation" },
+{ "sentence": "Dark clouds often **presage** a storm.", "answer": "portend" },
+{ "sentence": "The group was highly **heterogeneous**.", "answer": "disparate" },
+{ "sentence": "The committee chose to **sanction** the new policy.", "answer": "endorse" },
+{ "sentence": "His **tactless** remarks offended the audience.", "answer": "impolitic" },
+{ "sentence": "Her **insatiable** curiosity drove her research.", "answer": "voracious" },
+{ "sentence": "Scientific work demands **exactitude**.", "answer": "meticulousness" },
+{ "sentence": "The article was clearly **tendentious**.", "answer": "partisan" },
+{ "sentence": "Such conclusions are **inferable from** the data.", "answer": "entailed by" },
+{ "sentence": "The light was gradually **dimming**.", "answer": "darkening" },
+{ "sentence": "The view from the summit was **amazing**.", "answer": "wondrous" },
+{ "sentence": "The theory is **elemental** and lacks sophistication.", "answer": "rudimentary" },
+{ "sentence": "He gave the report only a **cursory** glance.", "answer": "perfunctory" },
+{ "sentence": "Success is often **contingent** on external factors.", "answer": "circumstantial" },
+{ "sentence": "The idea was merely a **seed** of a larger theory.", "answer": "germ" },
+{ "sentence": "Her response was **intuitive** rather than calculated.", "answer": "instinctive" },
+{ "sentence": "The issue remains highly **contentious**.", "answer": "fraught" },
+{ "sentence": "The building showed signs of **decay**.", "answer": "deterioration" },
+{ "sentence": "His **hypothesis** lacked supporting evidence.", "answer": "preconception" },
+{ "sentence": "Such views are considered **mainstream**.", "answer": "conventional" },
+{ "sentence": "The accusation was **unwarranted**.", "answer": "groundless" },
+{ "sentence": "The theory’s **simplicity** makes it appealing.", "answer": "intelligibility" },
+{ "sentence": "The error was **trivial** and easily corrected.", "answer": "insignificant" },
+{ "sentence": "The revolution caused massive **upheaval**.", "answer": "convulsion" },
+{ "sentence": "The company decided to **eliminate** outdated products.", "answer": "discontinue" },
+{ "sentence": "The job is **exacting** and requires precision.", "answer": "stringent" },
+{ "sentence": "His concerns were dismissed as **trivial**.", "answer": "inconsequential" },
+{ "sentence": "The country was divided into smaller **partitions**.", "answer": "segments" },
+{ "sentence": "Her ideas were truly **novel**.", "answer": "original" },
+/* ========= P3 ========= */
+{ "sentence": "His **vacillation** made it difficult for the committee to reach a decision.", "answer": "equivocation" },
+{ "sentence": "Only trained analysts can **detect** subtle irregularities in the data.", "answer": "discern" },
+{ "sentence": "The market suffers from a **plethora** of low-quality products.", "answer": "surfeit" },
+{ "sentence": "Rather than resolve tensions, the policy only **exacerbated** them.", "answer": "aggravate" },
+{ "sentence": "The ruler’s **rapacity** was evident in his excessive taxation.", "answer": "exaction" },
+{ "sentence": "The region sought greater **autonomy** from central authority.", "answer": "independence" },
+{ "sentence": "This solution is no **panacea** for the underlying problem.", "answer": "remedy" },
+{ "sentence": "The results were so **perplexing** that even experts hesitated to interpret them.", "answer": "enigmatic" },
+{ "sentence": "Trust is **essential** to any successful collaboration.", "answer": "foundational" },
+{ "sentence": "The instructions were **unambiguous**, leaving no room for misinterpretation.", "answer": "transparent" },
+{ "sentence": "She was completely **captivated by** the speaker’s eloquence.", "answer": "enamored of" },
+{ "sentence": "Smartphones have become **ubiquitous** in modern society.", "answer": "omnipresent" },
+{ "sentence": "The issue must be examined **dispassionately**, without emotional bias.", "answer": "analytically" },
+{ "sentence": "Critics were quick to **hail** the work as groundbreaking.", "answer": "acclaim" },
+{ "sentence": "The policy proved **deleterious** to long-term growth.", "answer": "counterproductive" },
+{ "sentence": "Public **skepticism** about the claim remains high.", "answer": "doubt" },
+{ "sentence": "His performance was merely **average**, failing to stand out.", "answer": "undistinguished" },
+{ "sentence": "The two groups remained deeply **antagonistic** toward each other.", "answer": "inimical" },
+{ "sentence": "A key **limitation** of the study is its small sample size.", "answer": "deficiency" },
+{ "sentence": "Decades of conflict bred deep **enmity** between the nations.", "answer": "hostility" },
+{ "sentence": "The change was so **gradual** that it went unnoticed.", "answer": "imperceptible" },
+{ "sentence": "There is a clear **discrepancy** between theory and practice.", "answer": "incongruity" },
+{ "sentence": "The proposal remains highly **contentious** among experts.", "answer": "fraught" },
+{ "sentence": "His **inconstant** behavior made him unreliable.", "answer": "capricious" },
+{ "sentence": "Cultural **heterogeneity** defines the region.", "answer": "disparateness" },
+{ "sentence": "They conducted a **clandestine** operation to avoid detection.", "answer": "surreptitious" },
+{ "sentence": "The organization sought to **foster** innovation.", "answer": "adopt" },
+{ "sentence": "He was so **loquacious** that meetings often ran overtime.", "answer": "garrulous" },
+{ "sentence": "The dialogue felt **canned** and lacked authenticity.", "answer": "formulaic" },
+{ "sentence": "For many workers, the job became a daily **routine**.", "answer": "grind" },
+{ "sentence": "The palace was known for its **splendor**.", "answer": "brilliance" },
+{ "sentence": "The crisis served as a **catalyst** for reform.", "answer": "factor" },
+{ "sentence": "These details are **consequential** to the final outcome.", "answer": "indispensable" },
+{ "sentence": "The artifact’s **pedigree** can be traced back centuries.", "answer": "origin" },
+{ "sentence": "Critics were quick to **decry** the policy.", "answer": "condemn" },
+{ "sentence": "His explanation was overly **verbose**.", "answer": "long-winded" },
+{ "sentence": "The funding was **meager**, limiting the project’s scope.", "answer": "paltry" },
+{ "sentence": "His **unfamiliarity** with the topic was evident.", "answer": "ignorance" },
+{ "sentence": "The room was **malodorous** after days of neglect.", "answer": "noisome" },
+{ "sentence": "She made a **canny** investment decision.", "answer": "shrewd" },
+{ "sentence": "The building was **unexceptional** in design.", "answer": "nondescript" },
+{ "sentence": "The tumor was found to be **benign**.", "answer": "innocuous" },
+{ "sentence": "He relied on his **kinfolk** for support.", "answer": "relative" },
+{ "sentence": "The study adopted an **experimental** approach.", "answer": "innovative" },
+{ "sentence": "Such flaws are **inherent** in the system.", "answer": "intrinsic" },
+{ "sentence": "Her comments were highly **insightful**.", "answer": "discriminating" },
+{ "sentence": "After lunch, he felt **somnolent**.", "answer": "lethargic" },
+{ "sentence": "Early experiences can **influence** later behavior.", "answer": "inform" },
+{ "sentence": "The journey was considered **dangerous**.", "answer": "perilous" },
+{ "sentence": "Resources were **scant** in the early stages.", "answer": "limited" },
+{ "sentence": "Control was **left to** local authorities.", "answer": "ceded to" },
+{ "sentence": "Political **polarization** has intensified in recent years.", "answer": "dichotomy" },
+{ "sentence": "The journalist chose to **lambast** the official.", "answer": "excoriate" },
+{ "sentence": "The organization has a rigid **hierarchical** structure.", "answer": "stratified" },
+{ "sentence": "Such errors tend to **proliferate** in complex systems.", "answer": "abound" },
+/* ========= P4 ========= */
+{ "sentence": "The shocking announcement seemed to **galvanize** the entire community into action.", "answer": "animate" },
+{ "sentence": "Exposure to toxic chemicals can have a **deleterious** effect on health.", "answer": "counterproductive" },
+{ "sentence": "The CEO’s **rapacious** appetite for acquisitions alarmed the shareholders.", "answer": "avaricious" },
+{ "sentence": "She **relished** the opportunity to lead the challenging project.", "answer": "delighted in" },
+{ "sentence": "The comedian’s speech was met with laughter and **mockery**.", "answer": "derision" },
+{ "sentence": "Investigators were able to **extract** crucial information from the suspect.", "answer": "ferret out" },
+{ "sentence": "The economy is highly **fluid**, changing rapidly with global trends.", "answer": "mutable" },
+{ "sentence": "The government took steps to **stave off** a financial crisis.", "answer": "forestall" },
+{ "sentence": "His performance in the task was completely **inept**.", "answer": "unequal" },
+{ "sentence": "Smartphones have become **ubiquitous** in modern society.", "answer": "prevalent" },
+{ "sentence": "The scientist received multiple **tributes** for her groundbreaking research.", "answer": "encomiums" },
+{ "sentence": "The politician’s career was marred by acts of **malfeasance**.", "answer": "fraudulence" },
+{ "sentence": "The artist’s style was refreshingly **unconventional**.", "answer": "original" },
+{ "sentence": "Winning the lottery caused an outpouring of **euphoria**.", "answer": "jubilation" },
+{ "sentence": "Carrying the heavy equipment proved **cumbersome** for the workers.", "answer": "unwieldy" },
+{ "sentence": "Her **meticulous** notes left no room for ambiguity.", "answer": "thorough" },
+{ "sentence": "The philanthropist was known for being **magnanimous**.", "answer": "generous" },
+{ "sentence": "The tools used in early societies were extremely **primitive**.", "answer": "rudimentary" },
+{ "sentence": "The instructions were written in such a way that they were almost **inaccessible** to novices.", "answer": "opaque" },
+{ "sentence": "The scientist’s measurements were highly **precise**.", "answer": "circumspect" },
+{ "sentence": "The CEO’s statement was **tantamount to** an admission of failure.", "answer": "synonymous with" },
+{ "sentence": "The teacher tried to **convey** the importance of honesty to the students.", "answer": "impart" },
+{ "sentence": "The ancient manuscript was almost **indiscernible** due to damage.", "answer": "undecipherable" },
+{ "sentence": "The artifact was truly **singular**, unlike anything seen before.", "answer": "unique" },
+{ "sentence": "She remained **inconspicuous** during the meeting.", "answer": "discreet" },
+{ "sentence": "His attempt at humor was met with **derision**.", "answer": "ridicule" },
+{ "sentence": "They managed to **bypass** the security measures.", "answer": "circumvent" },
+{ "sentence": "The policy was supported by the board, effectively **sanctioning** it.", "answer": "countenancing" },
+{ "sentence": "The encyclopedia offered an **encyclopedic** view of the topic.", "answer": "exhaustive" },
+{ "sentence": "His plans were dismissed as **quixotic**.", "answer": "idealistic" },
+{ "sentence": "The musician’s style was extremely **eclectic**, drawing from many genres.", "answer": "wide-ranging" },
+{ "sentence": "The new teacher was exceptionally **excellent** in explaining complex topics.", "answer": "agreeable" },
+{ "sentence": "The scientist continued to **assert** her hypothesis despite criticism.", "answer": "maintain" },
+{ "sentence": "The project was fully **underwritten** by a major corporation.", "answer": "endorsed" },
+{ "sentence": "The evidence made the conclusion **unquestionable**.", "answer": "undeniable" },
+{ "sentence": "The message of the speech seemed to **resonate** with everyone present.", "answer": "rings true" },
+{ "sentence": "The actor’s performance was extremely **histrionic**.", "answer": "theatrical" },
+{ "sentence": "Her **tenacity** allowed her to overcome every obstacle.", "answer": "resolve" },
+{ "sentence": "The teacher’s **scolding** made the students rethink their behavior.", "answer": "admonishment" },
+{ "sentence": "The recipe was **homegrown**, using ingredients from the local farm.", "answer": "indigenous" },
+{ "sentence": "The company decided to **transform** its business model.", "answer": "reinvent" },
+{ "sentence": "He was too **timorous** to speak up in the meeting.", "answer": "craven" },
+{ "sentence": "Her argument was **nuanced**, recognizing multiple perspectives.", "answer": "subtle" },
+{ "sentence": "The scientist faced a difficult **puzzle** in analyzing the data.", "answer": "conundrum" },
+{ "sentence": "The report was written by an **authoritative** source.", "answer": "definitive" },
+{ "sentence": "The process was **generating** new ideas every day.", "answer": "originating" },
+{ "sentence": "The leader’s **vehemence** intimidated his opponents.", "answer": "ferocity" },
+{ "sentence": "You should **limit** your sugar intake for better health.", "answer": "confine" },
+{ "sentence": "The company hired an **itinerant** consultant to improve workflow.", "answer": "peripatetic" },
+{ "sentence": "Policy changes could **undermine** public trust.", "answer": "impair" },
+{ "sentence": "His calm demeanor seemed to **belie** his nervousness.", "answer": "mask" },
+{ "sentence": "The scholarship was awarded despite his **paltry** academic record.", "answer": "meager" },
+{ "sentence": "The student received only **minimal** support from the teacher.", "answer": "trifling" },
+{ "sentence": "Digital streaming has largely **supplanted** traditional DVD rentals.", "answer": "supersede" },
+{ "sentence": "The solution proved difficult because the problem was **slippery**.", "answer": "elusive" },
+/* ========= P5 ========= */
+{ "sentence": "His claims were dismissed as **speculative** due to lack of evidence.", "answer": "unsubstantiated" },
+{ "sentence": "The article cast an **aspersion** on her reputation.", "answer": "slur" },
+{ "sentence": "The files were arranged **haphazardly**, making retrieval difficult.", "answer": "randomly" },
+{ "sentence": "The artifact’s **origin** can be traced back to ancient civilizations.", "answer": "provenance" },
+{ "sentence": "The news seemed to **deflate** his confidence.", "answer": "soothe" },
+{ "sentence": "The debate quickly became **adversarial**.", "answer": "antagonistic" },
+{ "sentence": "He chose to **eschew** conventional methods.", "answer": "shun" },
+{ "sentence": "Her integrity was **unimpeachable**.", "answer": "blameless" },
+{ "sentence": "There are clear **parallels** between the two theories.", "answer": "counterparts" },
+{ "sentence": "The new policy may **obviate** the need for further reforms.", "answer": "displace" },
+{ "sentence": "She offered **unstinting** support to her colleagues.", "answer": "generous" },
+{ "sentence": "The plan was slightly **modified** to suit local needs.", "answer": "adapt" },
+{ "sentence": "He showed open **disdain** for authority.", "answer": "contempt" },
+{ "sentence": "His understanding of the subject was **rudimentary**.", "answer": "sketchy" },
+{ "sentence": "The market suffered from a **glut** of products.", "answer": "surfeit" },
+{ "sentence": "Her ideas were entirely **original**.", "answer": "novel" },
+{ "sentence": "The manager issued a sharp **rebuke**.", "answer": "mockery" },
+{ "sentence": "He has a **prodigious** memory.", "answer": "voracious" },
+{ "sentence": "She continues to **espouse** progressive values.", "answer": "adopt" },
+{ "sentence": "The argument was clear and **coherent**.", "answer": "orderly" },
+{ "sentence": "His behavior was **atypical** for someone in his position.", "answer": "exceptional" },
+{ "sentence": "The situation remains **fluid**.", "answer": "unstable" },
+{ "sentence": "The report was **thorough** and detailed.", "answer": "exhaustive" },
+{ "sentence": "The results were **mixed**.", "answer": "inconsistent" },
+{ "sentence": "The monument is a site of **veneration**.", "answer": "reverence" },
+{ "sentence": "Her **perspicacity** allowed her to see the truth.", "answer": "discernment" },
+{ "sentence": "The material is highly **pliable**.", "answer": "malleable" },
+{ "sentence": "The decoration was overly **showy**.", "answer": "meretricious" },
+{ "sentence": "He has a **proclivity** for risk-taking.", "answer": "affinity" },
+{ "sentence": "The position is highly **coveted**.", "answer": "enviable" },
+{ "sentence": "Many leaders **support** the initiative.", "answer": "champion" },
+{ "sentence": "The economy remains **precarious**.", "answer": "uncertain" },
+{ "sentence": "The meaning of the text is **inaccessible** to most readers.", "answer": "opaque" },
+{ "sentence": "The design is purely **utilitarian**.", "answer": "pragmatic" },
+{ "sentence": "The holiday offered a brief **respite** from stress.", "answer": "relief" },
+{ "sentence": "The failure can be **attributed to** poor planning.", "answer": "be explained by" },
+{ "sentence": "The medicine may **palliate** the symptoms.", "answer": "damp" },
+{ "sentence": "His style is **unique**.", "answer": "characteristic" },
+{ "sentence": "The dog was unusually **pugnacious**.", "answer": "truculent" },
+{ "sentence": "The system allows for great **flexibility**.", "answer": "malleability" },
+{ "sentence": "She is highly **adept at** solving problems.", "answer": "proficient in" },
+{ "sentence": "Such claims remain mere **speculation**.", "answer": "conjecture" },
+{ "sentence": "He hopes to **secure** a promotion.", "answer": "earn" },
+{ "sentence": "The artist is known for his **iconoclastic** views.", "answer": "subversive" },
+{ "sentence": "The idea began to **diffuse** through society.", "answer": "spread" },
+{ "sentence": "Her **adaptability** is impressive.", "answer": "flexibility" },
+{ "sentence": "The new evidence may **stymie** the investigation.", "answer": "neutralize" },
+{ "sentence": "The village remained **sequestered** from modern life.", "answer": "unique" },
+{ "sentence": "He prefers a **private** life.", "answer": "insular" },
+{ "sentence": "She is **antipathetic** toward change.", "answer": "inconsistent" },
+{ "sentence": "The sudden noise seemed to **alarm** the children.", "answer": "unsettle" },
+{ "sentence": "The system is fundamentally **democratic**.", "answer": "egalitarian" },
+{ "sentence": "The measurements were **imprecise**.", "answer": "inexact" },
+{ "sentence": "The animal’s **predation** threatens the ecosystem.", "answer": "rapacity" },
+{ "sentence": "The argument is logically **sound**.", "answer": "unassailable" },
+/* ========= P5 ========= */
+{ "sentence": "The dark alley was so **scary** that few dared to enter.", "answer": "intimidating" },
+{ "sentence": "There is a clear **disparity** in income levels.", "answer": "variance" },
+{ "sentence": "The committee grew increasingly **fractious** during the debate.", "answer": "restive" },
+{ "sentence": "The theory is **undergirded by** solid empirical evidence.", "answer": "dependent on" },
+{ "sentence": "The organization seeks to **propagate** its ideals globally.", "answer": "spread" },
+{ "sentence": "The accusations were entirely **unfounded**.", "answer": "unjustified" },
+{ "sentence": "The plan failed due to unforeseen **contingencies**.", "answer": "serendipity" },
+{ "sentence": "Years of disappointment left him **cynical**.", "answer": "jaded" },
+{ "sentence": "The judge remained **temperate** in his remarks.", "answer": "dispassionate" },
+{ "sentence": "The cultural **revival** marked a new era.", "answer": "renaissance" },
+{ "sentence": "The animals were **confined** to a small enclosure.", "answer": "circumscribed" },
+{ "sentence": "Companies often **exploit** new technologies.", "answer": "utilize" },
+{ "sentence": "The distinction is **immaterial** to the argument.", "answer": "irrelevant" },
+{ "sentence": "Further discussion seemed an exercise in **futility**.", "answer": "pointlessness" },
+{ "sentence": "Such behavior is morally **reprehensible, appalling**.", "answer": "deplorable" },
+{ "sentence": "The policy may **dampen** economic growth.", "answer": "impede" },
+{ "sentence": "His speech was overly **preachy**.", "answer": "sanctimonious" },
+{ "sentence": "Dark clouds often **portend** a storm.", "answer": "predict" },
+{ "sentence": "The text explores **occult** traditions.", "answer": "arcane" },
+{ "sentence": "The reform proved to be a mere **sham**.", "answer": "travesty" },
+{ "sentence": "He acted as a **promoter** of the new initiative.", "answer": "champion" },
+{ "sentence": "The details were **irrelevant** to the main issue.", "answer": "extraneous" },
+{ "sentence": "His approach was **atypical**.", "answer": "idiosyncratic" },
+{ "sentence": "The speech was an **encomium** to her achievements.", "answer": "tribute" },
+{ "sentence": "The government tried to **allay** public fears.", "answer": "palliate" },
+{ "sentence": "The system is **robust** enough to handle stress.", "answer": "strong" },
+{ "sentence": "His movements were **awkward**.", "answer": "ungainly" },
+{ "sentence": "The project was **underwritten** by investors.", "answer": "endorse" },
+{ "sentence": "The issue gained **topicality** after recent events.", "answer": "immediacy" },
+{ "sentence": "His claims were **gainsaid** by critics.", "answer": "disputed" },
+{ "sentence": "The study emphasized **fairness** in evaluation.", "answer": "objectivity" },
+{ "sentence": "The company announced an **expansion** of operations.", "answer": "augmentation" },
+{ "sentence": "The region enjoys a **wealth** of resources.", "answer": "profusion" },
+{ "sentence": "The conclusion is **indubitable**.", "answer": "incontrovertible" },
+{ "sentence": "His **indifference** shocked everyone.", "answer": "apathy" },
+{ "sentence": "Her success seemed **assured**.", "answer": "settled" },
+{ "sentence": "Such talent is truly **exceptional**.", "answer": "rare" },
+{ "sentence": "Their meeting was purely **fortuitous**.", "answer": "accidental" },
+{ "sentence": "She was **eager** to learn.", "answer": "keen" },
+{ "sentence": "The ruins are a **relic** of the past.", "answer": "vestige" },
+{ "sentence": "He remained **stubborn** despite criticism.", "answer": "intractable" },
+{ "sentence": "The afternoon brought a brief **lull**.", "answer": "respite" },
+{ "sentence": "His remarks were sharply **acerbic**.", "answer": "vitriolic" },
+{ "sentence": "She expressed **misgivings** about the plan.", "answer": "trepidation" },
+{ "sentence": "The organism is in a **rudimentary** stage.", "answer": "embryonic" },
+{ "sentence": "They **venerate** their ancestors.", "answer": "honor" },
+{ "sentence": "The volcano remained **inert** for centuries.", "answer": "dormant" },
+{ "sentence": "Good teachers **nurture** creativity.", "answer": "foster" },
+{ "sentence": "The report was entirely **fabricated**.", "answer": "spurious" },
+{ "sentence": "She is known for being **outspoken**.", "answer": "candid" },
+{ "sentence": "The design is purely **utilitarian**.", "answer": "functional" },
+{ "sentence": "The committee decided to **eliminate** the proposal.", "answer": "put to rest" },
+{ "sentence": "Leaders often **mediate** disputes.", "answer": "influence" },
+{ "sentence": "The accusation was **baseless**.", "answer": "untenable" },
+{ "sentence": "The audit revealed an **irregularity**.", "answer": "anomaly" },
+
+/* ========= P7 ========= */
+{ "sentence": "His explanation was unnecessarily **circuitous**, confusing the audience.", "answer": "indirect" },
+{ "sentence": "The two theories are **comparable** in scope.", "answer": "analogous" },
+{ "sentence": "Her lifestyle is notably **unostentatious**.", "answer": "modest" },
+{ "sentence": "The practice of animal **husbandry** has shaped agriculture.", "answer": "domestication" },
+{ "sentence": "New evidence may **stymy** further investigation.", "answer": "hinder" },
+{ "sentence": "The change was so **imperceptible** that few noticed it.", "answer": "trivial" },
+{ "sentence": "The region is known for its cultural **heterogeneity**.", "answer": "diversity" },
+{ "sentence": "The atmosphere was **cheerless** and bleak.", "answer": "gloomy" },
+{ "sentence": "Her intervention was both **timely** and effective.", "answer": "opportune" },
+{ "sentence": "The artist sought to **render** reality faithfully.", "answer": "reproduce" },
+{ "sentence": "His **superciliousness** alienated his colleagues.", "answer": "condescension" },
+{ "sentence": "The material is highly **malleable**.", "answer": "plastic" },
+{ "sentence": "She is known for being **affable**.", "answer": "easygoing" },
+{ "sentence": "His actions were driven by pure **altruism**.", "answer": "benevolence" },
+{ "sentence": "Trust forms the **bedrock** of any relationship.", "answer": "foundation" },
+{ "sentence": "The judge maintained strict **neutrality**.", "answer": "impartiality" },
+{ "sentence": "He delivered a **fiery** speech.", "answer": "impassioned" },
+{ "sentence": "The substance remained **inert** under these conditions.", "answer": "passive" },
+{ "sentence": "Her analysis was remarkably **penetrating**.", "answer": "acute" },
+{ "sentence": "The message was deliberately **cryptic**.", "answer": "elusive" },
+{ "sentence": "His writing style is overly **prolix**.", "answer": "verbose" },
+{ "sentence": "The building appeared **unprepossessing**.", "answer": "unremarkable" },
+{ "sentence": "Economic forces often **determine** policy outcomes.", "answer": "govern" },
+{ "sentence": "The group was led by an **extremist**.", "answer": "zealot" },
+{ "sentence": "The issue was deemed **trivial**.", "answer": "inessential" },
+{ "sentence": "Bureaucracy is **impeding** progress.", "answer": "hampering" },
+{ "sentence": "The difference was nearly **imperceptible**.", "answer": "indiscernible" },
+{ "sentence": "She felt deep **trepidation** before the exam.", "answer": "misgivings" },
+{ "sentence": "The survey aims to **elicit** honest responses.", "answer": "draw" },
+{ "sentence": "The results **reveal** underlying patterns.", "answer": "manifest" },
+{ "sentence": "Their debate was marked by **acrimony**.", "answer": "bitterness" },
+{ "sentence": "The discovery was entirely **unprecedented**.", "answer": "novel" },
+{ "sentence": "There is clear **discordance** in their views.", "answer": "contention" },
+{ "sentence": "The fumes were **noxious**.", "answer": "insalubrious" },
+{ "sentence": "The study emphasized cultural **homogeneity**.", "answer": "resemblance" },
+{ "sentence": "His **arrogant** attitude was evident.", "answer": "hubristic" },
+{ "sentence": "His theory does not **conform to** the data.", "answer": "square with" },
+{ "sentence": "The professor is a highly **learned** scholar.", "answer": "erudite" },
+{ "sentence": "Her performance **eclipsed** all others.", "answer": "outdo" },
+{ "sentence": "The report was **exhaustive**.", "answer": "comprehensive" },
+{ "sentence": "He tried to **slight** his opponent.", "answer": "disparage" },
+{ "sentence": "Every system has its **shortcomings**.", "answer": "fault" },
+{ "sentence": "The policy is **spurring** innovation.", "answer": "fostering" },
+{ "sentence": "The leader was **expelled** from office.", "answer": "oust" },
+{ "sentence": "His reaction was purely **reflexive**.", "answer": "automatic" },
+{ "sentence": "She remained **undogmatic** in her views.", "answer": "receptive" },
+{ "sentence": "The initiative may **spur** economic growth.", "answer": "foster" },
+{ "sentence": "He acted as an **advocate** for reform.", "answer": "apologist" },
+{ "sentence": "The break offered a brief **respite**.", "answer": "break" },
+{ "sentence": "The survey revealed a clear **bias**.", "answer": "orientation" },
+{ "sentence": "His work is largely **academic**.", "answer": "theoretical" },
+{ "sentence": "A minor **snag** delayed the project.", "answer": "hitch" },
+{ "sentence": "The author remained **anonymous**.", "answer": "obscure" },
+{ "sentence": "His **irresolution** prevented action.", "answer": "vacillation" },
+{ "sentence": "The path was **tortuous**.", "answer": "convoluted" },
+/* ========= P8 ========= */
+  { "sentence": "His behavior was highly **anomalous**.", "answer": "unusual" },
+  { "sentence": "After years of turmoil, the region entered a period of **quiescence**.", "answer": "calm" },
+  { "sentence": "The criticism was dismissed as **trivial**.", "answer": "ephemeral" },
+  { "sentence": "His **obtrusive** behavior annoyed everyone.", "answer": "conspicuous" },
+  { "sentence": "The results were deeply **unsettling**.", "answer": "disconcerting" },
+  { "sentence": "The economies are highly **interdependent**.", "answer": "interrelated" },
+  { "sentence": "His answers were deliberately **evasive**.", "answer": "elusive" },
+  { "sentence": "Her actions were driven by **beneficence**.", "answer": "altruism" },
+  { "sentence": "The statement was deliberately **ambiguous**.", "answer": "mute" },
+  { "sentence": "The policy aims to **extirpate** corruption.", "answer": "eliminate" },
+  { "sentence": "The vacation proved highly **restorative**.", "answer": "tonic" },
+  { "sentence": "Resources are steadily **dwindling**.", "answer": "contracting" },
+  { "sentence": "His demeanor was **sober** and restrained.", "answer": "staid" },
+  { "sentence": "The critic **denounced** the work harshly.", "answer": "lambast" },
+  { "sentence": "The proposal remains highly **controversial**.", "answer": "provocative" },
+  { "sentence": "The novel is praised for its **realism**.", "answer": "verisimilitude" },
+  { "sentence": "The issue remains deeply **contentious**.", "answer": "controversial" },
+  { "sentence": "The rules are **bound** by strict limits.", "answer": "limit" },
+  { "sentence": "This practice is widely **prevalent**.", "answer": "widespread" },
+  { "sentence": "His tastes are fundamentally **miscellaneous**.", "answer": "thoroughly eclectic" },
+  { "sentence": "The speech turned into an angry **rant**.", "answer": "diatribe" },
+  { "sentence": "The region has **ample** natural resources.", "answer": "prodigious" },
+  { "sentence": "Education can be deeply **liberating**.", "answer": "emancipatory" },
+  { "sentence": "Her explanation was clear and **transparent**.", "answer": "lucid" },
+  { "sentence": "His **apathy** prevented meaningful change.", "answer": "passivity" },
+  { "sentence": "The evidence helped **dispel** doubts.", "answer": "dismiss" },
+  { "sentence": "Dark clouds often **presage** storms.", "answer": "foretell" },
+  { "sentence": "The reforms restored social **order**.", "answer": "stability" },
+  { "sentence": "The machine operates with near **faultlessness**.", "answer": "perfection" },
+  { "sentence": "His explanation was too **nebulous** to follow.", "answer": "vague" },
+  { "sentence": "The cool breeze was **invigorating**.", "answer": "refreshing" },
+  { "sentence": "Progress has been frustratingly **sluggish**.", "answer": "dilatory" },
+  { "sentence": "There is a **paucity** of evidence.", "answer": "dearth" },
+  { "sentence": "The manuscript required careful **emendation**.", "answer": "revision" },
+  { "sentence": "His tastes are distinctly **plebeian**.", "answer": "humble" },
+  { "sentence": "They attempted to **skirt** the regulations.", "answer": "circumvent" },
+  { "sentence": "The policy could have **deleterious** effects.", "answer": "pernicious" },
+  { "sentence": "The task proved **burdensome**.", "answer": "onerous" },
+  { "sentence": "He managed to **capture** the opportunity.", "answer": "secure" },
+  { "sentence": "The argument is merely **specious**.", "answer": "spurious" },
+  { "sentence": "The error was highly **conspicuous**.", "answer": "prominent" },
+  { "sentence": "The meaning of the text may **elude** readers.", "answer": "puzzle" },
+  { "sentence": "Doctors aim to **identify** the disease early.", "answer": "diagnose" },
+  { "sentence": "Her **resolve** never wavered.", "answer": "determination" },
+  { "sentence": "He chose to **defy** convention.", "answer": "disregard" },
+  { "sentence": "His argument was highly **cerebral**.", "answer": "dispassionate" },
+  { "sentence": "The message remained **cryptic**.", "answer": "enigmatic" },
+  { "sentence": "The theory relies on **abstraction**.", "answer": "generality" },
+  { "sentence": "The measures aim to **mitigate** risks.", "answer": "curtail" },
+  { "sentence": "This issue remains **prevalent**.", "answer": "extensive" },
+  { "sentence": "His behavior was highly **capricious**.", "answer": "unpredictable" },
+  { "sentence": "She was **charitable** toward his mistakes.", "answer": "forbearing" },
+  { "sentence": "The project was a major **triumph**.", "answer": "success" },
+  { "sentence": "The design is rather **bland**.", "answer": "modest" },
+  { "sentence": "The tools are quite **basic**.", "answer": "crude" },
+/* ========= P9 ========= */
+{ "sentence": "Although the policy was intended to **mitigate** economic disparities, its actual effect was minimal.", "answer": "abate" },
+{ "sentence": "Critics often **extol** the author’s early works while overlooking his later decline.", "answer": "acclaim" },
+{ "sentence": "The project was repeatedly **thwarted** by bureaucratic delays and insufficient funding.", "answer": "frustrated" },
+{ "sentence": "His **capricious** decisions made long-term planning virtually impossible.", "answer": "impulsive" },
+{ "sentence": "The ruler was forced to **cede** control after prolonged resistance.", "answer": "relinquish" },
+{ "sentence": "The movement represented not merely **a rejection of** tradition.", "answer": "a liberation from" },
+{ "sentence": "The deal was negotiated in a **furtive** manner to avoid public scrutiny.", "answer": "covert" },
+{ "sentence": "His repeated failures were attributed to sheer **ineptitude** rather than bad luck.", "answer": "maladroitness" },
+{ "sentence": "The reviewer’s comments were not constructive but rather **detracting** in tone.", "answer": "deprecatory" },
+{ "sentence": "Economic **uncertainty** has contributed to widespread market uncertainty.", "answer": "instability" },
+{ "sentence": "Far from being patient, she was **impatient** to see immediate results.", "answer": "keen" },
+{ "sentence": "His tone was markedly **deferential** when addressing senior officials.", "answer": "respectful" },
+{ "sentence": "The modern institution has no clear historical **counterpart**.", "answer": "parallel" },
+{ "sentence": "Only experts can **discern** subtle patterns in the data that others might miss.", "answer": "discover" },
+{ "sentence": "The author criticized the government’s **intemperate** response as unnecessarily harsh.", "answer": "excessive" },
+{ "sentence": "The experiment was conducted **painstakingly**, ensuring the highest degree of accuracy.", "answer": "meticulously" },
+{ "sentence": "The theory was initially dismissed as **novel**, yet it later proved transformative.", "answer": "unprecedented" },
+{ "sentence": "Her career has been remarkably **protean**, spanning multiple disciplines.", "answer": "versatile" },
+{ "sentence": "The substance was deemed **harmless**, posing no significant risk to health.", "answer": "innocuous" },
+{ "sentence": "The conflict remained **quiescent** for years before erupting again.", "answer": "abeyant" },
+{ "sentence": "The organization was largely **insulated from** external pressures by its structure.", "answer": "buffered against" },
+{ "sentence": "The position will **demand** exceptional skill and dedication.", "answer": "exact" },
+{ "sentence": "The evidence was so **decisive** that further debate seemed unnecessary.", "answer": "unmistakable" },
+{ "sentence": "His **prudent** investments ensured long-term financial stability.", "answer": "provident" },
+{ "sentence": "The argument presented a **dichotomous** view that oversimplified complex realities.", "answer": "contradictory" },
+{ "sentence": "The speaker’s remarks were deliberately **inflammatory**, provoking strong reactions.", "answer": "provocative" },
+{ "sentence": "She has a natural **proclivity** for artistic expression.", "answer": "predilection" },
+{ "sentence": "The phenomenon remains largely **inexplicable**, defying current theories.", "answer": "incomprehensible" },
+{ "sentence": "Such actions clearly **violate** established regulations.", "answer": "contravene" },
+{ "sentence": "The argument appears persuasive but is ultimately **specious**.", "answer": "deceptive" },
+{ "sentence": "His **acerbic** remarks alienated many of his colleagues.", "answer": "harsh" },
+{ "sentence": "The complexity of the problem continued to **confound** researchers.", "answer": "perplex" },
+{ "sentence": "The proposal was made more **palatable** by minor concessions.", "answer": "appetizing" },
+{ "sentence": "The study employed **rigorous** methods to ensure reliability.", "answer": "faithful" },
+{ "sentence": "The laws were once thought to be **immutable**, yet history proved otherwise.", "answer": "perpetual" },
+{ "sentence": "The official was widely regarded as **unscrupulous**.", "answer": "dishonest" },
+{ "sentence": "Such occurrences are **regular** in this region.", "answer": "abundant" },
+{ "sentence": "The new regulations may **hamper** economic growth.", "answer": "impede" },
+{ "sentence": "Such policies are **inimical** to long-term development.", "answer": "deleterious" },
+{ "sentence": "The evidence served to **bolster** his argument.", "answer": "buttress" },
+{ "sentence": "The effects of the policy were largely **transitory**.", "answer": "temporary" },
+{ "sentence": "The course is designed for **tyros** with little prior experience.", "answer": "novices" },
+{ "sentence": "The distinction proved **immaterial** to the overall conclusion.", "answer": "inconsequential" },
+{ "sentence": "The puzzle posed a difficult **riddle** for participants.", "answer": "conundrum" },
+{ "sentence": "The decision proved **advantageous** under the circumstances.", "answer": "expedient" },
+{ "sentence": "His claims were dismissed as mere **exaggeration**.", "answer": "hyperbole" },
+{ "sentence": "The institution has served as the **foundation** of the system.", "answer": "inception" },
+{ "sentence": "The design now seems **outmoded**.", "answer": "unfashionable" },
+{ "sentence": "Such behavior is highly **anomalous**.", "answer": "uncommon" },
+{ "sentence": "Failure under these conditions was **inevitable**.", "answer": "certain" },
+{ "sentence": "His **prescience** allowed him to anticipate future trends.", "answer": "foresightedness" },
+{ "sentence": "The challenge proved **formidable** even for experts.", "answer": "daunting" },
+{ "sentence": "His opinions tend to **waver** under public pressure, making him appear inconsistent.", "answer": "oscillate" },
+{ "sentence": "The population in urban areas is increasingly **heterogeneous**, reflecting broader social changes.", "answer": "dissimilar" },
+{ "sentence": "The policy reforms **hamstring** small businesses by limiting access to funding.", "answer": "impair" },
+{ "sentence": "Her **sincerity** in addressing the issue was widely acknowledged by the committee.", "answer": "earnestness" },
+{ "sentence": "The government's reforms were **buttressing** the fragile economic recovery.", "answer": "bolstering" },
+{ "sentence": "The concept became so **diffuse** that it lost its original meaning.", "answer": "amorphous" },
+{ "sentence": "The explosion was powerful enough to **destroy** the entire structure.", "answer": "annihilate" },
+{ "sentence": "Her speech reflected both **humility** and professionalism.", "answer": "modesty" },
+{ "sentence": "Policies were introduced to **preserve** cultural heritage sites.", "answer": "safeguard" },
+{ "sentence": "The outcome is **plausible** given the available evidence.", "answer": "conceivable" },
+{ "sentence": "Such regulations aim to **obviate** the need for lengthy legal disputes.", "answer": "displace" },
+{ "sentence": "The report presents an **incomplete** analysis of the situation.", "answer": "limited" },
+{ "sentence": "Although their approaches are **divergent**, both aim to improve public welfare.", "answer": "dissimilar" },
+{ "sentence": "He chose to **appropriate** ideas from earlier studies without proper citation.", "answer": "borrow" },
+{ "sentence": "The material is highly **porous**, allowing water to pass through easily.", "answer": "permeable" },
+{ "sentence": "The policy was once considered a **cure-all** for economic stagnation.", "answer": "panacea" },
+{ "sentence": "Heat treatment can **attenuate** the severity of certain symptoms.", "answer": "dissipate" },
+{ "sentence": "Her public speaking caused considerable **awkwardness** among the audience.", "answer": "discomfiture" },
+{ "sentence": "The final proposal was anything but **unalloyed**, as it included several compromises.", "answer": "unqualified" },
+{ "sentence": "The movement was described as **revolutionary** in its approach to education.", "answer": "iconoclastic" },
+{ "sentence": "His behavior was highly **capricious**, making planning difficult.", "answer": "unpredictable" },
+{ "sentence": "The policy reflected a sense of **placidity** that critics interpreted as complacency.", "answer": "complacency" },
+{ "sentence": "The scholar’s work was both **polymathic** and deeply influential.", "answer": "encyclopedic" },
+{ "sentence": "He attempted to **sidestep** the regulations through legal loopholes.", "answer": "circumvent" },
+{ "sentence": "The writing style appeared **stilted**, lacking natural flow.", "answer": "wooden" },
+{ "sentence": "The new rules are designed to **prevent** misuse of public funds.", "answer": "preclude" },
+{ "sentence": "Her argument seemed **slanted**, reflecting a clear bias.", "answer": "tendentious" },
+{ "sentence": "The influence of the movement is **waning** across the region.", "answer": "ebbing" },
+{ "sentence": "The findings are highly **compelling**, attracting widespread attention.", "answer": "interesting" },
+{ "sentence": "He lives a **frugal** lifestyle, avoiding unnecessary expenses.", "answer": "stinting" },
+{ "sentence": "The idea is so absurd that it is almost **risible**.", "answer": "ludicrous" },
+{ "sentence": "The lifestyle is often described as **sybaritic**, focused on luxury and pleasure.", "answer": "hedonistic" },
+{ "sentence": "The noise was described as **shrieking**, almost like **caterwauling** in the night.", "answer": "caterwauling" },
+{ "sentence": "The evidence was so **overwhelming** that opposition collapsed quickly.", "answer": "irresistible" },
+{ "sentence": "There is a **dearth** of reliable data on the subject.", "answer": "paucity" },
+{ "sentence": "The fashion style is deliberately **unconventional**, even somewhat quirky.", "answer": "quirky" },
+{ "sentence": "The official expressed **opprobrium** toward the corrupt practices.", "answer": "infamy" },
+{ "sentence": "He received public **opprobrium** for his controversial remarks.", "answer": "disdain" },
+{ "sentence": "The speaker will **broach** the topic during the meeting.", "answer": "propose" },
+{ "sentence": "The committee maintained **evenhandedness** throughout the investigation.", "answer": "impartiality" },
+{ "sentence": "The data were **abused** for political purposes.", "answer": "misused" },
+{ "sentence": "His **disposition** toward risk-taking shaped his career choices.", "answer": "proclivity" },
+{ "sentence": "The issue is **scarcely** mentioned in official reports.", "answer": "hardly" },
+{ "sentence": "The government agreed to **defray** the medical costs.", "answer": "pay" },
+{ "sentence": "She enjoys an **unconstrained** approach to creative writing.", "answer": "free" },
+{ "sentence": "The technology has become **pervasive** in modern society.", "answer": "ubiquitous" },
+{ "sentence": "The author was praised for his ability to **applaud** reform efforts.", "answer": "extol" },
+{ "sentence": "The system is highly **functional** despite its simplicity.", "answer": "serviceable" },
+{ "sentence": "Experts **comprehend** the phenomenon only partially.", "answer": "fathom" },
+{ "sentence": "The rules are **limiting**, restricting creative expression.", "answer": "confining" },
+{ "sentence": "After careful **deliberation**, the committee reached a consensus.", "answer": "consideration" },
+{ "sentence": "The report exposed the **sleazy** practices within the organization.", "answer": "sordid" },
+{ "sentence": "The speech served to **exalt** national achievements.", "answer": "valorize" },
+{ "sentence": "The system’s **predictability** ensures operational stability.", "answer": "regularity" },
+{ "sentence": "The effect was **ephemeral**, lasting only a short time.", "answer": "transitory" },
+{ "sentence": "Her **preternatural** ability to detect patterns impressed researchers.", "answer": "prodigious" },
+{ "sentence": "The evidence was **unassailable**, leaving no room for doubt.", "answer": "airtight" },
+{ "sentence": "He remained **implacable** despite repeated attempts at negotiation.", "answer": "unyielding" },
+/* ========= P11 12 ========= */
+{ "sentence": "The land was formally **ceded to** the neighbouring state after the treaty.", "answer": "be left to" },
+{ "sentence": "Her intellectual **maturity** was evident despite her age.", "answer": "precociousness" },
+{ "sentence": "The government's **acquiescence to** public pressure surprised many observers.", "answer": "accession to" },
+{ "sentence": "A life of **indolence** can hinder personal development.", "answer": "sloth" },
+{ "sentence": "The investor was arrested for attempting to **defraud** clients.", "answer": "swindle" },
+{ "sentence": "The official faced widespread **opprobrium** after the scandal.", "answer": "disdain" },
+{ "sentence": "The company acted as a major **purveyor** of medical supplies.", "answer": "supplier" },
+{ "sentence": "The policy is **fitting** in the current context.", "answer": "apposite" },
+{ "sentence": "Each institution has its **counterpart** abroad.", "answer": "correlative" },
+{ "sentence": "The regulations are highly **proscriptive**, limiting personal choice.", "answer": "exacting" },
+{ "sentence": "The instructions were **confused** and difficult to follow.", "answer": "muddled" },
+{ "sentence": "The policy focuses on **eliminating** wasteful spending.", "answer": "discontinuing" },
+{ "sentence": "The cause of the phenomenon remains **unfathomable**.", "answer": "inscrutable" },
+{ "sentence": "Her success was **unexampled** in the field.", "answer": "novel" },
+{ "sentence": "The audience was **ecstatic** at the performance.", "answer": "rapturous" },
+{ "sentence": "She hopes to **realize** her academic goals.", "answer": "achieve" },
+{ "sentence": "His role in the project was **limited**.", "answer": "ephemeral" },
+{ "sentence": "Students can **obtain** information from multiple sources.", "answer": "glean" },
+{ "sentence": "The two systems are **interdependent**.", "answer": "symbiotic" },
+{ "sentence": "The policy is **unwarranted** in this context.", "answer": "inapplicable" },
+{ "sentence": "The judge remained **objective** throughout the trial.", "answer": "impartial" },
+{ "sentence": "The argument was dismissed as overly **saccharine**.", "answer": "cloying" },
+{ "sentence": "The object is extremely **diminutive**.", "answer": "minuscule" },
+{ "sentence": "The patient remains in **healthy** condition.", "answer": "robust" },
+{ "sentence": "The explanation was clear and **understandable**.", "answer": "transparent" },
+{ "sentence": "She offered a **sensible** solution to the problem.", "answer": "levelheaded" },
+{ "sentence": "Water is **essential for** survival.", "answer": "indispensable to" },
+{ "sentence": "The guard reacted in a **truculent** manner.", "answer": "pugnacious" },
+{ "sentence": "Only a **scant** amount of evidence was available.", "answer": "little" },
+{ "sentence": "The new rules help **reinforce** discipline.", "answer": "buttress" },
+{ "sentence": "The student remained **naïve** about the system.", "answer": "unsophisticated" },
+{ "sentence": "The collection is a **hodgepodge** of styles.", "answer": "patchwork" },
+{ "sentence": "Her **doggedness** led to success.", "answer": "pertinacity" },
+{ "sentence": "The system can **buoy** the economy during downturns.", "answer": "sustain" },
+{ "sentence": "His explanation was **equivocal**.", "answer": "ambiguous" },
+{ "sentence": "She is the **sole** survivor.", "answer": "exclusive" },
+{ "sentence": "The atmosphere was **lugubrious**.", "answer": "gloomy" },
+{ "sentence": "The critic **lambast** the film for its flaws.", "answer": "deride" },
+{ "sentence": "His argument seems **prescient** in hindsight.", "answer": "prophetic" },
+{ "sentence": "The claim is **specious** and misleading.", "answer": "fallacious" },
+{ "sentence": "The news will **gratify** supporters.", "answer": "please" },
+{ "sentence": "The importance of the issue is **visible** in public debate.", "answer": "salient" },
+{ "sentence": "The reforms aim to **augment** resources.", "answer": "extend" },
+{ "sentence": "The new policy may **preclude** further action.", "answer": "rule out" },
+{ "sentence": "The measures help **check** the spread of disease.", "answer": "stem" },
+{ "sentence": "The issue remains **obscure** to most observers.", "answer": "opaque" },
+{ "sentence": "Modern society is increasingly **atomized**.", "answer": "fragmented" },
+{ "sentence": "The community remains **insular**.", "answer": "parochial" },
+{ "sentence": "The two systems are **unlinked** in practice.", "answer": "estranged" },
+{ "sentence": "He is a **shrewd** negotiator.", "answer": "canny" },
+{ "sentence": "The author embraces **hybridity** in style.", "answer": "eclecticism" },
+{ "sentence": "The report included a strong **denunciation** of corruption.", "answer": "indictment" },
+{ "sentence": "His actions **belie** his calm appearance.", "answer": "contradict" },
+{ "sentence": "She is a **maverick** in her field.", "answer": "nonconformist" },
+{ "sentence": "He remained **captivated** by the performance.", "answer": "enamored" },
+{ "sentence": "The weather conditions were **favorable** for agricultural development.", "answer": "auspicious" },
+{ "sentence": "The landmark is easily **familiar** to most visitors.", "answer": "recognizable" },
+{ "sentence": "The city’s architectural **splendor** attracted global attention.", "answer": "sumptuousness" },
+{ "sentence": "The results were **unexceptional** in a highly competitive field.", "answer": "commonplace" },
+{ "sentence": "Poor management can **engender** social unrest.", "answer": "induce" },
+{ "sentence": "Technological advances tend to **abound** in urban areas.", "answer": "proliferate" },
+{ "sentence": "The market is subject to **capriciousness**.", "answer": "volatility" },
+{ "sentence": "The child’s **wayward** behavior concerned the teachers.", "answer": "errant" },
+{ "sentence": "The debate became **untethered from** factual evidence.", "answer": "divorced from …" },
+{ "sentence": "The region has **bountiful** natural resources.", "answer": "fertile" },
+{ "sentence": "He offered only a **cursory** glance at the report.", "answer": "casual" },
+{ "sentence": "The two phenomena are **analogous** in structure.", "answer": "comparable" },
+{ "sentence": "Sales began to **wane** after the initial surge.", "answer": "decline" },
+{ "sentence": "Institutional **inertia** slowed reform efforts.", "answer": "stasis" },
+{ "sentence": "She gave the document a **cursory** review.", "answer": "fleeting" },
+{ "sentence": "The committee sought to **champion** minority rights.", "answer": "defend" },
+{ "sentence": "New regulations may **vitiate** the effectiveness of the policy.", "answer": "impair" },
+{ "sentence": "Her argument was grounded in **simplicity**.", "answer": "artlessness" },
+{ "sentence": "The authorities acted swiftly to **avert** a crisis.", "answer": "forestall" },
+{ "sentence": "Education is **essential** for development.", "answer": "indispensable" },
+{ "sentence": "The ritual holds a **totemic** significance.", "answer": "emblematic" },
+{ "sentence": "He chose to **repudiate** his earlier statement.", "answer": "recant" },
+{ "sentence": "The building is considered **hallowed** ground.", "answer": "respected" },
+{ "sentence": "She tried to **temper** her criticism.", "answer": "moderate" },
+{ "sentence": "The leader is known for his **probity**.", "answer": "integrity" },
+{ "sentence": "The report is a **hodgepodge** of conflicting ideas.", "answer": "pastiche" },
+{ "sentence": "The system is showing signs of **senescence**.", "answer": "decrepitude" },
+{ "sentence": "The proposal is of **unimportant** concern.", "answer": "insignificant" },
+{ "sentence": "The team displayed a **spirited** performance.", "answer": "vigorous" },
+{ "sentence": "The agreement is considered **inviolable**.", "answer": "sacrosanct" },
+{ "sentence": "The data is **exiguous** and unreliable.", "answer": "tenuous" },
+{ "sentence": "There is a severe **scarcity** of resources.", "answer": "want" },
+{ "sentence": "The instructions are **generic** and broadly applicable.", "answer": "inclusive" },
+{ "sentence": "The witness chose to **contradict** the testimony.", "answer": "gainsay" },
+{ "sentence": "The explanation was **limpid** and easy to follow.", "answer": "pellucid" },
+{ "sentence": "The situation presents an **irony**.", "answer": "paradox" },
+{ "sentence": "The judge had to **castigate** the offender.", "answer": "chastise" },
+{ "sentence": "His statement was seen as **dissembling**.", "answer": "mendacity" },
+{ "sentence": "The benefits are likely **short-lived**.", "answer": "ephemeral" },
+{ "sentence": "The spokesperson will **proclaim** the results.", "answer": "profess" },
+{ "sentence": "Hardship can **beget** resilience.", "answer": "create" },
+{ "sentence": "Rules may **constrain** individual behavior.", "answer": "deter" },
+{ "sentence": "The author tends to **recycle** old ideas.", "answer": "rehash" },
+{ "sentence": "His actions **evince** a lack of concern.", "answer": "betray" },
+{ "sentence": "Her **dissemblance** masked her intentions.", "answer": "duplicity" },
+{ "sentence": "The crisis strengthened national **solidarity**.", "answer": "camaraderie" },
+{ "sentence": "In modern economics, some goods are **fungible**.", "answer": "interchangeable" },
+{ "sentence": "The artifact remains **pristine** despite its age.", "answer": "unblemished" },
+{ "sentence": "The method is **unorthodox** but effective.", "answer": "unconventional" },
+{ "sentence": "He tends to **shun** publicity.", "answer": "eschew" },
+{ "sentence": "The report includes **supplemental** data.", "answer": "complementary" },
+{ "sentence": "This feature is **characteristic** of the style.", "answer": "emblematic" },
+{ "sentence": "His **irascibility** was evident in the meeting.", "answer": "exasperation" },
+{ "sentence": "The report will **anticipate** future risks.", "answer": "inform" },
+{ "sentence": "The issue remains **obscure** to the public.", "answer": "opaque" },
+{ "sentence": "Economic growth may **yield** long-term benefits.", "answer": "engender" }
+
+];
+
+const PAGE_SIZE = 6;
+const STORAGE_KEY = "GRE 001";
+const FAV_KEY = "GRE_FAV";
+
+let questions = [...ALL_QUESTIONS];
+let currentPage = 0;
+
+/* ========= 收藏 ========= */
+function loadFavs(){
+  return JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+}
+
+function saveFav(q){
+  const favs = loadFavs();
+  if(!favs.some(f=>f.sentence===q.sentence)){
+    favs.push(q);
+    localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+  }
+}
+
+function removeFav(q){
+  let favs = loadFavs();
+  favs = favs.filter(f=>f.sentence!==q.sentence);
+  localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+}
+
+function isFav(q){
+  return loadFavs().some(f=>f.sentence===q.sentence);
+}
+
+/* ========= 错题存储 ========= */
+function loadWrongs() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+}
+
+function saveWrong(q) {
+  const wrongs = loadWrongs();
+  if(!wrongs.some(w=>w.sentence===q.sentence)) {
+    wrongs.push(q);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(wrongs));
+  }
+}
+
+function clearWrongs() {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+/* ========= 渲染 ========= */
+function renderPage() {
+
+  const container = document.getElementById("quiz-container");
+  container.innerHTML = "";
+
+  const pageQs = questions.slice(currentPage*PAGE_SIZE, currentPage*PAGE_SIZE+PAGE_SIZE);
+
+  pageQs.forEach(q=>{
+    const card = document.createElement("div");
+    card.className="question-card";
+
+    const favClass = isFav(q) ? "star-btn active" : "star-btn";
+
+    const html = q.sentence.replace(/\*\*(.+?)\*\*/g,
+      `<span class="target-word" data-answer="${q.answer}" draggable="true">$1</span>`);
+
+    card.innerHTML=`
+	<div class="question-row">
+    <div class="sentence">${html}</div>
+    <div class="${favClass}">⭐</div>
+	</div>
+`;
+
+    container.appendChild(card);
+  });
+
+  const bank = document.createElement("div");
+  bank.className="word-bank";
+
+  pageQs.map(q=>q.answer)
+    .sort(()=>Math.random()-0.5)
+    .forEach(ans=>{
+      const w=document.createElement("div");
+      w.className="word";
+      w.textContent=ans;
+      w.draggable=true;
+
+      w.addEventListener("click",(e)=>{
+        e.stopPropagation();
+        speak(ans);
+      });
+
+      w.ondragstart=e=>{
+        e.dataTransfer.setData("text",ans);
+        w.classList.add("dragging");
+      };
+
+      w.ondragend=e=>w.classList.remove("dragging");
+
+      bank.appendChild(w);
+    });
+
+  container.appendChild(bank);
+
+  document.querySelectorAll(".target-word").forEach(t=>{
+    t.addEventListener("click",(e)=>{
+      e.stopPropagation();
+      speak(t.textContent);
+    });
+
+    t.ondragover=e=>e.preventDefault();
+
+    t.ondrop=e=>{
+      e.preventDefault();
+      const text=e.dataTransfer.getData("text");
+
+      if(t.dataset.filled){
+        addWordToBank(t.dataset.filled);
+      }
+
+      t.dataset.filled=text;
+
+      [...bank.children].forEach(w=>{
+        if(w.textContent===text) w.remove();
+      });
+    };
+  });
+
+  /* ⭐ 收藏点击 */
+  document.querySelectorAll(".star-btn").forEach((star, idx)=>{
+    const q = pageQs[idx];
+    star.onclick = ()=>{
+      if(isFav(q)){
+        removeFav(q);
+        star.classList.remove("active");
+      } else {
+        saveFav(q);
+        star.classList.add("active");
+      }
+    };
+  });
+
+  document.getElementById("pageInfo").textContent =
+    `第 ${currentPage+1} 页 / ${Math.ceil(questions.length/PAGE_SIZE)} 页`;
+}
+
+/* 拖回词库 */
+function addWordToBank(wordText){
+  const bank = document.querySelector(".word-bank");
+
+  if([...bank.children].some(w=>w.textContent===wordText)) return;
+
+  const w = document.createElement("div");
+  w.className="word";
+  w.textContent=wordText;
+  w.draggable=true;
+
+  w.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    speak(wordText);
+  });
+
+  w.ondragstart=e=>{
+    e.dataTransfer.setData("text",wordText);
+    w.classList.add("dragging");
+  };
+
+  w.ondragend=e=>w.classList.remove("dragging");
+
+  bank.appendChild(w);
+}
+
+/* ========= 提交 ========= */
+document.getElementById("submitBtn").onclick = () => {
+
+  let score = 0;
+  const pageQs = questions.slice(currentPage*PAGE_SIZE, currentPage*PAGE_SIZE+PAGE_SIZE);
+
+  document.querySelectorAll(".question-card").forEach((card, idx) => {
+
+    const target = card.querySelector(".target-word");
+    const correct = target.dataset.answer;
+    const user = target.dataset.filled;
+
+    target.classList.remove("correct","error");
+    card.querySelectorAll(".answer-row,.wrong-badge").forEach(e=>e.remove());
+
+    const row = document.createElement("div");
+    row.className = "answer-row";
+
+    if(user === correct){
+      target.classList.add("correct");
+      score++;
+    } else {
+      target.classList.add("error");
+      card.insertAdjacentHTML("beforeend", `<div class="wrong-badge">❌ 错题</div>`);
+      saveWrong(pageQs[idx]);
+    }
+
+    row.innerHTML = `<span class="correct-answer">✅ ${correct}</span>` +
+                    (user!==correct && user ? `<span class="user-answer">❌ ${user}</span>` : "");
+
+    card.appendChild(row);
+  });
+
+  document.getElementById("result").textContent =
+    `本页得分：${score} / ${document.querySelectorAll(".target-word").length}`;
+};
+
+/* ========= 错题重做 ========= */
+document.getElementById("redoBtn").onclick = () => {
+  const wrongs = loadWrongs();
+  if(!wrongs.length){ alert("🎉 当前没有错题"); return; }
+  questions = wrongs;
+  currentPage = 0;
+  document.getElementById("modeTip").textContent="🔥 错题模式";
+  renderPage();
+};
+
+/* ========= 清空错题 ========= */
+document.getElementById("clearWrongBtn").onclick = () => {
+  if(confirm("确定清空所有错题吗？")){
+    clearWrongs();
+    alert("已清空错题");
+  }
+};
+
+/* ========= 收藏模式 ========= */
+document.getElementById("favModeBtn").onclick = () => {
+  const favs = loadFavs();
+  if(!favs.length){ alert("暂无收藏"); return; }
+  questions = favs;
+  currentPage = 0;
+  document.getElementById("modeTip").textContent="⭐ 收藏模式";
+  renderPage();
+};
+
+document.getElementById("allModeBtn").onclick = () => {
+  questions = [...ALL_QUESTIONS];
+  currentPage = 0;
+  document.getElementById("modeTip").textContent="📘 练习模式";
+  renderPage();
+};
+
+/* ========= 翻页 ========= */
+document.getElementById("nextBtn").onclick = () => {
+  if((currentPage+1)*PAGE_SIZE<questions.length){
+    currentPage++;
+    renderPage();
+  }
+};
+
+document.getElementById("prevBtn").onclick = () => {
+  if(currentPage>0){
+    currentPage--;
+    renderPage();
+  }
+};
+
+/* ========= 跳转页 ========= */
+document.getElementById("jumpBtn").onclick = () => {
+  const input = document.getElementById("jumpInput");
+  let page = parseInt(input.value) - 1;
+
+  const maxPage = Math.ceil(questions.length / PAGE_SIZE) - 1;
+
+  if(isNaN(page) || page < 0 || page > maxPage){
+    alert("页码超出范围");
+    return;
+  }
+
+  currentPage = page;
+  renderPage();
+};
+
+renderPage();
+
+</script>
+</body>
+</html>
