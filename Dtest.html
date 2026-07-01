@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<!-- 增强版设计感 Title 结构 -->
+<title>IELTS Dictation Pro | 雅思听写大师</title>
+
+<style>
+/* 核心颜色变量体系 */
+:root {
+  --bg-gradient: linear-gradient(135deg, #f5f8ff 0%, #f9fbff 100%);
+  --panel-bg: #ffffff;
+  --text-color: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --border-color: #d8e2f1;
+  --input-border: #ccd7ea;
+  --th-bg: #f4f7fd;
+  --td-border: #edf1f7;
+  --active-row: #eaf3ff;
+  --shadow: rgba(164, 180, 206, 0.2);
+  
+  /* 亮色模式按钮 */
+  --btn-primary: #4a90e2;
+  --btn-secondary: #8aa4c8;
+  --btn-danger: #e96a6a;
+  --btn-playing: #1aa260;
+  --btn-paused: #f5a623;
+  --btn-text: #ffffff;
+  --mistake-bg: #fff7f7;
+  --card-border: none;
+  --input-text: #2c3e50;
+  --btn-border: none;
+  --btn-inner-shadow: 0 4px 10px rgba(74, 144, 226, 0.15);
+  --btn-blur: none;
+  
+  /* 🟢 亮色模式进度条：干净清爽的纯净蓝，无发光 */
+  --progress-bar-bg: linear-gradient(90deg, #4a90e2 0%, #6fb1ff 100%);
+  --progress-shadow: none;
+  
+  /* 头部设计感颜色 */
+  --title-gradient: linear-gradient(135deg, #2c3e50 0%, #4a90e2 100%);
+  --tag-bg: #eaf3ff;
+  --tag-text: #4a90e2;
+}
+
+/* 🌌 赛博朋克霓虹流光 + 玻璃态按钮（深色模式） */
+[data-theme="dark"] {
+  --bg-gradient: linear-gradient(135deg, #090d1a 0%, #050811 100%);
+  --panel-bg: rgba(13, 22, 43, 0.75); 
+  --text-color: #ffffff;
+  --text-secondary: #8aa4c8;
+  --border-color: transparent;
+  --th-bg: rgba(255, 255, 255, 0.05);
+  --td-border: rgba(255, 255, 255, 0.08);
+  --active-row: rgba(0, 255, 204, 0.12);
+  --shadow: rgba(0, 0, 0, 0.5);
+
+  /* 深色模式按钮 */
+  --btn-primary: linear-gradient(180deg, rgba(0, 153, 255, 0.4) 0%, rgba(0, 255, 204, 0.2) 100%);
+  --btn-secondary: linear-gradient(180deg, rgba(123, 0, 255, 0.4) 0%, rgba(255, 0, 221, 0.2) 100%);
+  --btn-danger: linear-gradient(180deg, rgba(255, 0, 85, 0.4) 0%, rgba(153, 0, 51, 0.2) 100%);
+  --btn-playing: linear-gradient(180deg, rgba(0, 255, 102, 0.4) 0%, rgba(0, 204, 68, 0.2) 100%);
+  --btn-paused: linear-gradient(180deg, rgba(255, 170, 0, 0.4) 0%, rgba(204, 119, 0, 0.2) 100%);
+  
+  --btn-text: #ffffff;
+  --mistake-bg: rgba(255, 0, 85, 0.12);
+  --input-text: #00ffcc;
+  
+  /* 玻璃质感核心 */
+  --btn-border: 1px solid rgba(255, 255, 255, 0.25);
+  --btn-inner-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), inset 0 -2px 6px rgba(0, 0, 0, 0.3);
+  --btn-blur: blur(8px);
+  
+  /* 🔵 深色模式进度条：极光幻彩，带科技感外发光 */
+  --progress-bar-bg: linear-gradient(90deg, #00bfff, #00ffcc, #bd00ff);
+  --progress-shadow: 0 0 12px #00bfff, 0 0 4px #00ffcc;
+  
+  /* 头部设计感颜色 */
+  --title-gradient: linear-gradient(90deg, #ffffff 0%, #ff00dd 50%, #00ffcc 100%);
+  --tag-bg: rgba(0, 255, 204, 0.15);
+  --tag-text: #00ffcc;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg-gradient);
+  padding: 40px 34px;
+  color: var(--text-color);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  min-height: 100vh;
+}
+
+/* 👑 头部设计感样式大改造 */
+.header-wrap { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: flex-start; 
+  margin-bottom: 28px; 
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 16px;
+}
+[data-theme="dark"] .header-wrap { border-bottom-color: rgba(255,255,255,0.08); }
+
+.brand-area { display: flex; flex-direction: column; gap: 4px; }
+.title-main { display: flex; align-items: center; gap: 10px; margin: 0; }
+
+.title-text {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: var(--title-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* 为深色追加发光滤镜 */
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
+}
+[data-theme="dark"] .title-text {
+  filter: drop-shadow(0 0 10px rgba(255, 0, 221, 0.25));
+}
+
+.version-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.subtitle-eng {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+h3 { margin: 0; font-size: 16px; font-weight: 600; }
+[data-theme="dark"] h3 { color: #ff0055; text-shadow: 0 0 10px rgba(255,0,85,0.4); }
+
+/* 面板基底 */
+.panel { 
+  background: var(--panel-bg); 
+  padding: 22px; 
+  border-radius: 16px; 
+  box-shadow: 0 10px 30px var(--shadow); 
+  margin-bottom: 26px; 
+  border: var(--card-border);
+  position: relative;
+  transition: all 0.4s ease; 
+}
+
+[data-theme="dark"] .panel {
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 25px rgba(0, 153, 255, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .panel::before {
+  content: ''; position: absolute; top: -1px; left: -1px; right: -1px; bottom: -1px;
+  border-radius: 16px; padding: 1px; 
+  background: linear-gradient(135deg, #00ffcc, #7b00ff, #ff00dd);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events: none; opacity: 0.6;
+}
+
+.playerPanel { position: sticky; top: 10px; z-index: 50; }
+
+textarea { 
+  width: 98%; height: 95px; padding: 14px; border-radius: 12px; 
+  border: 1px solid var(--border-color); font-size: 14px; 
+  background: var(--panel-bg); color: var(--text-color); 
+  transition: all 0.3s ease; resize: none;
+}
+[data-theme="dark"] textarea { 
+  color: #ffffff; 
+  background: rgba(5, 9, 20, 0.6); 
+  border: 1px solid rgba(0, 255, 204, 0.2);
+}
+textarea:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 0 2px rgba(74,144,226,.12); }
+[data-theme="dark"] textarea:focus { border-color: #00ffcc; box-shadow: 0 0 12px rgba(0, 255, 204, 0.3); }
+
+/* 按钮样式（完全解耦亮色与深色） */
+button { 
+  background: var(--btn-primary); 
+  color: var(--btn-text); 
+  border: var(--btn-border); 
+  padding: 8px 16px; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  margin-right: 10px; 
+  font-weight: 500; 
+  box-shadow: var(--btn-inner-shadow);
+  backdrop-filter: var(--btn-blur);
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px;
+  transition: all .2s cubic-bezier(0.2, 0.8, 0.2, 1); 
+}
+button:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 14px rgba(0,0,0,.12);
+}
+button:active { transform: translateY(1px); box-shadow: 0 2px 5px rgba(0,0,0,.1); }
+
+button.secondary { background: var(--btn-secondary); }
+button.danger { background: var(--btn-danger); }
+button.playing { background: var(--btn-playing); }
+button.paused { background: var(--btn-paused); }
+
+/* 仅在深色模式下对按钮注入玻璃特效，不污染亮色 */
+[data-theme="dark"] button:hover { box-shadow: var(--btn-inner-shadow), 0 0 20px rgba(0, 255, 204, 0.5); border-color: rgba(255, 255, 255, 0.5); filter: brightness(1.2); }
+[data-theme="dark"] button.secondary:hover { box-shadow: var(--btn-inner-shadow), 0 0 20px rgba(255, 0, 221, 0.5); }
+[data-theme="dark"] button.danger:hover { box-shadow: var(--btn-inner-shadow), 0 0 20px rgba(255, 0, 85, 0.5); }
+[data-theme="dark"] button.playing:hover { box-shadow: var(--btn-inner-shadow), 0 0 20px rgba(0, 255, 102, 0.5); }
+[data-theme="dark"] button.paused:hover { box-shadow: var(--btn-inner-shadow), 0 0 20px rgba(255, 170, 0, 0.5); }
+
+/* 错题表内部防畸形隔离 */
+.mistakeBox button { margin-right: 4px; }
+
+/* 表格与输入框 */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: var(--th-bg); font-weight: 600; color: var(--text-color); transition: background 0.3s; }
+th, td { padding: 12px; border-bottom: 1px solid var(--td-border); text-align: center; color: var(--text-color); }
+[data-theme="dark"] th { color: #00ffcc; }
+[data-theme="dark"] td { color: #ffffff; }
+
+input { 
+  width: 90%; padding: 7px; border-radius: 8px; 
+  border: 1px solid var(--input-border); 
+  background: var(--panel-bg); color: var(--input-text); 
+  transition: all 0.2s ease; 
+}
+[data-theme="dark"] input { 
+  background: rgba(5, 9, 20, 0.5); 
+  border: 1px solid rgba(0, 153, 255, 0.25);
+}
+input:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 0 2px rgba(74,144,226,.12); }
+[data-theme="dark"] input:focus { border-color: #00ffcc; box-shadow: 0 0 12px rgba(0, 255, 204, 0.4); }
+
+.activeRow { background: var(--active-row) !important; transition: .2s; }
+[data-theme="dark"] .activeRow { box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2); border-left: 3px solid #00ffcc; }
+
+.correct { color: #1aa260; font-weight: 600; }
+.wrong { color: #e53935; font-weight: 600; }
+[data-theme="dark"] .correct { color: #00ff66; text-shadow: 0 0 8px rgba(0,255,102,0.4); }
+[data-theme="dark"] .wrong { color: #ff0055; text-shadow: 0 0 8px rgba(255,0,85,0.4); }
+.hideWord .word { visibility: hidden; }
+
+/* 进度条核心：变量映射，亮暗色完全划清界限 */
+.progressWrap { height: 10px; background: var(--th-bg); border-radius: 30px; overflow: hidden; margin-top: 14px; border: 1px solid var(--border-color); }
+[data-theme="dark"] .progressWrap { border-color: rgba(0, 191, 255, 0.2); background: rgba(5, 9, 20, 0.6); }
+.progressBar { height: 100%; width: 0%; background: var(--progress-bar-bg); box-shadow: var(--progress-shadow); transition: width .25s linear; }
+
+.mistakeBox { background: var(--mistake-bg); }
+.mistakeHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.toolbar-left { display: flex; gap: 8px; align-items: center; }
+.toolbar-right { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+
+/* 换肤按钮高级微调 */
+.theme-btn { background: #8aa4c8; color: #fff; margin-right: 0; border: none; padding: 6px 12px; font-size: 13px; }
+[data-theme="dark"] .theme-btn { 
+  background: linear-gradient(180deg, rgba(255, 0, 221, 0.4) 0%, rgba(123, 0, 255, 0.2) 100%); 
+  color: #ffffff; 
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4), 0 0 12px rgba(255, 0, 221, 0.3); 
+}
+
+/* 滑动条样式 */
+input[type="range"] { -webkit-appearance: none; background: var(--th-bg); height: 6px; border-radius: 30px; width: 100px; }
+[data-theme="dark"] input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #00ffcc; border-radius: 50%; box-shadow: 0 0 8px #00ffcc; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- 👑 极具商用设计感的头部布局 -->
+<div class="header-wrap">
+  <div class="brand-area">
+    <div class="title-main">
+      <span class="title-text">🎧 IELTS Dictation Master</span>
+      <span class="version-tag">v2.4 Pro</span>
+    </div>
+    <span class="subtitle-eng">雅思听写专家 · Elevate Your Listening & Band Score</span>
+  </div>
+  <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 赛博深色</button>
+</div>
+
+<div class="panel">
+<textarea id="pasteArea" placeholder="粘贴一列单词（每行一个）Alt暂停 Enter下一行"></textarea>
+<br><br>
+<button onclick="importWords()">📥 导入单词</button>
+</div>
+
+<div class="panel playerPanel">
+<div class="toolbar">
+  <div class="toolbar-left">
+    <button id="playBtn" onclick="startPlay()">▶ 开始</button>
+    <button id="pauseBtn" class="secondary" onclick="pausePlay()">⏸ 暂停</button>  
+    <button onclick="toggleDictation()">🎯 听写模式</button>
+    <button class="danger" onclick="checkAnswer()">✔ 提交检查</button>
+    <button class="secondary" onclick="resetExam(true)">🔄 重新考</button>
+  </div>
+  <div class="toolbar-right">
+    ⚡<input type="range" min="1.0" max="2.0" step="0.1" value="1.0" id="rate"> <span id="rateValue">1.0x</span>
+  </div>
+</div>
+<div class="progressWrap"><div class="progressBar" id="progressBar"></div></div>
+</div>
+
+<div class="panel">
+<table>
+<thead><tr><th>原单词</th><th>听写输入</th><th>结果</th></tr></thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="panel mistakeBox">
+<div class="mistakeHeader">
+  <h3>❌ 错题管理</h3>
+  <div>
+    <button onclick="copyMistakeTable()">📋 复制错题表</button>
+    <button class="secondary" onclick="retryMistakes()">🔁 重考错题</button>
+  </div>
+</div>
+<table id="mistakeTable">
+<thead><tr><th>正确单词</th><th>你的答案</th></tr></thead>
+<tbody id="mistakes"></tbody>
+</table>
+</div>
+
+<script>
+const tbody=document.getElementById("tbody");
+const mistakeBox=document.getElementById("mistakes");
+const progressBar=document.getElementById("progressBar");
+const rateInput=document.getElementById('rate');
+const rateValue=document.getElementById('rateValue');
+const playBtn=document.getElementById('playBtn');
+const pauseBtn=document.getElementById('pauseBtn');
+const themeBtn=document.getElementById('themeBtn');
+let synth=window.speechSynthesis, words=[], currentIndex=0, paused=false, dictationMode=false;
+
+rateInput.addEventListener('input', ()=>{rateValue.textContent = parseFloat(rateInput.value).toFixed(1)+'x';});
+
+function toggleTheme() {
+  if (document.documentElement.getAttribute('data-theme') === 'dark') {
+    document.documentElement.removeAttribute('data-theme');
+    themeBtn.innerHTML = "🌙 赛博深色";
+  } else {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeBtn.innerHTML = "☀️ 极客明亮";
+  }
+}
+
+function importWords(){
+  const text=document.getElementById("pasteArea").value.trim();
+  if(!text) return;
+  tbody.innerHTML="";
+  words=text.split(/\n+/).map(w=>w.trim());
+  words.forEach(w=>{const tr=document.createElement("tr");tr.innerHTML=`<td><input class="word" value="${w}"></td><td><input class="answer"></td><td class="result"></td>`;tbody.appendChild(tr);});
+  currentIndex=0;updateProgress();
+}
+
+function shuffleArray(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+
+function toggleDictation(){dictationMode=!dictationMode;document.body.classList.toggle("hideWord");}
+async function startPlay(){paused=false;synth.cancel();playBtn.classList.add('playing');pauseBtn.classList.remove('paused');const rows=document.querySelectorAll("#tbody tr");for(currentIndex;currentIndex<rows.length;currentIndex++){if(paused) break;highlightRow(currentIndex);updateProgress();const word=rows[currentIndex].querySelector(".word").value.trim();if(!word) continue;await speakAsync(word);await wait(800);await speakAsync(word);await wait(2500);}if(!paused){progressBar.style.width='100%';}playBtn.classList.remove('playing');pauseBtn.classList.add('paused');}
+function pausePlay(){paused=true;synth.cancel();playBtn.classList.remove('playing');pauseBtn.classList.add('paused');}
+function resetExam(shuffle=false){
+  document.querySelectorAll('.answer').forEach(i=>i.value='');
+  document.querySelectorAll('.result').forEach(r=>r.innerHTML='');
+  currentIndex=0;updateProgress();synth.cancel();
+  playBtn.classList.remove('playing');pauseBtn.classList.remove('paused');
+  if(shuffle){
+    words=shuffleArray(words);
+    tbody.innerHTML="";
+    words.forEach(w=>{const tr=document.createElement('tr');tr.innerHTML=`<td><input class="word" value="${w}"></td><td><input class="answer"></td><td class="result"></td>`;tbody.appendChild(tr);});
+  }
+}
+
+function highlightRow(i){document.querySelectorAll("#tbody tr").forEach(r=>r.classList.remove("activeRow"));const row=document.querySelectorAll("#tbody tr")[i];if(row) row.classList.add("activeRow");}
+function updateProgress(){const percent=(words.length?(currentIndex/words.length)*100:0);progressBar.style.width=percent+"%";}
+function speakAsync(text){return new Promise(resolve=>{const utter=new SpeechSynthesisUtterance(text);utter.lang="en-GB";utter.rate=document.getElementById("rate").value;utter.onend=resolve;synth.speak(utter);});}
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+function normalizeWord(word){word = word.toLowerCase().trim();if(!isNaN(word)){return numberToWords(parseInt(word));}return word;}
+function numberToWords(num){const a=["zero","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+const b=["","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"];
+if(num<20) return a[num];if(num<100){let ten=Math.floor(num/10), unit=num%10; return b[ten]+(unit>0?"-"+a[unit]:"");}if(num<1000){let hundred=Math.floor(num/100), rest=num%100; return a[hundred]+" hundred"+(rest>0?" "+numberToWords(rest):"");}return num.toString();}
+function checkAnswer(){mistakeBox.innerHTML="";const rows=document.querySelectorAll("#tbody tr");rows.forEach(row=>{const word=normalizeWord(row.querySelector(".word").value.trim());const ans=normalizeWord(row.querySelector(".answer").value.trim());const result=row.querySelector(".result");if(word===ans){result.innerHTML=`<span class="correct">✔</span>`;}else{result.innerHTML=`<span class="wrong">✘ ${row.querySelector(".word").value.trim()}</span>`;const tr=document.createElement("tr");tr.innerHTML=`<td class="mistakeWord">${row.querySelector(".word").value.trim()}</td><td class="mistakeAns">${row.querySelector(".answer").value.trim()||"-"}</td>`;mistakeBox.appendChild(tr);}});}
+function copyMistakeTable(){const table=document.getElementById("mistakeTable").outerHTML;const blob=new Blob([table],{type:"text/html"});const data=[new ClipboardItem({"text/html":blob})];navigator.clipboard.write(data);alert("已复制错题表（含答案）");}
+function retryMistakes(){
+  const mistakeWords=[...document.querySelectorAll('.mistakeWord')].map(td=>td.innerText.trim());
+  if(!mistakeWords.length){alert('没有错题可重考');return;}
+  tbody.innerHTML="";
+  words=[...mistakeWords];
+  words.forEach(w=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td><input class="word" value="${w}"></td><td><input class="answer"></td><td class="result"></td>`;
+    tbody.appendChild(tr);
+  });
+  currentIndex=0;
+  updateProgress();
+}
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter'){const active= document.activeElement;if(active.tagName==='INPUT' && active.classList.contains('answer')){e.preventDefault();let next = active.closest('tr').nextElementSibling;if(next){next.querySelector('.answer').focus();}}}
+  if(e.altKey){e.preventDefault();if(paused){startPlay();}else{pausePlay();}}
+});
+document.addEventListener('focusin',function(e){
+  if(e.target.classList && e.target.classList.contains('answer')){
+    e.target.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+});
+</script>
+
+</body>
+</html>
