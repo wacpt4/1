@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>德语学习助手</title>
+<style>
+/* ==========================================
+   🎨 CSS 变量：定义浅色和深色主题
+   ========================================== */
+:root {
+    --bg-gradient: linear-gradient(135deg, #f3f0ff, #e5dbff);
+    --text-main: #3b286d;
+    --text-sub: #705da4;
+    --text-card-big: #4338ca;
+    --text-card-small: #6b7280;
+    --btn-bg: rgba(255, 255, 255, 0.6);
+    --btn-color: #5f4bb6;
+    --btn-active-bg: #5f4bb6;
+    --btn-active-color: white;
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-hover-bg: rgba(255, 255, 255, 0.95);
+    --card-shadow: 0 4px 14px rgba(147, 130, 219, 0.15);
+    --card-hover-shadow: 0 6px 20px rgba(147, 130, 219, 0.25);
+    --card-border: rgba(255, 255, 255, 0.6);
+    --card-playing-bg: #e0e7ff;
+    --card-playing-border: #6366f1;
+    --star-color: #d1d5db;
+    --star-active-color: #fbbf24;
+
+    /* 💬 聊天对话专属颜色 */
+    --chat-left-bg: rgba(255, 255, 255, 0.95);
+    --chat-right-bg: #e8e5ff;
+    --chat-avatar-bg: #5f4bb6;
+}
+
+[data-theme="dark"] {
+    --bg-gradient: linear-gradient(135deg, #1e1b4b, #311042);
+    --text-main: #f3f4f6;
+    --text-sub: rgba(255, 255, 255, 0.6);
+    --text-card-big: #a5b4fc;
+    --text-card-small: #cbd5e1;
+    --btn-bg: rgba(255, 255, 255, 0.1);
+    --btn-color: #c7d2fe;
+    --btn-active-bg: #6366f1;
+    --btn-active-color: white;
+    --card-bg: rgba(255, 255, 255, 0.08);
+    --card-hover-bg: rgba(255, 255, 255, 0.15);
+    --card-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 6px 20px rgba(99, 102, 241, 0.2);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-playing-bg: rgba(99, 102, 241, 0.35);
+    --card-playing-border: #818cf8;
+    --star-color: rgba(255, 255, 255, 0.2);
+    --star-active-color: #fbbf24;
+
+    /* 💬 聊天对话专属颜色 */
+    --chat-left-bg: rgba(255, 255, 255, 0.08);
+    --chat-right-bg: rgba(95, 75, 182, 0.3);
+    --chat-avatar-bg: #818cf8;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg-gradient);
+    color: var(--text-main);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+}
+.header { text-align: center; padding: 25px; position: relative; }
+.header p { color: var(--text-sub); margin-top: 5px; }
+
+.theme-toggle {
+    position: absolute; right: 20px; top: 20px; padding: 10px 16px; font-size: 14px;
+    background: var(--btn-bg); color: var(--btn-color); border-radius: 20px; box-shadow: var(--card-shadow);
+}
+
+.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+button {
+    border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; font-size: 15px;
+    background: var(--btn-bg); color: var(--btn-color); transition: 0.2s; box-shadow: var(--card-shadow);
+}
+button:hover { background: var(--card-hover-bg); }
+.tabs button.active { background: var(--btn-active-bg); color: var(--btn-active-color); font-weight: bold; }
+
+.page { display: none; max-width: 1200px; margin: auto; padding: 20px; box-sizing: border-box; }
+.page.show { display: block; }
+
+/* ==========================================
+   🧱 基础网格布局样式 
+   ========================================== */
+.grid-word { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+.grid-word .big { font-size: 1.4rem; font-weight: bold; color: var(--text-card-big); }
+.grid-word .small { font-size: 1rem; margin-top: 8px; color: var(--text-card-small); }
+
+.grid-phrase { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px; }
+.grid-phrase .big { font-size: 1.25rem; font-weight: bold; color: var(--text-card-big); }
+.grid-phrase .small { font-size: 1.05rem; margin-top: 6px; color: var(--text-card-small); }
+
+.grid-sentence { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 15px; }
+.grid-sentence .card { text-align: left; padding: 20px; }
+.grid-sentence .big { font-size: 1.2rem; font-weight: bold; line-height: 1.4; color: var(--text-card-big); }
+.grid-sentence .small { font-size: 1.05rem; margin-top: 8px; color: var(--text-card-small); line-height: 1.4; }
+
+.grid-long-sentence { display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 20px; }
+@media (max-width: 600px) { .grid-long-sentence { grid-template-columns: 1fr; } }
+.grid-long-sentence .card { text-align: left; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+.grid-long-sentence .big { font-size: 1.15rem; font-weight: bold; line-height: 1.5; color: var(--text-card-big); border-bottom: 1px dashed var(--card-border); padding-bottom: 8px; padding-right: 25px; }
+.grid-long-sentence .small { font-size: 1.05rem; line-height: 1.6; color: var(--text-card-small); margin: 0; }
+
+/* ==========================================
+   🚨 对话布局 (Dialogue) 
+   ========================================== */
+.grid-dialogue {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;             
+    padding: 10px;
+    box-sizing: border-box;
+}
+.dialogue-row {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+.dialogue-row.left { justify-content: flex-start; }
+.dialogue-row.right { justify-content: flex-end; }
+
+.dialogue-content {
+    display: flex;
+    gap: 14px;
+    max-width: 75%; 
+    align-items: flex-start;
+}
+.dialogue-row.left .dialogue-content { flex-direction: row; }
+.dialogue-row.right .dialogue-content { flex-direction: row-reverse; }
+
+.chat-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--chat-avatar-bg); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 1.1rem; box-shadow: var(--card-shadow);
+    flex-shrink: 0;          
+}
+
+.dialogue-content .card {
+    display: block;
+    width: auto;                  
+    text-align: left;
+    padding: 16px 22px;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+.dialogue-row.left .card { background: var(--chat-left-bg); border-top-left-radius: 4px; }
+.dialogue-row.right .card { background: var(--chat-right-bg); border-top-right-radius: 4px; }
+
+.dialogue-content .card .big { font-size: 1.15rem; font-weight: bold; color: var(--text-main); line-height: 1.5; padding-right: 25px; text-align: left; }
+.dialogue-content .card .small { font-size: 1rem; margin-top: 6px; color: var(--text-card-small); line-height: 1.45; text-align: left; }
+
+/* ==========================================
+   公共卡片与辅助样式
+   ========================================== */
+.card {
+    position: relative;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 24px 18px 18px 18px;
+    border-radius: 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--card-border);
+}
+.card:hover {
+    transform: translateY(-3px);
+    background: var(--card-hover-bg);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.star-icon {
+    position: absolute; top: 14px; right: 16px; font-size: 1.1rem;
+    color: var(--star-color); cursor: pointer; transition: transform 0.1s, color 0.2s;
+    user-select: none; z-index: 10;
+}
+.star-icon:hover { transform: scale(1.2); }
+.star-icon.active { color: var(--star-active-color); filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.4)); }
+
+.card.playing {
+    background: var(--card-playing-bg) !important;
+    border-color: var(--card-playing-border) !important;
+    transform: scale(1.02) translateY(-1px);
+    box-shadow: var(--hover-shadow);
+}
+
+/* ==========================================
+   🚀 核心修改：左上角悬浮播放面板
+   ========================================== */
+.play-panel { 
+    position: fixed; 
+    left: 20px; 
+    top: 20px; 
+    z-index: 9999; 
+}
+.autoplay-btn { 
+    font-size: 14px; 
+    padding: 10px 18px; 
+    border-radius: 20px; 
+    background: #6366f1; 
+    color: white; 
+    font-weight: bold; 
+    letter-spacing: 0.5px; 
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    opacity: 1.0;                   /* 🌟 核心：默认高度，完全不影响视线 */
+    transition: opacity 0.2s, transform 0.2s, background 0.2s;
+}
+.autoplay-btn:hover { 
+    opacity: 1.0;    	/* 🌟 鼠标悬停时恢复清晰 */
+	background: #4f46e5;
+    transform: scale(1.05);
+}
+.autoplay-btn.playing { 
+    background: #ef4444; 
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
+    opacity: 1.0;                    /* 🌟 正在播放时维持较高可见度，提醒正在运行 */
+}
+.autoplay-btn.playing:hover {
+    opacity: 1.0;
+}
+.empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+
+<div class="play-panel">
+    <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶</button>
+</div>
+
+<div class="header">
+    <h1>🇩🇪 德语学习助手</h1>
+    <p>A1</p>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+</div>
+    
+<div class="tabs" id="tabsContainer"></div>
+<div id="pagesContainer"></div>
+
+<script>
+// ==========================================
+// 💡 数据源
+// ==========================================
+const appData = {
+    alphabet: {
+        title: "🔤 字母表",
+        layout: "word",
+        speakType: "key", 
+        items: [
+            ["A","a"],["B","be"],["C","ce"],["D","de"],["E","e"],["F","ef"],
+            ["G","ge"],["H","ha"],["I","i"],["J","jot"],["K","ka"],["L","el"],
+            ["M","em"],["N","en"],["O","o"],["P","pe"],["Q","ku"],["R","er"],
+            ["S","es"],["T","te"],["U","u"],["V","fau"],["W","we"],
+            ["X","iks"],["Y","ypsilon"],["Z","tsett"],
+            ["Ä","ä"],["Ö","ö"],["Ü","ü"],["ß","Eszett"]
+        ]
+    },
+
+    numbers: {
+        title: "🔢 数字",
+        layout: "word",
+        speakType: "value", 
+        items: [
+            ["0", "null"], ["1", "eins"], ["2", "zwei"], ["3", "drei"], ["4", "vier"],
+            ["5", "fünf"], ["6", "sechs"], ["7", "sieben"], ["8", "acht"], ["9", "neun"], ["10", "zehn"],
+            ["11", "elf"], ["12", "zwölf"], ["13", "dreizehn"], ["14", "vierzehn"], ["15", "fünfzehn"],
+            ["16", "sechzehn"], ["17", "siebzehn"], ["18", "achtzehn"], ["19", "neunzehn"], ["20", "zwanzig"],
+            ["30", "dreißig"], ["40", "vierzig"], ["50", "fünfzig"], 
+            ["60", "sechzig"], ["70", "siebzig"], ["80", "achtzig"], ["90", "neunzig"],
+            ["100", "hundert"],
+            ["21", "einundzwanzig"],  
+            ["22", "zweiundzwanzig"],
+            ["23", "dreiundzwanzig"],
+            ["24", "vierundzwanzig"],
+            ["25", "fünfundzwanzig"],
+            ["26", "sechsundzwanzig"], 
+            ["27", "siebenundzwanzig"],
+            ["28", "achtundzwanzig"],
+            ["29", "neunundzwanzig"]
+        ]
+    },
+
+// --- 1. 数字基础 (0-19) ---
+    numbers_basic: {
+        title: "🔢 Basic Numbers (0-19)",
+        layout: "word",
+        speakType: "key", 
+        items: [
+            ["null", "0 (Zero)"], ["eins", "1 (One)"], ["zwei", "2 (Two)"], ["drei", "3 (Three)"], ["vier", "4 (Four)"], 
+            ["fünf", "5 (Five)"], ["sechs", "6 (Six)"], ["sieben", "7 (Seven)"], ["acht", "8 (Eight)"], ["neun", "9 (Nine)"], 
+            ["zehn", "10 (Ten)"], ["elf", "11 (Eleven)"], ["zwölf", "12 (Twelve)"], ["dreizehn", "13 (Thirteen)"], 
+            ["vierzehn", "14 (Fourteen)"], ["fünfzehn", "15 (Fifteen)"], ["sechzehn", "16 (Sixteen)"], 
+            ["siebzehn", "17 (Seventeen)"], ["achtzehn", "18 (Eighteen)"], ["neunzehn", "19 (Nineteen)"]
+        ]
+    },
+
+    // --- 2. 高阶数字与序数词 ---
+    numbers_advanced: {
+        title: "🔢 Big Numbers & Ordinals",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["zwanzig", "20 (Twenty)"], ["einundzwanzig", "21 (Twenty-one)"], ["dreißig", "30 (Thirty)"], ["vierzig", "40 (Forty)"],
+            ["fünfzig", "50 (Fifty)"], ["sechzig", "60 (Sixty)"], ["siebzig", "70 (Seventy)"], ["achtzig", "80 (Eighty)"],
+            ["neunzig", "90 (Ninety)"], ["hundert", "100 (One hundred)"], ["hunderteins", "101 (One hundred and one)"], ["zweihundert", "200 (Two hundred)"],
+            ["tausend", "1,000 (One thousand)"], ["eine Million", "1,000,000 (One million)"], ["eine Milliarde", "1,000,000,000 (One billion)"],
+            ["erste", "1st (First)"], ["zweite", "2nd (Second)"], ["dritte", "3rd (Third)"], ["vierte", "4th (Fourth)"]
+        ]
+    },
+
+    // --- 3. 日期与年份表达 ---
+    date_expressions: {
+        title: "📅 Dates & Years",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["ein halb", "A half (1/2)"],
+            ["ein Viertel", "A quarter (1/4)"],
+            ["neunzehnhundertneunundneunzig", "The year 1999"],
+            ["zweitausendvierzehn", "The year 2014"],
+            ["heute ist der erste März", "Today is March 1st"],
+            ["Berlin, zwölfter Vierter zweitausendzwei", "Berlin, April 12th 2002"]
+        ]
+    },
+
+    // --- 4. 时间与时钟 ---
+    uhrzeit: {
+        title: "🕒 Time & Clock",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["null Uhr drei", "12:03 AM / 00:03"],
+            ["sieben Uhr fünfzehn", "7:15 AM / 07:15"],
+            ["dreizehn Uhr siebzehn", "1:17 PM / 13:17"],
+            ["vierundzwanzig Uhr", "12:00 AM / Midnight"],
+            ["ein Uhr", "1 o'clock"],
+            ["fünf Minuten vor eins", "Five minutes to one"],
+            ["fünf Minuten nach eins", "Five minutes past one"],
+            ["Viertel vor zwei", "Quarter to two"],
+            ["Viertel nach zwei", "Quarter past two"],
+            ["halb drei", "Half past two (literally: half three)"]
+        ]
+    },
+
+    // --- 5. 时间计量与星期 ---
+    zeitangaben: {
+        title: "⏳ Time Units & Weekdays",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["die Sekunde", "The second"], ["die Minute", "The minute"], ["die Stunde", "The hour"],
+            ["der Tag", "The day"], ["die Woche", "The week"], ["das Jahr", "The year"],
+            ["der Wochentag", "The weekday"], ["das Wochenende", "The weekend"], ["am Wochenende", "At the weekend"],
+            ["der Montag", "Monday"], ["der Dienstag", "Tuesday"], ["der Mittwoch", "Wednesday"],
+            ["der Donnerstag", "Thursday"], ["der Freitag", "Friday"], ["der Samstag", "Saturday"],
+            ["der Sonntag", "Sunday"]
+        ]
+    },
+
+    // --- 6. 一天时间段与月份 ---
+    tageszeiten_monate: {
+        title: "🌅 Dayparts & Months",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Morgen", "The morning"], ["der Vormittag", "The forenoon / morning"], ["der Mittag", "The noon / midday"],
+            ["der Nachmittag", "The afternoon"], ["der Abend", "The evening"], ["die Nacht", "The night"],
+            ["der Januar", "January"], ["der Februar", "February"], ["der März", "March"],
+            ["der April", "April"], ["der Mai", "May"], ["der Juni", "June"],
+            ["der Juli", "July"], ["der August", "August"], ["der September", "September"],
+            ["der Oktober", "October"], ["der November", "November"], ["der Dezember", "December"]
+        ]
+    },
+
+    // --- 7. 季节、货币与度量衡 ---
+    jahreszeiten_masse: {
+        title: "❄️ Seasons & Measures",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Frühling", "Spring"], ["der Sommer", "Summer"], ["der Herbst", "Autumn / Fall"], ["der Winter", "Winter"],
+            ["ein Euro hundert Cent", "1 Euro = 100 Cents"],
+            ["ein Meter", "One meter (1 m)"], ["ein Zentimeter", "One centimeter (1 cm)"], ["ein Meter fünfzehn", "One meter fifteen (1.15 m)"],
+            ["zweihundert Kilometer", "Two hundred kilometers (200 km)"], ["ein Quadratmeter", "One square meter (1 m²)"],
+            ["ein Prozent", "One percent (1 %)"], ["ein Liter", "One liter (1 l)"], ["ein Gramm", "One gram (1 g)"],
+            ["ein Pfund", "One pound / 500 grams"], ["ein Kilo", "One kilogram (1 kg)"],
+            ["ein Grad unter Null", "One degree below zero (-1°)"],
+            ["minus ein Grad", "Minus one degree (-1°)"],
+            ["vier Grad über Null", "Four degrees above zero (+4°)"],
+            ["plus vier Grad", "Plus four degrees (+4°)"]
+        ]
+    },
+
+    // --- 8. 国家与国籍 (🌟 完整拆分男/女词卡) ---
+    countries: {
+        title: "🌍 Countries & Nationalities",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["Deutschland", "Germany"], 
+            ["deutsch", "German (adjective)"],
+            ["der Deutsche", "German man"], 
+            ["die Deutsche", "German woman"],
+            ["Europa", "Europe"], 
+            ["Europäer", "European man / people"], 
+            ["europäisch", "European (adjective)"],
+            ["die Türkei", "Turkey"], 
+            ["der Türke", "Turkish man"], 
+            ["die Türkin", "Turkish woman"], 
+            ["türkisch", "Turkish (adjective)"],
+            ["Finnland", "Finland"], 
+            ["der Finne", "Finnish man"], 
+            ["die Finnin", "Finnish woman"], 
+            ["finnisch", "Finnish (adjective)"],
+            ["Mexiko", "Mexico"], 
+            ["der Mexikaner", "Mexican man"], 
+            ["die Mexikanerin", "Mexican woman"], 
+            ["mexikanisch", "Mexican (adjective)"]
+        ]
+    },
+
+    // --- 9. 颜色与方位 ---
+    colors_directions: {
+        title: "🎨 Colors & Directions",
+        layout: "word",
+        speakType: "key",
+        items: [
+            ["schwarz", "Black"], ["weiß", "White"], ["grau", "Grey"], ["rot", "Red"],
+            ["blau", "Blue"], ["gelb", "Yellow"], ["grün", "Green"], ["braun", "Brown"],
+            ["der Norden", "The North"], ["der Süden", "The South"], ["der Westen", "The West"], ["der Osten", "The East"]
+        ]
+    },
+
+    a_words: {
+        title: "🏷️ 高频单词",
+        layout: "phrase",
+        speakType: "key", 
+        items: [
+            ["der Freund", "朋友 (阳性)"], ["die Familie", "家庭 (阴性)"], ["die Ehefrau", "妻子 (阴性)"], 
+            ["die Kinder", "孩子们 (复数)"], ["das Alter", "年龄 (中性)"], ["der Urlaub", "假期 (阳性)"], 
+            ["die Wohnung", "公寓 (阴性)"], ["das Meer", "大海 (中性)"], ["der Wohnraum", "起居室 (阳性)"], 
+            ["die Küche", "厨房 (阴性)"], ["das Bad", "浴室 (中性)"], ["das Formular", "表格 (中性)"], 
+            ["die Lösungen", "答案；解决方案 (复数)"], ["der Antwortbogen", "答题卡 (阳性)"], ["die Anzahl", "数量 (阴性)"], 
+            ["die Person", "人 (阴性)"], ["die Umgebung", "环境；周边 (阴性)"], ["der Bahnhof", "火车站 (阳性)"], 
+            ["die Frau", "女士；妻子 (阴性)"], ["die Freundin", "女朋友 (阴性)"], ["der Satz", "句子 (阳性)"], 
+            ["das Land", "国家 (中性)"], ["der Wohnort", "居住地 (阳性)"], ["die Sprache", "语言 (阴性)"], 
+            ["der Beruf", "职业 (阳性)"], ["das Hobby", "爱好 (中性)"], ["der Prüfer", "考官 (阳性)"], 
+            ["der Kollege", "同事 (阳性)"], ["das Wort", "单词 (中性)"], ["die Prüfungsnummer", "考号 (阴性)"], 
+            ["die Information", "信息 (阴性)"], ["die Wortkarte", "单词卡 (阴性)"], ["das Thema", "主题 (中性)"], 
+            ["der Kandidat", "考生 (阳性)"], ["das Wochenende", "周末 (中性)"], ["der Feierabend", "下班休闲时间 (阳性)"], 
+            ["der Sport", "运动 (阳性)"], ["das Fernsehen", "看电视 (中性)"], ["der Arbeitsplatz", "工作岗位 (阳性)"], 
+            ["die Pause", "休息 (阴性)"], ["die Firma", "公司 (阴性)"], ["der Computer", "电脑 (阳性)"], 
+            ["der Punkt", "分数；点 (阳性)"], ["die Gruppe", "小组 (阴性)"], ["Flugzeug", "飞机 (中性)"], 
+            ["Zug", "火车 (阳性)"], ["Auto", "汽车 (中性)"], ["brauchen", "需要 (及物动词)"], 
+            ["anreisen", "抵达 (不及物动词)"], ["abreisen", "启程 (不及物动词)"], ["besuchen", "拜访 (及物动词)"], 
+            ["abholen", "接人/取物 (及物动词)"], ["fragen", "提问 (及物动词)"], ["antworten", "回答 (不及物动词)"], 
+            ["kontrollieren", "检查；核对 (及物动词)"], ["buchstabieren", "拼写 (及物动词)"]
+        ]
+    },
+    b_phrases: {
+        title: "📂 核心短语/填表",
+        layout: "phrase",
+        speakType: "key", 
+        items: [
+            ["drei Kinder", "三个孩子"], ["Alter der Kinder", "孩子们的年龄"], ["zwei bis sieben Jahre alt", "2 到 7 岁"], 
+            ["Ostsee Urlaub", "波罗的海假期"], ["drei Wochen Urlaub", "三周假期"], ["ruhige Wohnung", "安静的公寓"], 
+            ["am Meer", "在海边"], ["zwei Schlafzimmer", "两间卧室"], ["nach Deutschland kommen", "来德国"], 
+            ["fünf fehlenden Informationen", "5 条缺失的信息"], ["Anzahl der Personen", "人数"], ["davon Kinder", "其中儿童"], 
+            ["Anreise", "抵达；行程 (填表高频)"], ["Abreise", "离开；启程 (填表高频)"], ["Ferienwohnungen", "度假公寓 (复数)"], 
+            ["nächste Woche", "下周"], ["zu Hause sein", "在家"], ["maximal zehn Punkte", "最多 10分"], 
+            ["sich vorstellen", "自我介绍"], ["laut lesen", "大声朗读"], ["maximal", "最多的；最大的 (形容词)"], 
+            ["circa / ca.", "大约；大概 (副词)"], ["Minuten", "分钟 (复数)"]
+        ]
+    },
+    c_sentences: {
+        title: "🗣️ 常用交流句型",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Brauchen Sie eine Küche?", "您需要厨房吗？"],
+            ["Wie reisen Sie an?", "您将如何抵达？"],
+            ["Ich kann dich nicht am Bahnhof abholen.", "我不能去火车站接你。"],
+            ["Du kannst mit dem Bus zu meiner Wohnung kommen.", "你可以坐公交车来我的公寓。"],
+            ["Du kannst mit der U-Bahn zu meiner Wohnung kommen.", "你可以坐地铁来我的公寓。"],
+            ["Meine Frau ist zu Hause.", "我的妻子在家。"],
+            ["Meine Freundin ist zu Hause.", "我的女朋友在家。"],
+            ["Bitte sprechen Sie langsam.", "请您说慢一点。"]
+        ]
+    },
+    d_long_sentences: {
+        title: "🚨 考场指令与求助长句",
+        layout: "long-sentence",
+        speakType: "key",
+        items: [
+            [
+                "vom fünfundzwanzigsten Juni bis zum fünfzehnten Juli", 
+                "从 6 月 25 日到 7 月 15 日（💡 听力与书写考试高频复杂时间结构）"
+            ],
+            [
+                "Füllen Sie das Formular sorgfältig aus.", 
+                "请您仔细地填写这份表格。（💡 考官核心阅读/写作指令）"
+            ],
+            [
+                "Ich kenne das Wort nicht. Was bedeutet das?", 
+                "我不认识这个单词。请问它是什么意思？（💡 口语考试万能求助句型）"
+            ],
+            [
+                "Bitte, wiederholen Sie.", 
+                "请您重复一遍。（💡 没听清考官或搭档说话时的必备礼貌用语）"
+            ]
+        ]
+    },
+// ========================================================
+// 💡 A1 电影剧本级别全量对话卡片（精简去噪 + 德英对照版）
+// ========================================================
+food_restaurant: {
+        title: "🍏 Food, Drink & Restaurant",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            // --- Fruits & Vegetables ---
+            ["der Apfel", "apple"],
+            ["die Äpfel", "apples (plural)"],
+            ["die Birne", "pear"],
+            ["die Birnen", "pears (plural)"],
+            ["die Tomate", "tomato"],
+            ["die Tomaten", "tomatoes (plural)"],
+            ["der Salat", "salad / lettuce"],
+            ["das Obst", "fruit"],
+
+            // --- Bakery & Staples ---
+            ["das Brot", "bread"],
+            ["die Brote", "breads (plural)"],
+            ["das Brötchen", "bread roll"],
+            ["die Brötchen", "bread rolls (plural)"],
+            ["die Butter", "butter"],
+            ["das Öl", "oil"],
+
+            // --- Meat & Fish ---
+            ["das Fleisch", "meat"],
+            ["der Schinken", "ham"],
+            ["die Schinken", "hams (plural)"],
+            ["der Fisch", "fish"],
+            ["die Fische", "fishes (plural)"],
+            ["das Hähnchen", "chicken"],
+            ["die Hähnchen", "chickens (plural)"],
+
+            // --- Drinks & Beverages ---
+            ["das Bier", "beer"],
+            ["der Kaffee", "coffee"],
+            ["der Tee", "tea"],
+            ["der Saft", "juice"],
+            ["trinken", "to drink"],
+            ["die Flasche", "bottle"],
+            ["die Flaschen", "bottles (plural)"],
+
+            // --- Sweets, Sides & Seasonings ---
+            ["der Kuchen", "cake"],
+            ["die Kuchen", "cakes (plural)"],
+            ["die Pommes frites", "french fries (plural)"],
+            ["das Salz", "salt"],
+            ["bitter", "bitter"],
+
+            // --- Dining & Body Sensations ---
+            ["der Appetit", "appetite"],
+            ["der Hunger", "hunger"],
+            ["der Durst", "thirst"],
+            ["das Café", "café"],
+            ["das Essen", "food / meal"],
+            ["essen", "to eat"],
+            ["schmecken", "to taste"],
+            ["grillen", "to grill / barbecue"],
+            ["die Speisekarte", "menu"],
+
+            // --- Household & General ---
+            ["der Kühlschrank", "refrigerator"],
+            ["die Lebensmittel", "groceries / food (plural)"]
+        ]
+    },
+	
+	food_chat: {
+        title: "💬 Kochen in der Küche",
+        layout: "dialogue", 
+        speakType: "key",
+        items: [
+            // --- Scene 1: Hunger and checking the fridge ---
+            ["Ich habe Hunger.", "Nico: I am hungry.", "right"],
+            ["Hast du auch Appetit?", "Nico: Do you also have an appetite?", "right"],
+            ["Ja, ich habe großen Hunger!", "Lisa: Yes, I am very hungry!", "left"],
+            ["Was haben wir im Kühlschrank?", "Lisa: What do we have in the refrigerator?", "left"],
+            ["Mal sehen, wo sind die Lebensmittel?", "Nico: Let's see, where are the groceries?", "right"],
+            ["Hier ist die Butter.", "Nico: Here is the butter.", "right"],
+            ["Und hier ist das Öl.", "Nico: And here is the oil.", "right"],
+
+            // --- Scene 2: Checking Fruits and Vegetables ---
+            ["Haben wir auch Gemüse und Obst?", "Lisa: Do we have vegetables and fruit too?", "left"],
+            ["Ja, hier ist eine Tomate.", "Nico: Yes, here is a tomato.", "right"],
+            ["Und ich sehe eine Birne.", "Nico: And I see a pear.", "right"],
+            ["Gibt es auch einen Apfel?", "Lisa: Is there also an apple?", "left"],
+            ["Nein, wir haben keinen Apfel.", "Nico: No, we don't have an apple.", "right"],
+            ["Aber der Salat hier ist frisch.", "Nico: But the salad here is fresh.", "right"],
+
+            // --- Scene 3: Deciding on the Main Course ---
+            ["Möchtest du Fleisch essen?", "Lisa: Would you like to eat meat?", "left"],
+            ["Hier ist noch Schinken.", "Lisa: There is still some ham here.", "left"],
+            ["Ich mag keinen Schinken.", "Nico: I don't like ham.", "right"],
+            ["Können wir das Hähnchen grillen?", "Nico: Can we grill the chicken?", "right"],
+            ["Gute Idee! Wir grillen das Hähnchen.", "Lisa: Good idea! We'll grill the chicken.", "left"],
+            ["Und dazu machen wir Pommes frites.", "Lisa: And we'll make french fries with it.", "left"],
+            ["Super! Brauchen wir noch Salz?", "Nico: Super! Do we still need salt?", "right"],
+            ["Ja, gib mir bitte das Salz.", "Lisa: Yes, please give me the salt.", "left"],
+
+            // --- Scene 4: Thirst and Drinks ---
+            ["Ich habe jetzt auch Durst.", "Nico: I am thirsty now too.", "right"],
+            ["Möchtest du ein Bier trinken?", "Lisa: Would you like to drink a beer?", "left"],
+            ["Nein danke, ich trinke lieber einen Saft.", "Nico: No thanks, I prefer to drink a juice.", "right"],
+            ["Hier ist eine Flasche Wasser für dich.", "Lisa: Here is a bottle of water for you.", "left"],
+            ["Ich trinke einen Kaffee.", "Lisa: I'll drink a coffee.", "left"],
+            ["Oder vielleicht einen Tee?", "Nico: Or maybe a tea?", "right"],
+
+            // --- Scene 5: Evaluation and Dessert ---
+            ["Das Essen riecht gut.", "Nico: The food smells good.", "right"],
+            ["Wie schmeckt es dir?", "Lisa: How does it taste to you?", "left"],
+            ["Es schmeckt sehr gut!", "Nico: It tastes very good!", "right"],
+            ["Der Salat ist nicht bitter.", "Nico: The salad is not bitter.", "right"],
+            ["Möchtest du noch ein Brötchen?", "Lisa: Would you like another bread roll?", "left"],
+            ["Nein danke, ich bin satt.", "Nico: No thanks, I'm full.", "right"],
+            ["Aber wir haben noch Kuchen!", "Lisa: But we still have cake!", "left"],
+            ["Schön, dann gehen wir später ins Café.", "Nico: Nice, then we'll go to the café later.", "right"]
+        ]
+    },
+
+
+    dialogues_all: {
+        title: "💬 Nico's Weg",
+        layout: "dialogue", 
+        speakType: "key",
+        items: [
+            // --- Scene 1: Formal Greetings (Office & Business) ---
+            ["Guten Morgen, Herr Müller.", "Woman: Good morning, Mr. Müller, how are you?", "left"],
+			["Wie geht es Ihnen?", "Woman: How are you?", "left"],
+            ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
+			["Danke, gut! Und Ihnen?", "Man: Fine, thanks! And you?", "right"],
+            ["Guten Morgen, Herr Müller, wie geht es Ihnen?", "Woman: Good morning, Mr. Müller, how are you?", "left"],
+            ["Guten Morgen, Frau Schneider. Danke, gut! Und Ihnen?", "Man: Good morning, Ms. Schneider. Fine, thanks! And you?", "right"],
+            ["Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
+            ["Guten Tag! Wie geht es Ihnen?", "Woman: Good day! How are you?", "left"],
+            ["Sehr gut, danke. Und Ihnen?", "Man: Very well, thanks. And you?", "right"],
+
+            // --- Scene 2: Informal Greetings (Family & Friends) ---
+            ["Hey, Lena! Na, wie geht’s?", "Man: Hey, Lena! So, how's it going?", "right"],
+            ["Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
+            ["Hallo, Sarah. Wie geht’s dir?", "Man: Hello, Sarah. How are you?", "right"],
+            ["Hi, Tom! Super, danke. Und dir?", "Woman: Hi, Tom! Great, thanks. And you?", "left"],
+
+            // --- Scene 3: The Beautiful Bag ---
+            ["Oh, schön!", "Emma: Oh, beautiful!", "left"],
+            ["Hm?", "Nico: Hm?", "right"],
+            ["Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
+            ["Entschuldigung? Schön?", "Nico: Excuse me? Beautiful?", "right"],
+            ["Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
+            ["Emma, komm jetzt! Entschuldigung!", "Lisa: Emma, come now! Excuse me!", "left"],
+            ["Adalbert-Stifter-Straße – Hallo!", "Nico: Adalbert-Stifter Street – Hello!", "right"],
+
+            // --- Scene 4: The Taxi & Meeting Plans ---
+            ["Mist!", "Emma: Shoot!", "left"],
+            ["Ja, ich bin gut angekommen.", "Man: Yes, I arrived safely.", "right"],
+            ["Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: You can leave the documents for the meeting at the hotel.", "right"],
+            ["Cool! Noch mal!", "Emma: Cool! One more time!", "left"],
+            ["Ins Zentrum bitte. Zum Königshof.", "Man: To the city center, please. To the Königshof.", "right"],
+            ["Ins Zentrum, zum Königshof.", "Taxi Driver: To the city center, to the Königshof.", "left"],
+            ["Ins Restaurant Königshof oder zum Hotel Königshof?", "Taxi Driver: To the Königshof restaurant or to the Königshof hotel?", "left"],
+            ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
+            ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
+            ["Hey, stopp!", "Nico: Hey, stop!", "right"],
+
+			// --- Scene 5: Goodbyes at the Station (Ultra-Fine Split) ---
+            ["Tschüss, Martina.", "Man: Goodbye, Martina.", "left"],
+            ["Gute Reise!", "Man: Have a good trip!", "left"],
+            ["Mach’s gut, Herbert.", "Woman: Take care, Herbert.", "right"],
+            ["Bis bald!", "Woman: See you soon!", "right"],
+            ["Tschüss!", "Man: Bye!", "left"],
+            ["Auf Wiedersehen, Herr Tillmanns.", "Woman: Goodbye, Mr. Tillmanns.", "left"],
+            ["Gute Reise!", "Woman: Have a good trip!", "left"],
+            ["Danke schön!", "Man: Thank you very much!", "right"],
+            ["Auf Wiedersehen, Frau Scholl.", "Man: Goodbye, Ms. Scholl.", "right"],
+
+            // --- Scene 6: Offering Help & Looking for Yara ---
+            ["Alles okay?", "Lisa: Everything okay?", "left"],
+            ["Brauchst du Hilfe?", "Lisa: Do you need help?", "left"],
+            ["Hilfe, help? Do you need help?", "Lisa: Help, help? Do you need help?", "left"],
+            ["Ja! Hilfe!", "Nico: Yes! Help!", "right"],
+            ["Wo ist die Tasche?", "Lisa: Where is the bag?", "left"],
+            ["Die Tasche ist … gone … in the ... Taxi!", "Nico: The bag is... gone... in the... taxi!", "right"],
+            ["Die Tasche ist weg in dem Taxi?", "Lisa: The bag is gone in the taxi?", "left"],
+            ["Wohin willst du?", "Lisa: Where do you want to go?", "left"],
+            ["Wohin? Willst du ins Zentrum?", "Lisa: Where? Do you want to go to the city center?", "left"],
+            ["Zentrum, ja!", "Nico: Center, yes!", "right"],
+            ["Yara.", "Nico: Yara.", "right"],
+            ["Wer ist Yara?", "Lisa: Who is Yara?", "left"],
+            ["Meine ... aunt?", "Nico: My... aunt?", "right"],
+            ["Deine Tante?", "Lisa: Your aunt?", "left"],
+            ["Nicht schlecht!", "Lisa: Not bad!", "left"],
+            ["Du willst zu deiner Tante? Zu Yara?", "Lisa: You want to go to your aunt? To Yara?", "left"],
+            ["Hast du die Adresse?", "Lisa: Do you have the address?", "left"],
+            ["Adresse: Straße, Hausnummer?", "Lisa: Address: street, house number?", "left"],
+            ["Andel … Adelschiffstraße?", "Nico: Andel... Adelschiff Street?", "right"],
+            ["Die kenn ich nicht …", "Lisa: I don't know that one...", "left"],
+            ["Komm, wir helfen dir!", "Lisa: Come on, we'll help you!", "left"],
+            ["Yippie!", "Emma: Yippee!", "left"],
+
+            // --- Scene 7: Emma Explains Her Family ---
+            ["Emma! Mein Name ist Emma!", "Emma: Emma! My name is Emma!", "left"],
+            ["Und das ist meine Tante.", "Emma: And this is my aunt.", "left"],
+            ["Deine Mama?", "Nico: Your mom?", "right"],
+            ["Nein, Lisa ist nicht meine Mama.", "Emma: No, Lisa is not my mom.", "left"],
+            ["Sie ist meine Tante.", "Emma: She is my aunt.", "left"],
+            ["Meine Mama ... fliegt nach Amerika.", "Emma: My mom... is flying to America.", "left"],
+            ["Sie arbeitet da.", "Emma: She works there.", "left"],
+            ["Bitte!", "Emma: Here you go!", "left"],
+            ["Danke.", "Nico: Thank you.", "right"],
+            ["Nico.", "Nico: Nico.", "right"],
+            ["Mein Name ist Nico.", "Nico: My name is Nico.", "right"],
+            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+            ["Hallo, Emma.", "Nico: Hello, Emma.", "right"],
+
+            // --- Scene 8: The Introduction Confusion at the Gas Station ---
+            ["Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
+            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+            ["Hallo.", "Lisa: Hello.", "left"],
+            ["Also: Hallo, wie heißt du?", "Lisa: So: Hello, what's your name?", "left"],
+            ["Hallo, ich heiße Nico.", "Nico: Hello, my name is Nico.", "right"],
+            ["Und wie heißt du?", "Nico: And what's your name?", "right"],
+            ["Ich heiße Lisa.", "Lisa: My name is Lisa.", "left"],
+            ["Nein, du heißt Nico.", "Emma: No, your name is Nico.", "left"],
+            ["Das ist Emma. Emma spinnt gerade.", "Lisa: This is Emma. Emma is being silly right now.", "left"],
+            ["Ich … heiße …", "Emma: My... name... is...", "left"],
+            ["Ey!", "Emma: Hey!", "left"],
+            ["Emma!", "Lisa: Emma!", "left"],
+            ["Aber jetzt ist das „N“ weg!", "Emma: But now the 'N' is gone!", "left"],
+            ["Das war Nico!", "Emma: That was Nico!", "left"],
+            ["Ich?", "Nico: Me?", "right"],
+            ["Moment bitte.", "Lisa: Just a moment, please.", "left"],
+            ["Ich muss noch kurz tanken.", "Lisa: I need to fill up the tank real quick.", "left"],
+
+            // --- Scene 9: Catching the Taxi Driver ---
+            ["Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
+            ["Nico! Stopp!", "Lisa & Nico: Nico! Stop!", "left"],
+            ["Sag mal, spinnst du? Was ist denn?", "Taxi Driver: Hey, are you crazy? What's going on?", "left"],
+            ["Die Tasche!", "Nico: The bag!", "right"],
+            ["Oh, oh …", "Emma: Oh, oh...", "left"],
+            ["Die Tasche? Welche Tasche?", "Taxi Driver: The bag? Which bag?", "left"],
+            ["Warte, Emma!", "Lisa: Wait, Emma!", "left"],
+            ["Die … die Tasche in there!", "Nico: The... the bag in there!", "right"],
+            ["Da ist keine Tasche.", "Taxi Driver: There is no bag there.", "left"],
+            ["Hallo, ich bin Lisa Brunner.", "Lisa: Hello, I am Lisa Brunner.", "left"],
+            ["Das ist Nico. Nico sucht seine Tasche.", "Lisa: This is Nico. Nico is looking for his bag.", "left"],
+            ["Und?", "Taxi Driver: And?", "left"],
+            ["Ist Nicos Tasche in Ihrem Taxi?", "Lisa: Is Nico's bag in your taxi?", "left"],
+            ["Nicos Tasche? Nein.", "Taxi Driver: Nico's bag? No.", "left"],
+            ["Die Tasche ist nicht im Taxi.", "Taxi Driver: The bag is not in the taxi.", "left"],
+            ["Nein. Wo?", "Nico: No. Where?", "right"],
+            ["Keine Ahnung, wo deine Tasche is.", "Taxi Driver: No idea where your bag is.", "left"],
+            ["Hier ist die Tasche nicht.", "Taxi Driver: The bag is not here.", "left"],
+            ["Komm, wir suchen die Tasche!", "Lisa: Come on, let's look for the bag!", "left"],
+            ["Suchen. Komm, Nico!", "Lisa: Search. Come on, Nico!", "left"],
+
+            // --- Scene 10: Meeting Max ---
+            ["Hallo, Lisa!", "Max: Hello, Lisa!", "left"],
+            ["Hallo, Max, wie geht es dir?", "Lisa: Hello, Max, how are you?", "left"],
+            ["Super. Und dir?", "Max: Great. And you?", "left"],
+            ["Auch gut, danke.", "Lisa: Also good, thanks.", "left"],
+            ["Hi, Emma.", "Max: Hi, Emma.", "left"],
+            ["Hallo, Max.", "Emma: Hello, Max.", "left"],
+            ["Und du? Wer bist du?", "Max: And you? Who are you?", "left"],
+            ["Ich bin Nico.", "Nico: I am Nico.", "right"],
+            ["Hallo, Nico.", "Max: Hello, Nico.", "left"],
+            ["Du kommst nicht aus Deutschland, oder?", "Max: You are not from Germany, right?", "left"],
+            ["Entschuldigung?", "Nico: Excuse me?", "right"],
+            ["Woher kommst du?", "Max: Where are you from?", "left"],
+            ["Ich bin Max und ich komme aus Deutschland.", "Max: I am Max and I come from Germany.", "left"],
+            ["Und ich bin Emma und ich komme auch aus Deutschland.", "Emma: And I am Emma and I also come from Germany.", "left"],
+            ["Ich bin Nico.", "Nico: I am Nico.", "right"],
+            ["Ich komme aus ... Spain?", "Nico: I come from... Spain?", "right"],
+            ["Spanien?", "Max: Spain?", "left"],
+            ["Spanien, ja!", "Nico: Spain, yes!", "right"],
+            ["Ich komme aus Spanien.", "Nico: I come from Spain.", "right"],
+            ["Und woher kommst du genau?", "Max: And where exactly are you from?", "left"],
+            ["Woher?", "Nico: Where?", "right"],
+            ["Wo wohnst du in Spanien?", "Max: Where do you live in Spain?", "left"],
+            ["Wohnst du in Barcelona oder in Madrid?", "Max: Do you live in Barcelona or in Madrid?", "left"],
+            ["Sevilla!", "Nico: Seville!", "right"],
+            ["Du wohnst in Sevilla?", "Max: You live in Seville?", "left"],
+            ["Ich wohne in Sevilla.", "Nico: I live in Seville.", "right"],
+
+            // --- Scene 12: Explaining the Problem to Max ---
+            ["Nico war auch am Flughafen.", "Lisa: Nico was also at the airport.", "left"],
+            ["Er hat ein Problem: Seine Tasche ist weg.", "Lisa: He has a problem: His bag is gone.", "left"],
+            ["Oh. Und was machst du jetzt?", "Max: Oh. And what are you doing now?", "left"],
+            ["Ich suche meine Tante.", "Nico: I am looking for my aunt.", "right"],
+            ["Nicos Tante wohnt hier in Deutschland.", "Lisa: Nico's aunt lives here in Germany.", "left"],
+            ["Aber er hat die Adresse nicht.", "Lisa: But he doesn't have the address.", "left"],
+            ["Kannst du deine Tante anrufen?", "Max: Can you call your aunt?", "left"],
+            ["Meine Tasche ist weg.", "Nico: My bag is gone.", "right"],
+            ["Mein Telefon ist weg.", "Nico: My phone is gone.", "right"],
+            ["Und die Nummer ist weg.", "Nico: And the number is gone.", "right"],
+            ["Und deine Familie?", "Max: And your family?", "left"],
+            ["Kannst du deine Familie anrufen?", "Max: Can you call your family?", "left"],
+            ["Nein.", "Nico: No.", "right"],
+            ["Kann dein Vater nicht helfen?", "Emma: Can't your father help?", "left"],
+            ["Er ist doch bei der Polizei.", "Emma: He's with the police, after all.", "left"],
+            ["Gute Idee!", "Lisa: Good idea!", "left"],
+            ["Vater?", "Nico: Father?", "right"],
+            ["Mein Vater ist Polizist.", "Lisa: My father is a police officer.", "left"],
+            ["Police. Vielleicht hilft er uns. Moment!", "Lisa: Police. Maybe he can help us. Just a moment!", "left"],
+
+            // --- Scene 13: Calling Lisa's Father (The Police) ---
+            ["Polizeirevier Ost, Brunner hier.", "Father: Police Station East, Brunner here.", "left"],
+            ["Ah, hallo, Lisa. Wie geht’s dir?", "Father: Ah, hello, Lisa. How are you?", "left"],
+            ["Was ist los? Geht es Emma nicht gut?", "Father: What's wrong? Is Emma not doing well?", "left"],
+            ["Doch, keine Sorge! Emma geht es gut.", "Lisa: Yes, don't worry! Emma is doing well.", "left"],
+            ["Aber Nico hat ein Problem.", "Lisa: But Nico has a problem.", "left"],
+            ["Er war auch am Flughafen.", "Lisa: He was also at the airport.", "left"],
+            ["Er kommt aus Spanien.", "Lisa: He comes from Spain.", "left"],
+            ["Ja, genau.", "Lisa: Yes, exactly.", "left"],
+            ["Er kommt aus Spanien und er hat ein Problem.", "Lisa: He comes from Spain and he has a problem.", "left"],
+            ["Seine Tasche ist weg und er spricht nicht gut Deutsch.", "Lisa: His bag is gone and he doesn't speak German well.", "left"],
+            ["Hat er Papiere?", "Father: Does he have documents?", "left"],
+            ["Einen Ausweis oder einen Pass?", "Father: An ID or a passport?", "left"],
+            ["Hast du einen Pass? Passport?", "Lisa: Do you have a passport? Passport?", "left"],
+            ["Nein.", "Nico: No.", "right"],
+            ["Nicos Pass ist in seiner Tasche.", "Lisa: Nico's passport is in his bag.", "left"],
+            ["Aber er hat ein Foto von seiner Tante.", "Lisa: But he has a photo of his aunt.", "left"],
+            ["Sie wohnt auch hier in Deutschland, aber Nico hat die Adresse nicht.", "Lisa: She also lives here in Germany, but Nico doesn't have the address.", "left"],
+            ["Meine Tante … She has a bicycle shop.", "Nico: My aunt... She has a bicycle shop.", "right"],
+            ["Seine Tante hat ein Geschäft, ein Fahrradgeschäft.", "Lisa: His aunt has a shop, a bicycle shop.", "left"],
+            ["Wir suchen also eine Adresse.", "Father: So we are looking for an address.", "left"],
+            ["Die Frau hat ein Fahrradgeschäft. Richtig?", "Father: The woman has a bicycle shop. Right?", "left"],
+            ["Okay. Dann komm doch mit Nico zur Polizei.", "Father: Okay. Then why don't you come to the police station with Nico.", "left"],
+            ["Danke, Papa! Bis später!", "Lisa: Thanks, Dad! See you later!", "left"],
+            ["Und?", "Max: And?", "left"],
+            ["Vielleicht kann mein Vater uns helfen.", "Lisa: Maybe my father can help us.", "left"],
+            ["Er hilft. He helps.", "Lisa: He helps. He helps.", "left"],
+            ["Super!", "Max: Super!", "left"],
+            ["Danke!", "Nico: Thank you!", "right"],
+            ["Mach’s gut, Lisa. Ciao, Emma.", "Max: Take care, Lisa. Bye, Emma.", "left"],
+            ["Tschüss, Max!", "Lisa & Emma: Goodbye, Max!", "left"],
+            ["Ciao, Nico. Viel Erfolg!", "Max: Bye, Nico. Good luck!", "left"],
+
+            // --- Scene 14: Arriving at the House & Counting Numbers ---
+            ["Wie ist die Hausnummer, Emma? 38 oder 83?", "Lisa: What's the house number, Emma? 38 or 83?", "left"],
+            ["Moment… 11.", "Emma: Wait... 11.", "left"],
+            ["Ah, ja. Dann sind wir richtig hier.", "Lisa: Ah, yes. Then we are in the right place here.", "left"],
+            ["Da.", "Nico: There.", "right"],
+            ["Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
+            ["Wie viele?", "Nico: How many?", "right"],
+            ["Das sind 31 Zahlen.", "Emma: That makes 31 numbers.", "left"],
+            ["31 …", "Nico: 31...", "right"],
+            ["Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
+            ["Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
+            ["... sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: ... six, seven, eight, nine, ten, eleven, twelve.", "left"],
+            ["Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Nico: Six, seven, eight, nine, ten, eleven, twelve.", "right"],
+            ["Was ist das?", "Nico: What is this?", "right"],
+            ["Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
+            ["Geburtstag?", "Nico: Birthday?", "right"],
+            ["Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
+            ["Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
+            ["Ja, und das hier ist ein Geschenk.", "Lisa: Yes, and this here is a gift.", "left"],
+            ["Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
+            ["Tschüss, Emma!", "Nico: Bye, Emma!", "right"]
+        ]
+    }
+
+
+};
+
+// ==========================================
+// 核心状态控制中心 (加入 LocalStorage 记忆)
+// ==========================================
+let currentActivePageId = 'review'; 
+let isAutoplayRunning = false;
+let currentPlayIndex = 0;
+
+let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
+
+function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    if (currentTheme === 'dark') document.body.removeAttribute('data-theme');
+    else document.body.setAttribute('data-theme', 'dark');
+}
+
+function speak(text, callback) {
+    let cleanedText = text;
+    
+    // 🌟 只针对单个大写字母（包括德语变音Ä、Ö、Ü），强行转为小写
+    if (text.length === 1 && text === text.toUpperCase()) {
+        cleanedText = text.toLowerCase();
+    }
+
+    // 🌟 针对德语变音符号 Ä、Ö、Ü 独立出现时的特殊拦截
+    if (cleanedText === 'ä' || cleanedText === 'Ä') cleanedText = 'eh';
+    if (cleanedText === 'ö' || cleanedText === 'Ö') cleanedText = 'öh';
+    if (cleanedText === 'ü' || cleanedText === 'Ü') cleanedText = 'üh';
+    if (cleanedText === 'ß' || cleanedText === 'ẞ') cleanedText = 'esszett';
+    
+    const u = new SpeechSynthesisUtterance(cleanedText);
+    u.lang = "de-DE";
+    if (callback) {
+        u.onend = () => callback();
+        u.onerror = () => callback();
+    }
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+}
+
+function toggleStar(e, pageKey, itemIndex, starEl) {
+    e.stopPropagation(); 
+    const item = appData[pageKey].items[itemIndex];
+    const uniqueId = `${pageKey}-${itemIndex}`;
+    const existingIndex = starredItems.findIndex(x => x.id === uniqueId);
+    
+    if (existingIndex > -1) {
+        starredItems.splice(existingIndex, 1);
+        document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.remove('active'));
+    } else {
+        starredItems.push({
+            id: uniqueId,
+            pageKey: pageKey,
+            layout: appData[pageKey].layout,
+            speakType: appData[pageKey].speakType,
+            data: item
+        });
+        document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.add('active'));
+    }
+    
+    localStorage.setItem('german_helper_stars', JSON.stringify(starredItems));
+    renderReviewPage();
+}
+
+function renderReviewPage() {
+    const reviewGrid = document.getElementById('review-grid');
+    if (!reviewGrid) return;
+    
+    reviewGrid.removeAttribute('class'); 
+    reviewGrid.innerHTML = '';
+    
+    if (starredItems.length === 0) {
+        reviewGrid.innerHTML = `<div class="empty-tip">⭐ 还没有标记重点。点击其他页面卡片上的星星，不熟的内容会同步到这里，刷新也不会丢失哦！</div>`;
+        return;
+    }
+    
+    reviewGrid.className = 'grid-sentence'; 
+    
+    starredItems.forEach((fav) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'grid-sentence'; 
+        
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]}, this)">★</span>
+            <div class='big'>${fav.data[0]}</div>
+            <div class='small'>${fav.data[1]}</div>
+        `;
+        
+        const textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
+        card.onclick = () => {
+            stopAutoplay();
+            speak(textToSpeak);
+        };
+        
+        wrapper.appendChild(card);
+        reviewGrid.appendChild(wrapper);
+    });
+}
+
+function syncStarUIFromStorage() {
+    starredItems.forEach(fav => {
+        document.querySelectorAll(`.star-${fav.id}`).forEach(el => el.classList.add('active'));
+    });
+}
+
+function startAutoplay() {
+    const activePage = document.getElementById(`page-${currentActivePageId}`);
+    const cards = activePage.querySelectorAll('.card');
+    
+    if (currentPlayIndex >= cards.length || cards.length === 0) {
+        stopAutoplay();
+        return;
+    }
+
+    cards.forEach(c => c.classList.remove('playing'));
+    const currentCard = cards[currentPlayIndex];
+    
+    if (currentCard.parentElement.classList.contains('empty-tip') || currentCard.classList.contains('empty-tip')) {
+        stopAutoplay();
+        return;
+    }
+    
+    currentCard.classList.add('playing');
+    currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    let textToSpeak = "";
+    if (currentActivePageId === 'review') {
+        const fav = starredItems[currentPlayIndex];
+        textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
+    } else {
+        const pageConfig = appData[currentActivePageId];
+        const itemData = pageConfig.items[currentPlayIndex];
+        textToSpeak = pageConfig.speakType === 'key' ? itemData[0] : itemData[1];
+    }
+
+    speak(textToSpeak, () => {
+        if (!isAutoplayRunning) return;
+        currentPlayIndex++;
+        setTimeout(() => {
+            if (isAutoplayRunning) startAutoplay();
+        }, 1400); 
+    });
+}
+
+function stopAutoplay() {
+    isAutoplayRunning = false;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
+    const btn = document.getElementById('autoPlayBtn');
+    btn.innerHTML = "▶";
+    btn.classList.remove('playing');
+}
+
+function toggleAutoPlay() {
+    if (isAutoplayRunning) {
+        stopAutoplay();
+    } else {
+        isAutoplayRunning = true;
+        currentPlayIndex = 0;
+        const btn = document.getElementById('autoPlayBtn');
+        btn.innerHTML = "⏸";
+        btn.classList.add('playing');
+        startAutoplay();
+    }
+}
+
+// ==========================================
+// 初始化 DOM 渲染引擎
+// ==========================================
+const tabsContainer = document.getElementById('tabsContainer');
+const pagesContainer = document.getElementById('pagesContainer');
+
+const reviewBtn = document.createElement('button');
+reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
+reviewBtn.onclick = () => switchPage('review');
+tabsContainer.appendChild(reviewBtn);
+
+const reviewPageDiv = document.createElement('div');
+reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
+const reviewGridDiv = document.createElement('div');
+reviewGridDiv.id = 'review-grid';
+reviewPageDiv.appendChild(reviewGridDiv);
+pagesContainer.appendChild(reviewPageDiv);
+
+Object.keys(appData).forEach((key) => {
+    const pageConfig = appData[key];
+    
+    const btn = document.createElement('button');
+    btn.id = `btn-${key}`; btn.innerHTML = pageConfig.title;
+    btn.onclick = () => switchPage(key);
+    tabsContainer.appendChild(btn);
+
+    const pageDiv = document.createElement('div');
+    pageDiv.id = `page-${key}`; pageDiv.className = 'page';
+    
+    const gridDiv = document.createElement('div');
+    const layoutStyle = pageConfig.layout || 'word';
+    gridDiv.className = `grid-${layoutStyle}`;
+
+    pageConfig.items.forEach((item, itemIndex) => {
+        if (layoutStyle === 'dialogue') {
+            const direction = item[2] || 'left'; 
+            const avatarTxt = direction === 'left' ? '😼' : '🐶';
+            
+            const row = document.createElement('div');
+            row.className = `dialogue-row ${direction}`;
+            
+            row.innerHTML = `
+                <div class="dialogue-content">
+                    <div class="chat-avatar">${avatarTxt}</div>
+                    <div class="card">
+                        <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                        <div class='big'>${item[0]}</div>
+                        <div class='small'>${item[1]}</div>
+                    </div>
+                </div>
+            `;
+            
+            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
+            row.querySelector('.card').onclick = () => {
+                stopAutoplay();
+                speak(textToSpeak);
+            };
+            gridDiv.appendChild(row);
+            
+        } else {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                <div class='big'>${item[0]}</div>
+                <div class='small'>${item[1]}</div>
+            `;
+            
+            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
+            card.onclick = () => {
+                stopAutoplay();
+                speak(textToSpeak);
+            };
+            gridDiv.appendChild(card);
+        }
+    });
+
+    pageDiv.appendChild(gridDiv);
+    pagesContainer.appendChild(pageDiv);
+});
+
+renderReviewPage();
+syncStarUIFromStorage();
+
+function switchPage(pageId) {
+    stopAutoplay();
+    currentActivePageId = pageId;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`page-${pageId}`).classList.add('show');
+    document.getElementById(`btn-${pageId}`).classList.add('active');
+}
+</script>
+
+</body>
+</html>
