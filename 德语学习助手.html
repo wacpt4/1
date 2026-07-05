@@ -1232,8 +1232,8 @@ function initPracticeGame() {
 }
 
 function renderPracticeGroup() {
-    const startIdx = practiceGroupIndex * 8;
-    const currentGroup = practiceItemsAll.slice(startIdx, startIdx + 8);
+    const startIdx = practiceGroupIndex * 6;
+    const currentGroup = practiceItemsAll.slice(startIdx, startIdx + 6);
 
     if (currentGroup.length === 0) {
         alert("🎉 太棒了！本页的所有内容全部练习完毕！");
