@@ -32,6 +32,15 @@
     --chat-left-bg: rgba(255, 255, 255, 0.95);
     --chat-right-bg: #e8e5ff;
     --chat-avatar-bg: #5f4bb6;
+
+    /* 🎮 连连看练习模式专属颜色 */
+    --match-selected: #cbd5e1;
+    --match-success-bg: #e2fbe8;
+    --match-success-border: #22c55e;
+    --match-success-text: #15803d;
+    --match-error-bg: #fef2f2;
+    --match-error-border: #ef4444;
+    --match-error-text: #b91c1c;
 }
 
 [data-theme="dark"] {
@@ -58,6 +67,15 @@
     --chat-left-bg: rgba(255, 255, 255, 0.08);
     --chat-right-bg: rgba(95, 75, 182, 0.3);
     --chat-avatar-bg: #818cf8;
+
+    /* 🎮 连连看练习模式专属颜色 */
+    --match-selected: rgba(99, 102, 241, 0.4);
+    --match-success-bg: rgba(34, 197, 94, 0.2);
+    --match-success-border: #22c55e;
+    --match-success-text: #86efac;
+    --match-error-bg: rgba(239, 68, 68, 0.15);
+    --match-error-border: #f87171;
+    --match-error-text: #fca5a5;
 }
 
 body {
@@ -76,16 +94,17 @@ body {
     background: var(--btn-bg); color: var(--btn-color); border-radius: 20px; box-shadow: var(--card-shadow);
 }
 
-.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; padding: 0 10px; }
 button {
     border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; font-size: 15px;
     background: var(--btn-bg); color: var(--btn-color); transition: 0.2s; box-shadow: var(--card-shadow);
+    -webkit-tap-highlight-color: transparent;
 }
 button:hover { background: var(--card-hover-bg); }
 .tabs button.active { background: var(--btn-active-bg); color: var(--btn-active-color); font-weight: bold; }
 
 .page { display: none; max-width: 1200px; margin: auto; padding: 20px; box-sizing: border-box; }
-.page.show { display: block; }
+.page.show { display: block !important; }
 
 /* ==========================================
    🧱 基础网格布局样式 
@@ -174,6 +193,8 @@ button:hover { background: var(--card-hover-bg); }
     transition: transform 0.2s, background 0.2s, box-shadow 0.2s, border-color 0.2s;
     box-shadow: var(--card-shadow);
     border: 1px solid var(--card-border);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 .card:hover {
     transform: translateY(-3px);
@@ -197,15 +218,17 @@ button:hover { background: var(--card-hover-bg); }
 }
 
 /* ==========================================
-   🚀 核心修改：左上角悬浮播放面板
+   🚀 左上角悬浮播放面板
    ========================================== */
 .play-panel { 
     position: fixed; 
     left: 20px; 
     top: 20px; 
     z-index: 9999; 
+    display: flex;
+    gap: 8px;
 }
-.autoplay-btn { 
+.autoplay-btn, .practice-mode-btn { 
     font-size: 14px; 
     padding: 10px 18px; 
     border-radius: 20px; 
@@ -214,29 +237,124 @@ button:hover { background: var(--card-hover-bg); }
     font-weight: bold; 
     letter-spacing: 0.5px; 
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-    opacity: 1.0;                   /* 🌟 核心：默认高度，完全不影响视线 */
     transition: opacity 0.2s, transform 0.2s, background 0.2s;
 }
-.autoplay-btn:hover { 
-    opacity: 1.0;    	/* 🌟 鼠标悬停时恢复清晰 */
-	background: #4f46e5;
+.autoplay-btn:hover, .practice-mode-btn:hover { 
+    background: #4f46e5;
     transform: scale(1.05);
 }
-.autoplay-btn.playing { 
+.autoplay-btn.playing, .practice-mode-btn.active { 
     background: #ef4444; 
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
-    opacity: 1.0;                    /* 🌟 正在播放时维持较高可见度，提醒正在运行 */
-}
-.autoplay-btn.playing:hover {
-    opacity: 1.0;
 }
 .empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
+
+/* ==========================================
+   🎮 连连看练习模式专属 UI 布局 
+   ========================================== */
+.practice-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(10px);
+}
+.practice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 5px;
+}
+.practice-header h3 { margin: 0; color: var(--text-main); font-size: 1.2rem; }
+.practice-board {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.practice-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.practice-card {
+    padding: 18px 14px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    border-radius: 16px;
+    text-align: center;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, opacity 0.3s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.practice-card:hover {
+    transform: translateY(-2px);
+    background: var(--card-hover-bg);
+    box-shadow: var(--card-hover-shadow);
+}
+/* 选中状态：呼吸质感 */
+.practice-card.selected {
+    background: var(--match-selected) !important;
+    border-color: var(--btn-active-bg) !important;
+    transform: scale(0.97) translateY(0);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+/* 🎉 配对成功状态：轻微弹跳放大后变绿淡出 */
+.practice-card.success {
+    animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    background: var(--match-success-bg) !important;
+    border-color: var(--match-success-border) !important;
+    color: var(--match-success-text) !important;
+    cursor: default;
+    pointer-events: none; /* 彻底禁用点击 */
+}
+/* ❌ 配对失败状态：红色框+轻微震动动画 */
+.practice-card.error {
+    animation: errorShake 0.4s ease-in-out;
+    background: var(--match-error-bg) !important;
+    border-color: var(--match-error-border) !important;
+    color: var(--match-error-text) !important;
+}
+
+/* ==========================================
+   🎬 连连看丝滑核心动画
+   ========================================== */
+@keyframes successPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+    100% { transform: scale(1); opacity: 0.5; }
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+/* 📱 手机移动端极端适配 */
+@media (max-width: 600px) {
+    .play-panel { left: 10px; top: 15px; }
+    .header { padding-top: 65px; }
+    .practice-board { gap: 12px; }
+    .practice-card { padding: 14px 8px; font-size: 0.95rem; min-height: 32px; }
+}
 </style>
 </head>
 <body>
 
 <div class="play-panel">
     <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶</button>
+    <button id="practiceBtn" class="practice-mode-btn" onclick="togglePracticeMode()">🎮 练习</button>
 </div>
 
 <div class="header">
@@ -886,11 +1004,19 @@ food_restaurant: {
 };
 
 // ==========================================
-// 核心状态控制中心 (加入 LocalStorage 记忆)
+// 核心状态控制中心
 // ==========================================
 let currentActivePageId = 'review'; 
 let isAutoplayRunning = false;
 let currentPlayIndex = 0;
+
+// 🎮 连连看模块专属状态
+let isPracticeModeActive = false;
+let practiceItemsAll = []; 
+let practiceGroupIndex = 0;
+let selectedGermanCard = null;
+let selectedTranslationCard = null;
+let isAnimating = false; // 防止手速过快打破动画队列
 
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
 
@@ -902,13 +1028,7 @@ function toggleTheme() {
 
 function speak(text, callback) {
     let cleanedText = text;
-    
-    // 🌟 只针对单个大写字母（包括德语变音Ä、Ö、Ü），强行转为小写
-    if (text.length === 1 && text === text.toUpperCase()) {
-        cleanedText = text.toLowerCase();
-    }
-
-    // 🌟 针对德语变音符号 Ä、Ö、Ü 独立出现时的特殊拦截
+    if (text.length === 1 && text === text.toUpperCase()) { cleanedText = text.toLowerCase(); }
     if (cleanedText === 'ä' || cleanedText === 'Ä') cleanedText = 'eh';
     if (cleanedText === 'ö' || cleanedText === 'Ö') cleanedText = 'öh';
     if (cleanedText === 'ü' || cleanedText === 'Ü') cleanedText = 'üh';
@@ -951,7 +1071,6 @@ function toggleStar(e, pageKey, itemIndex, starEl) {
 function renderReviewPage() {
     const reviewGrid = document.getElementById('review-grid');
     if (!reviewGrid) return;
-    
     reviewGrid.removeAttribute('class'); 
     reviewGrid.innerHTML = '';
     
@@ -961,7 +1080,6 @@ function renderReviewPage() {
     }
     
     reviewGrid.className = 'grid-sentence'; 
-    
     starredItems.forEach((fav) => {
         const wrapper = document.createElement('div');
         wrapper.className = 'grid-sentence'; 
@@ -979,7 +1097,6 @@ function renderReviewPage() {
             stopAutoplay();
             speak(textToSpeak);
         };
-        
         wrapper.appendChild(card);
         reviewGrid.appendChild(wrapper);
     });
@@ -1024,9 +1141,7 @@ function startAutoplay() {
     speak(textToSpeak, () => {
         if (!isAutoplayRunning) return;
         currentPlayIndex++;
-        setTimeout(() => {
-            if (isAutoplayRunning) startAutoplay();
-        }, 1400); 
+        setTimeout(() => { if (isAutoplayRunning) startAutoplay(); }, 1400); 
     });
 }
 
@@ -1040,6 +1155,7 @@ function stopAutoplay() {
 }
 
 function toggleAutoPlay() {
+    if (isPracticeModeActive) { quitPracticeMode(); } 
     if (isAutoplayRunning) {
         stopAutoplay();
     } else {
@@ -1053,7 +1169,200 @@ function toggleAutoPlay() {
 }
 
 // ==========================================
-// 初始化 DOM 渲染引擎
+// 🎮 连连看练习模式核心引擎（UI 丝滑重构版）
+// ==========================================
+function togglePracticeMode() {
+    if (isAutoplayRunning) stopAutoplay(); 
+
+    const btn = document.getElementById('practiceBtn');
+    if (isPracticeModeActive) {
+        quitPracticeMode();
+    } else {
+        isPracticeModeActive = true;
+        btn.innerHTML = "❌ 退出";
+        btn.classList.add('active');
+        initPracticeGame();
+    }
+}
+
+function quitPracticeMode() {
+    isPracticeModeActive = false;
+    isAnimating = false;
+    const btn = document.getElementById('practiceBtn');
+    btn.innerHTML = "🎮 练习";
+    btn.classList.remove('active');
+    
+    clearPracticeView();
+    switchPage(currentActivePageId);
+}
+
+function clearPracticeView() {
+    const existBox = document.getElementById('practice-box');
+    if (existBox) existBox.remove();
+}
+
+function initPracticeGame() {
+    clearPracticeView();
+
+    let sourceItems = [];
+    if (currentActivePageId === 'review') {
+        sourceItems = starredItems.map(x => x.data);
+    } else {
+        sourceItems = appData[currentActivePageId].items;
+    }
+
+    if (sourceItems.length === 0) {
+        alert("当前页面没有可以练习的词汇哦！");
+        quitPracticeMode();
+        return;
+    }
+
+    practiceItemsAll = sourceItems.map((item, idx) => {
+        return { id: idx, german: item[0], translation: item[1] };
+    });
+
+    practiceGroupIndex = 0;
+    
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.setProperty('display', 'none', 'important');
+        p.classList.remove('show');
+    });
+
+    renderPracticeGroup();
+}
+
+function renderPracticeGroup() {
+    const startIdx = practiceGroupIndex * 8;
+    const currentGroup = practiceItemsAll.slice(startIdx, startIdx + 8);
+
+    if (currentGroup.length === 0) {
+        alert("🎉 太棒了！本页的所有内容全部练习完毕！");
+        quitPracticeMode();
+        return;
+    }
+
+    clearPracticeView();
+
+    const practiceBox = document.createElement('div');
+    practiceBox.id = 'practice-box';
+    practiceBox.className = 'practice-container';
+
+    const totalGroups = Math.ceil(practiceItemsAll.length / 6);
+    practiceBox.innerHTML = `
+        <div class="practice-header">
+            <h3>🎮 连连看模式 (${practiceGroupIndex + 1}/${totalGroups} 组)</h3>
+            <span style="font-size:13px; opacity:0.75; letter-spacing:0.3px;"> 🚀</span>
+        </div>
+        <div class="practice-board">
+            <div class="practice-column" id="german-col"></div>
+            <div class="practice-column" id="translation-col"></div>
+        </div>
+    `;
+
+    const pagesContainer = document.getElementById('pagesContainer');
+    pagesContainer.appendChild(practiceBox);
+
+    const germanCol = document.getElementById('german-col');
+    const translationCol = document.getElementById('translation-col');
+
+    const shuffledGerman = [...currentGroup].sort(() => Math.random() - 0.5);
+    const shuffledTranslation = [...currentGroup].sort(() => Math.random() - 0.5);
+
+    selectedGermanCard = null;
+    selectedTranslationCard = null;
+    isAnimating = false;
+
+    shuffledGerman.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'practice-card';
+        card.innerText = item.german;
+        card.dataset.id = item.id;
+        card.onclick = () => { if(!isAnimating) selectGermanCard(card, item.german); };
+        germanCol.appendChild(card);
+    });
+
+    shuffledTranslation.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'practice-card';
+        card.innerText = item.translation;
+        card.dataset.id = item.id;
+        card.onclick = () => { if(!isAnimating) selectTranslationCard(card); };
+        translationCol.appendChild(card);
+    });
+}
+
+function selectGermanCard(cardElement, text) {
+    if (cardElement.classList.contains('success')) return;
+    speak(text);
+
+    if (selectedGermanCard) { selectedGermanCard.classList.remove('selected'); }
+    selectedGermanCard = cardElement;
+    selectedGermanCard.classList.add('selected');
+    checkMatch();
+}
+
+function selectTranslationCard(cardElement) {
+    if (cardElement.classList.contains('success')) return;
+
+    if (selectedTranslationCard) { selectedTranslationCard.classList.remove('selected'); }
+    selectedTranslationCard = cardElement;
+    selectedTranslationCard.classList.add('selected');
+    checkMatch();
+}
+
+// ⚡ 核心丝滑匹配逻辑：增加选错闪烁震动
+function checkMatch() {
+    if (!selectedGermanCard || !selectedTranslationCard) return;
+
+    const germanId = selectedGermanCard.dataset.id;
+    const translationId = selectedTranslationCard.dataset.id;
+
+    if (germanId === translationId) {
+        // ✅ 匹配成功
+        const c1 = selectedGermanCard;
+        const c2 = selectedTranslationCard;
+        
+        c1.classList.remove('selected');
+        c2.classList.remove('selected');
+        c1.classList.add('success');
+        c2.classList.add('success');
+
+        selectedGermanCard = null;
+        selectedTranslationCard = null;
+
+        const remaining = document.querySelectorAll('.practice-card:not(.success)');
+        if (remaining.length === 0) {
+            isAnimating = true;
+            setTimeout(() => {
+                practiceGroupIndex++;
+                renderPracticeGroup();
+            }, 700);
+        }
+    } else {
+        // ❌ 匹配失败：触发闪红框震动动效
+        isAnimating = true;
+        const c1 = selectedGermanCard;
+        const c2 = selectedTranslationCard;
+        
+        c1.classList.remove('selected');
+        c2.classList.remove('selected');
+        c1.classList.add('error');
+        c2.classList.add('error');
+
+        selectedGermanCard = null;
+        selectedTranslationCard = null;
+
+        // 动效结束后洗掉错误状态，恢复原样
+        setTimeout(() => {
+            c1.classList.remove('error');
+            c2.classList.remove('error');
+            isAnimating = false; // 解锁点击队列
+        }, 400); // 严格对齐 CSS 动画时长 0.4s
+    }
+}
+
+// ==========================================
+// 初始化 DOM 渲染引擎与页面切换逻辑
 // ==========================================
 const tabsContainer = document.getElementById('tabsContainer');
 const pagesContainer = document.getElementById('pagesContainer');
@@ -1072,7 +1381,6 @@ pagesContainer.appendChild(reviewPageDiv);
 
 Object.keys(appData).forEach((key) => {
     const pageConfig = appData[key];
-    
     const btn = document.createElement('button');
     btn.id = `btn-${key}`; btn.innerHTML = pageConfig.title;
     btn.onclick = () => switchPage(key);
@@ -1089,10 +1397,8 @@ Object.keys(appData).forEach((key) => {
         if (layoutStyle === 'dialogue') {
             const direction = item[2] || 'left'; 
             const avatarTxt = direction === 'left' ? '😼' : '🐶';
-            
             const row = document.createElement('div');
             row.className = `dialogue-row ${direction}`;
-            
             row.innerHTML = `
                 <div class="dialogue-content">
                     <div class="chat-avatar">${avatarTxt}</div>
@@ -1103,14 +1409,12 @@ Object.keys(appData).forEach((key) => {
                     </div>
                 </div>
             `;
-            
             const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
             row.querySelector('.card').onclick = () => {
                 stopAutoplay();
                 speak(textToSpeak);
             };
             gridDiv.appendChild(row);
-            
         } else {
             const card = document.createElement('div');
             card.className = 'card';
@@ -1119,7 +1423,6 @@ Object.keys(appData).forEach((key) => {
                 <div class='big'>${item[0]}</div>
                 <div class='small'>${item[1]}</div>
             `;
-            
             const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
             card.onclick = () => {
                 stopAutoplay();
@@ -1128,7 +1431,6 @@ Object.keys(appData).forEach((key) => {
             gridDiv.appendChild(card);
         }
     });
-
     pageDiv.appendChild(gridDiv);
     pagesContainer.appendChild(pageDiv);
 });
@@ -1139,10 +1441,25 @@ syncStarUIFromStorage();
 function switchPage(pageId) {
     stopAutoplay();
     currentActivePageId = pageId;
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+
     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    document.getElementById(`page-${pageId}`).classList.add('show');
-    document.getElementById(`btn-${pageId}`).classList.add('active');
+    const targetBtn = document.getElementById(`btn-${pageId}`);
+    if (targetBtn) targetBtn.classList.add('active');
+
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.removeProperty('display'); 
+        p.classList.remove('show');
+    });
+
+    if (isPracticeModeActive) {
+        document.querySelectorAll('.page').forEach(p => {
+            p.style.setProperty('display', 'none', 'important');
+        });
+        initPracticeGame();
+    } else {
+        const targetPage = document.getElementById(`page-${pageId}`);
+        if (targetPage) targetPage.classList.add('show');
+    }
 }
 </script>
 
