@@ -107,6 +107,21 @@ button:hover { background: var(--card-hover-bg); }
 .page.show { display: block !important; }
 
 /* ==========================================
+   🖼️ 自适应卡片图片样式（限制尺寸）
+   ========================================== */
+.card-img {
+    max-width: 100%;
+    max-height: 130px;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    pointer-events: none; /* 放置误触拖拽图片 */
+}
+
+/* ==========================================
    🧱 基础网格布局样式 
    ========================================== */
 .grid-word { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
@@ -127,6 +142,7 @@ button:hover { background: var(--card-hover-bg); }
 .grid-long-sentence .card { text-align: left; padding: 24px; display: flex; flex-direction: column; gap: 10px; }
 .grid-long-sentence .big { font-size: 1.15rem; font-weight: bold; line-height: 1.5; color: var(--text-card-big); border-bottom: 1px dashed var(--card-border); padding-bottom: 8px; padding-right: 25px; }
 .grid-long-sentence .small { font-size: 1.05rem; line-height: 1.6; color: var(--text-card-small); margin: 0; }
+.grid-long-sentence .card-img { max-height: 180px; align-self: center; }
 
 /* ==========================================
    🚨 对话布局 (Dialogue) 
@@ -302,23 +318,23 @@ button:hover { background: var(--card-hover-bg); }
     background: var(--card-hover-bg);
     box-shadow: var(--card-hover-shadow);
 }
-/* 选中状态：呼吸质感 */
+/* 选中状态 */
 .practice-card.selected {
     background: var(--match-selected) !important;
     border-color: var(--btn-active-bg) !important;
     transform: scale(0.97) translateY(0);
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
 }
-/* 🎉 配对成功状态：轻微弹跳放大后变绿淡出 */
+/* 🎉 配对成功状态 */
 .practice-card.success {
     animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     background: var(--match-success-bg) !important;
     border-color: var(--match-success-border) !important;
     color: var(--match-success-text) !important;
     cursor: default;
-    pointer-events: none; /* 彻底禁用点击 */
+    pointer-events: none;
 }
-/* ❌ 配对失败状态：红色框+轻微震动动画 */
+/* ❌ 配对失败状态 */
 .practice-card.error {
     animation: errorShake 0.4s ease-in-out;
     background: var(--match-error-bg) !important;
@@ -326,9 +342,6 @@ button:hover { background: var(--card-hover-bg); }
     color: var(--match-error-text) !important;
 }
 
-/* ==========================================
-   🎬 连连看丝滑核心动画
-   ========================================== */
 @keyframes successPop {
     0% { transform: scale(1); }
     50% { transform: scale(1.06); }
@@ -341,7 +354,6 @@ button:hover { background: var(--card-hover-bg); }
     40%, 80% { transform: translateX(6px); }
 }
 
-/* 📱 手机移动端极端适配 */
 @media (max-width: 600px) {
     .play-panel { left: 10px; top: 15px; }
     .header { padding-top: 65px; }
@@ -368,7 +380,8 @@ button:hover { background: var(--card-hover-bg); }
 
 <script>
 // ==========================================
-// 💡 数据源
+// 💡 数据源（支持在第三/四项填入图片 URL）
+// 格式：[德语, 翻译, 图片URL(可选)]
 // ==========================================
 const appData = {
     alphabet: {
@@ -486,18 +499,33 @@ const appData = {
         ]
     },
 
-    // --- 6. 一天时间段与月份 ---
+// --- 6. 一天时间段与月份 ---
     tageszeiten_monate: {
         title: "🌅 Dayparts & Months",
         layout: "phrase",
         speakType: "key",
         items: [
-            ["der Morgen", "The morning"], ["der Vormittag", "The forenoon / morning"], ["der Mittag", "The noon / midday"],
-            ["der Nachmittag", "The afternoon"], ["der Abend", "The evening"], ["die Nacht", "The night"],
-            ["der Januar", "January"], ["der Februar", "February"], ["der März", "March"],
-            ["der April", "April"], ["der Mai", "May"], ["der Juni", "June"],
-            ["der Juli", "July"], ["der August", "August"], ["der September", "September"],
-            ["der Oktober", "October"], ["der November", "November"], ["der Dezember", "December"]
+// --- 🌅 一天的时间段 (逻辑：从晨光到深夜) ---
+            ["der Morgen", "The morning", "https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-cloud_26c5.png"], // 🌅 06:00-09:00 清晨日出
+            ["der Vormittag", "The forenoon / morning", "https://em-content.zobj.net/source/microsoft-teams/363/sun-with-face_1f31e.png"], // ☀️ 09:00-12:00 艳阳上午
+            ["der Mittag", "The noon / midday", "https://em-content.zobj.net/source/microsoft-teams/363/sun_2600-fe0f.png"], // 🍕 12:00 午饭时间
+			["der Nachmittag", "The afternoon", "https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-small-cloud_1f324-fe0f.png"], // 🌤️ 午后斜阳 / 充实的下午
+            ["der Abend", "The evening", "https://em-content.zobj.net/source/microsoft-teams/363/sunset_1f307.png"], // 🌇 18:00-21:00 傍晚日落
+            ["die Nacht", "The night", "https://em-content.zobj.net/source/microsoft-teams/363/crescent-moon_1f319.png"], // 🌙 21:00+ 深夜月亮
+
+            // --- 📅 12 个月份 (逻辑：四季轮转 + 标志性节日/事件) ---
+            ["der Januar", "January", "https://em-content.zobj.net/source/microsoft-teams/363/fireworks_1f386.png"], // 🎆 1月：元旦新年烟花
+            ["der Februar", "February", "https://em-content.zobj.net/source/microsoft-teams/363/heart-with-ribbon_1f49d.png"], // 💝 2月：情人节
+            ["der März", "March", "https://em-content.zobj.net/source/microsoft-teams/363/seedling_1f331.png"], // 🌱 3月：初春发芽
+            ["der April", "April", "https://em-content.zobj.net/source/microsoft-teams/363/hatching-chick_1f423.png"], // 🐣 4月：复活节小鸡/破壳
+            ["der Mai", "May", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"], // 🐝 5月：盛春蜜蜂采蜜
+			["der Juni", "June", "https://em-content.zobj.net/source/microsoft-teams/363/hibiscus_1f33a.png"], // 🌺 6月：盛夏花朵，夏日初绽
+            ["der Juli", "July", "https://em-content.zobj.net/source/microsoft-teams/363/beach-with-umbrella_1f3d6-fe0f.png"], // 🏖️ 7月：暑假海滩度假
+            ["der August", "August", "https://em-content.zobj.net/source/microsoft-teams/363/watermelon_1f349.png"], // 🍉 8月：酷暑吃西瓜
+            ["der September", "September", "https://em-content.zobj.net/source/microsoft-teams/363/school_1f3eb.png"], // 🏫 9月：开学季
+            ["der Oktober", "October", "https://em-content.zobj.net/source/microsoft-teams/363/jack-o-lantern_1f383.png"], // 🎃 10月：万圣节南瓜
+            ["der November", "November", "https://em-content.zobj.net/source/microsoft-teams/363/maple-leaf_1f341.png"], // 🍁 11月：深秋枫叶
+            ["der Dezember", "December", "https://em-content.zobj.net/source/microsoft-teams/363/christmas-tree_1f384.png"] // 🎄 12月：圣诞节
         ]
     },
 
@@ -548,15 +576,27 @@ const appData = {
         ]
     },
 
-    // --- 9. 颜色与方位 ---
+// --- 9. 颜色与方位 ---
     colors_directions: {
         title: "🎨 Colors & Directions",
         layout: "word",
         speakType: "key",
         items: [
-            ["schwarz", "Black"], ["weiß", "White"], ["grau", "Grey"], ["rot", "Red"],
-            ["blau", "Blue"], ["gelb", "Yellow"], ["grün", "Green"], ["braun", "Brown"],
-            ["der Norden", "The North"], ["der Süden", "The South"], ["der Westen", "The West"], ["der Osten", "The East"]
+			// --- 🎨 颜色 (微软 3D 纯色与画材，100% 稳定加载) ---
+			["schwarz", "Black", "https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"], // 🐈‍⬛ 黑色 (3D黑猫)
+            ["weiß", "White", "https://em-content.zobj.net/source/microsoft-teams/363/dove_1f54a-fe0f.png"], // 🕊️ 白色 (3D白鸽)
+            ["grau", "Grey", "https://em-content.zobj.net/source/microsoft-teams/363/rock_1faa8.png"], // 🪨 灰色 (3D灰石)
+            ["rot", "Red", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"], // 🍎 红色
+            ["blau", "Blue", "https://em-content.zobj.net/source/microsoft-teams/363/blue-book_1f4d8.png"], // 📘 蓝色
+            ["gelb", "Yellow", "https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"], // 🍋 黄色
+            ["grün", "Green", "https://em-content.zobj.net/source/microsoft-teams/363/green-apple_1f34f.png"], // 🍏 绿色
+            ["braun", "Brown", "https://em-content.zobj.net/source/microsoft-teams/363/wood_1fab5.png"], // 🪵 棕色/木色
+
+            // --- 🧭 方位 (指南针与方向箭头) ---
+            ["der Norden", "The North", "https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"], // ⬆️ 北方 (向上)
+            ["der Süden", "The South", "https://em-content.zobj.net/source/microsoft-teams/363/down-arrow_2b07-fe0f.png"], // ⬇️ 南方 (向下)
+            ["der Westen", "The West", "https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"], // ⬅️ 西方 (向左)
+            ["der Osten", "The East", "https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"] // ➡️ 东方 (向右)
         ]
     },
 
@@ -1010,13 +1050,12 @@ let currentActivePageId = 'review';
 let isAutoplayRunning = false;
 let currentPlayIndex = 0;
 
-// 🎮 连连看模块专属状态
 let isPracticeModeActive = false;
 let practiceItemsAll = []; 
 let practiceGroupIndex = 0;
 let selectedGermanCard = null;
 let selectedTranslationCard = null;
-let isAnimating = false; // 防止手速过快打破动画队列
+let isAnimating = false;
 
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
 
@@ -1084,10 +1123,15 @@ function renderReviewPage() {
         const wrapper = document.createElement('div');
         wrapper.className = 'grid-sentence'; 
         
+        const isDialogue = fav.layout === 'dialogue';
+        const imgUrl = isDialogue ? fav.data[3] : fav.data[2];
+        const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
+
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
             <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]}, this)">★</span>
+            ${imgHtml}
             <div class='big'>${fav.data[0]}</div>
             <div class='small'>${fav.data[1]}</div>
         `;
@@ -1169,7 +1213,7 @@ function toggleAutoPlay() {
 }
 
 // ==========================================
-// 🎮 连连看练习模式核心引擎（UI 丝滑重构版）
+// 🎮 连连看练习模式
 // ==========================================
 function togglePracticeMode() {
     if (isAutoplayRunning) stopAutoplay(); 
@@ -1232,8 +1276,8 @@ function initPracticeGame() {
 }
 
 function renderPracticeGroup() {
-    const startIdx = practiceGroupIndex * 6;
-    const currentGroup = practiceItemsAll.slice(startIdx, startIdx + 6);
+    const startIdx = practiceGroupIndex * 8;
+    const currentGroup = practiceItemsAll.slice(startIdx, startIdx + 8);
 
     if (currentGroup.length === 0) {
         alert("🎉 太棒了！本页的所有内容全部练习完毕！");
@@ -1247,7 +1291,7 @@ function renderPracticeGroup() {
     practiceBox.id = 'practice-box';
     practiceBox.className = 'practice-container';
 
-    const totalGroups = Math.ceil(practiceItemsAll.length / 6);
+    const totalGroups = Math.ceil(practiceItemsAll.length / 8);
     practiceBox.innerHTML = `
         <div class="practice-header">
             <h3>🎮 连连看模式 (${practiceGroupIndex + 1}/${totalGroups} 组)</h3>
@@ -1310,7 +1354,6 @@ function selectTranslationCard(cardElement) {
     checkMatch();
 }
 
-// ⚡ 核心丝滑匹配逻辑：增加选错闪烁震动
 function checkMatch() {
     if (!selectedGermanCard || !selectedTranslationCard) return;
 
@@ -1318,7 +1361,6 @@ function checkMatch() {
     const translationId = selectedTranslationCard.dataset.id;
 
     if (germanId === translationId) {
-        // ✅ 匹配成功
         const c1 = selectedGermanCard;
         const c2 = selectedTranslationCard;
         
@@ -1339,7 +1381,6 @@ function checkMatch() {
             }, 700);
         }
     } else {
-        // ❌ 匹配失败：触发闪红框震动动效
         isAnimating = true;
         const c1 = selectedGermanCard;
         const c2 = selectedTranslationCard;
@@ -1352,12 +1393,11 @@ function checkMatch() {
         selectedGermanCard = null;
         selectedTranslationCard = null;
 
-        // 动效结束后洗掉错误状态，恢复原样
         setTimeout(() => {
             c1.classList.remove('error');
             c2.classList.remove('error');
-            isAnimating = false; // 解锁点击队列
-        }, 400); // 严格对齐 CSS 动画时长 0.4s
+            isAnimating = false;
+        }, 400);
     }
 }
 
@@ -1396,7 +1436,10 @@ Object.keys(appData).forEach((key) => {
     pageConfig.items.forEach((item, itemIndex) => {
         if (layoutStyle === 'dialogue') {
             const direction = item[2] || 'left'; 
+            const imgUrl = item[3] || '';
+            const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
             const avatarTxt = direction === 'left' ? '😼' : '🐶';
+            
             const row = document.createElement('div');
             row.className = `dialogue-row ${direction}`;
             row.innerHTML = `
@@ -1404,6 +1447,7 @@ Object.keys(appData).forEach((key) => {
                     <div class="chat-avatar">${avatarTxt}</div>
                     <div class="card">
                         <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                        ${imgHtml}
                         <div class='big'>${item[0]}</div>
                         <div class='small'>${item[1]}</div>
                     </div>
@@ -1416,10 +1460,14 @@ Object.keys(appData).forEach((key) => {
             };
             gridDiv.appendChild(row);
         } else {
+            const imgUrl = item[2] || '';
+            const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
+
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
+                ${imgHtml}
                 <div class='big'>${item[0]}</div>
                 <div class='small'>${item[1]}</div>
             `;
