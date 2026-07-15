@@ -384,6 +384,86 @@ button:hover { background: var(--card-hover-bg); }
 // 格式：[德语, 翻译, 图片URL(可选)]
 // ==========================================
 const appData = {
+animals: {
+    title: "🐾 Animals",
+    layout: "phrase",
+    speakType: "key",
+    items: [
+
+        // --- 🏠 宠物 (Common Pets) ---
+        ["der Hund", "The Dog", "https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
+        ["die Katze", "The Cat", "https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
+        ["der Vogel", "The Bird", "https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
+        ["der Fisch", "The Fish", "https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
+        ["der Hamster", "The Hamster", "https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
+        ["das Kaninchen", "The Rabbit", "https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
+
+        // --- 🐄 农场动物 (Farm Animals) ---
+        ["die Kuh", "The Cow", "https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
+        ["das Schwein", "The Pig", "https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
+        ["das Pferd", "The Horse", "https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
+        ["das Schaf", "The Sheep", "https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
+        ["die Ziege", "The Goat", "https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
+        ["das Huhn", "The Chicken", "https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
+        ["die Ente", "The Duck", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"],
+
+        // --- 🌍 世界野生动物 (Wild Animals) ---
+        ["der Löwe", "The Lion", "https://em-content.zobj.net/source/microsoft-teams/363/lion_1f981.png"],
+        ["der Tiger", "The Tiger", "https://em-content.zobj.net/source/microsoft-teams/363/tiger_1f405.png"],
+        ["der Bär", "The Bear", "https://em-content.zobj.net/source/microsoft-teams/363/bear_1f43b.png"],
+        ["der Affe", "The Monkey", "https://em-content.zobj.net/source/microsoft-teams/363/monkey_1f412.png"],
+        ["der Elefant", "The Elephant", "https://em-content.zobj.net/source/microsoft-teams/363/elephant_1f418.png"],
+        ["die Giraffe", "The Giraffe", "https://em-content.zobj.net/source/microsoft-teams/363/giraffe_1f992.png"],
+        ["das Zebra", "The Zebra", "https://em-content.zobj.net/source/microsoft-teams/363/zebra_1f993.png"],
+
+        // --- 🐞 小动物 (Small Animals) ---
+        ["der Schmetterling", "The Butterfly", "https://em-content.zobj.net/source/microsoft-teams/363/butterfly_1f98b.png"],
+        ["die Biene", "The Bee", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"],
+        ["der Käfer", "The Beetle", "https://em-content.zobj.net/source/microsoft-teams/363/beetle_1fab2.png"],
+        ["die Spinne", "The Spider", "https://em-content.zobj.net/source/microsoft-teams/363/spider_1f577-fe0f.png"],
+        ["die Schnecke", "The Snail", "https://em-content.zobj.net/source/microsoft-teams/363/snail_1f40c.png"],
+
+        // --- 🌊 海洋动物 (Sea Animals) ---
+        ["der Delfin", "The Dolphin", "https://em-content.zobj.net/source/microsoft-teams/363/dolphin_1f42c.png"],
+        ["der Wal", "The Whale", "https://em-content.zobj.net/source/microsoft-teams/363/whale_1f40b.png"],
+        ["der Hai", "The Shark", "https://em-content.zobj.net/source/microsoft-teams/363/shark_1f988.png"],
+        ["die Schildkröte", "The Turtle", "https://em-content.zobj.net/source/microsoft-teams/363/turtle_1f422.png"]
+    ]
+},
+
+
+german_animals: {
+    title: "🇩🇪 German Wildlife",
+    layout: "phrase",
+    speakType: "key",
+    items: [
+
+        // --- 🌲 德国森林动物 (Forest Animals) ---
+        ["der Hirsch", "The Stag", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfRQatYYwJUuGZXWeb7OY64jD4jmKOQeMImIq-yqZi4w&s=10"],
+        ["das Reh", "The Roe Deer", "https://cdn-ilbamed.nitrocdn.com/cDunbKRFwbKoFAKUGFpmRYmvLJoAWJCm/assets/images/optimized/rev-db8508d/elen-hunting.bg/wp-content/uploads/2024/06/roe-deer.jpg"],
+        ["das Wildschwein", "The Wild Boar", "https://em-content.zobj.net/source/microsoft-teams/363/boar_1f417.png"],
+        ["der Fuchs", "The Fox", "https://em-content.zobj.net/source/microsoft-teams/363/fox_1f98a.png"],
+        ["der Igel", "The Hedgehog", "https://em-content.zobj.net/source/microsoft-teams/363/hedgehog_1f994.png"],
+        ["der Wolf", "The Wolf", "https://em-content.zobj.net/source/microsoft-teams/363/wolf_1f43a.png"],
+        ["der Biber", "The Beaver", "https://em-content.zobj.net/source/microsoft-teams/363/beaver_1f9ab.png"],
+
+		["das Eichhörnchen", "The Squirrel", "https://www.vetmed.wisc.edu/wp-content/uploads/2022/01/joshua-j-cotten-XQqbauEeors-unsplash-2048x1365.jpg"],
+
+        // --- 🐦 德国鸟类 (German Birds) ---
+		["der Storch", "The Stork", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQoUPh99p297hu7uXC2CaPZCOUyDAXHdrIrnFichSK5bApEXTymKn6oB1SZ-bUPdz-HCUtApxQ5QTZvD3baHWa_mfaqv-OsRFfaOT56CcsZQ&s=10"],
+		
+        ["der Adler", "The Eagle", "https://em-content.zobj.net/source/microsoft-teams/363/eagle_1f985.png"],
+        ["die Eule", "The Owl", "https://em-content.zobj.net/source/microsoft-teams/363/owl_1f989.png"],
+        ["der Schwan", "The Swan", "https://em-content.zobj.net/source/microsoft-teams/363/swan_1f9a2.png"],
+
+        // --- 🐸 德国水域动物 (German Water Animals) ---
+        ["der Frosch", "The Frog", "https://em-content.zobj.net/source/microsoft-teams/363/frog_1f438.png"],
+
+        // --- 🐝 德国花园动物 (Garden Animals) ---
+        ["der Marienkäfer", "The Ladybug", "https://em-content.zobj.net/source/microsoft-teams/363/lady-beetle_1f41e.png"]
+    ]
+},
+
     alphabet: {
         title: "🔤 字母表",
         layout: "word",
