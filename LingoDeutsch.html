@@ -632,6 +632,9 @@ button:hover { background: var(--card-hover-bg); }
 // ==========================================
 const appData = {
 
+    // ------------------------------------------
+    // 🔤 Basics & Numbers
+    // ------------------------------------------
     alphabet: {
         title: "🔤 ABC",
         layout: "word",
@@ -646,7 +649,7 @@ const appData = {
         ]
     },
 
-	numbers: {
+    numbers_base: {
         title: "🔢 0-12",
         layout: "word",
         speakType: "key", 
@@ -662,13 +665,8 @@ const appData = {
         layout: "word",
         speakType: "key",
         items: [
-            ["dreizehn", "13 (Thirteen)"],
-            ["vierzehn", "14 (Fourteen)"],
-            ["fünfzehn", "15 (Fifteen)"],
-            ["sechzehn", "16 (Sixteen)"],
-            ["siebzehn", "17 (Seventeen)"],
-            ["achtzehn", "18 (Eighteen)"],
-            ["neunzehn", "19 (Nineteen)"]
+            ["dreizehn", "13 (Thirteen)"], ["vierzehn", "14 (Fourteen)"], ["fünfzehn", "15 (Fifteen)"],
+            ["sechzehn", "16 (Sixteen)"], ["siebzehn", "17 (Seventeen)"], ["achtzehn", "18 (Eighteen)"], ["neunzehn", "19 (Nineteen)"]
         ]
     },
 
@@ -677,14 +675,9 @@ const appData = {
         layout: "word",
         speakType: "key",
         items: [
-            ["zwanzig", "20 (Twenty)"],
-            ["dreißig", "30 (Thirty)"],
-            ["vierzig", "40 (Forty)"],
-            ["fünfzig", "50 (Fifty)"],
-            ["sechzig", "60 (Sixty)"],
-            ["siebzig", "70 (Seventy)"],
-            ["achtzig", "80 (Eighty)"],
-            ["neunzig", "90 (Ninety)"]
+            ["zwanzig", "20 (Twenty)"], ["dreißig", "30 (Thirty)"], ["vierzig", "40 (Forty)"],
+            ["fünfzig", "50 (Fifty)"], ["sechzig", "60 (Sixty)"], ["siebzig", "70 (Seventy)"],
+            ["achtzig", "80 (Eighty)"], ["neunzig", "90 (Ninety)"]
         ]
     },
 
@@ -693,41 +686,34 @@ const appData = {
         layout: "phrase",
         speakType: "key",
         items: [
-            ["dreißig", "30 (Thirty)"],
-            ["einunddreißig", "31 (Thirty-one)"],
-            ["zweiunddreißig", "32 (Thirty-two)"],
-            ["dreiunddreißig", "33 (Thirty-three)"],
-            ["vierunddreißig", "34 (Thirty-four)"],
-            ["fünfunddreißig", "35 (Thirty-five)"],
-            ["sechsunddreißig", "36 (Thirty-six)"],
-            ["siebenunddreißig", "37 (Thirty-seven)"],
-            ["achtunddreißig", "38 (Thirty-eight)"],
-            ["neununddreißig", "39 (Thirty-nine)"]
+            ["dreißig", "30 (Thirty)"], ["einunddreißig", "31 (Thirty-one)"], ["zweiunddreißig", "32 (Thirty-two)"],
+            ["dreiunddreißig", "33 (Thirty-three)"], ["vierunddreißig", "34 (Thirty-four)"], ["fünfunddreißig", "35 (Thirty-five)"],
+            ["sechsunddreißig", "36 (Thirty-six)"], ["siebenunddreißig", "37 (Thirty-seven)"], ["achtunddreißig", "38 (Thirty-eight)"], ["neununddreißig", "39 (Thirty-nine)"]
         ]
     },
 
     numbers_advanced: {
-        title: "🔢 Big&Th",
+        title: "🔢 Scale",
         layout: "phrase",
         speakType: "key",
         items: [
-			["hundert", "100 (One hundred)"], ["hunderteins", "101 (One hundred and one)"], ["zweihundert", "200 (Two hundred)"],
+            ["hundert", "100 (One hundred)"], ["hunderteins", "101 (One hundred and one)"], ["zweihundert", "200 (Two hundred)"],
             ["tausend", "1,000 (One thousand)"], ["eine Million", "1,000,000 (One million)"], ["eine Milliarde", "1,000,000,000 (One billion)"],
             ["erste", "1st (First)"], ["zweite", "2nd (Second)"], ["dritte", "3rd (Third)"], ["vierte", "4th (Fourth)"]
         ]
     },
 
+    // ------------------------------------------
+    // 📅 Time & Calendar
+    // ------------------------------------------
     date_expressions: {
         title: "📅 Dates",
         layout: "sentence",
         speakType: "key",
         items: [
-            ["ein halb", "A half (1/2)"],
-            ["ein Viertel", "A quarter (1/4)"],
-            ["neunzehnhundertneunundneunzig", "The year 1999"],
-            ["zweitausendvierzehn", "The year 2014"],
-            ["heute ist der erste März", "Today is March 1st"],
-            ["Berlin, zwölfter Vierter zweitausendzwei", "Berlin, April 12th 2002"]
+            ["ein halb", "A half (1/2)"], ["ein Viertel", "A quarter (1/4)"],
+            ["neunzehnhundertneunundneunzig", "The year 1999"], ["zweitausendvierzehn", "The year 2014"],
+            ["heute ist der erste März", "Today is March 1st"], ["Berlin, zwölfter Vierter zweitausendzwei", "Berlin, April 12th 2002"]
         ]
     },
 
@@ -736,21 +722,16 @@ const appData = {
         layout: "phrase",
         speakType: "key",
         items: [
-            ["null Uhr drei", "12:03 AM / 00:03"],
-            ["sieben Uhr fünfzehn", "7:15 AM / 07:15"],
-            ["dreizehn Uhr siebzehn", "1:17 PM / 13:17"],
-            ["vierundzwanzig Uhr", "12:00 AM / Midnight"],
-            ["ein Uhr", "1 o'clock"],
-            ["fünf Minuten vor eins", "Five minutes to one"],
-            ["fünf Minuten nach eins", "Five minutes past one"],
-            ["Viertel vor zwei", "Quarter to two"],
-            ["Viertel nach zwei", "Quarter past two"],
-            ["halb drei", "Half past two (literally: half three)"]
+            ["null Uhr drei", "12:03 AM / 00:03"], ["sieben Uhr fünfzehn", "7:15 AM / 07:15"],
+            ["dreizehn Uhr siebzehn", "1:17 PM / 13:17"], ["vierundzwanzig Uhr", "12:00 AM / Midnight"],
+            ["ein Uhr", "1 o'clock"], ["fünf Minuten vor eins", "Five minutes to one"],
+            ["fünf Minuten nach eins", "Five minutes past one"], ["Viertel vor zwei", "Quarter to two"],
+            ["Viertel nach zwei", "Quarter past two"], ["halb drei", "Half past two (literally: half three)"]
         ]
     },
 
     zeitangaben: {
-        title: "⏳ Time",
+        title: "⏳ Units",
         layout: "phrase",
         speakType: "key",
         items: [
@@ -761,7 +742,7 @@ const appData = {
             ["der Abend", "The evening", "https://em-content.zobj.net/source/microsoft-teams/363/sunset_1f307.png"],
             ["die Nacht", "The night", "https://em-content.zobj.net/source/microsoft-teams/363/crescent-moon_1f319.png"],
             ["die Sekunde", "The second"], ["die Minute", "The minute"], ["die Stunde", "The hour"],
-            ["der Tag", "The day"], ["die Woche", "The week"], ["das Jahr", "The year"],
+            ["der Tag", "The day"], ["die Woche", "The week"], ["das Jahr", "The year"]
         ]
     },
 
@@ -772,39 +753,48 @@ const appData = {
         items: [
             ["der Wochentag", "The weekday"], ["das Wochenende", "The weekend"], ["am Wochenende", "At the weekend"],
             ["der Montag", "Monday"], ["der Dienstag", "Tuesday"], ["der Mittwoch", "Wednesday"],
-            ["der Donnerstag", "Thursday"], ["der Freitag", "Friday"], ["der Samstag", "Saturday"],
-            ["der Sonntag", "Sunday"]
+            ["der Donnerstag", "Thursday"], ["der Freitag", "Friday"], ["der Samstag", "Saturday"], ["der Sonntag", "Sunday"]
         ]
     },
-zeitangaben2sen: {
-    title: "⏳",
-    layout: "sentence",
-    speakType: "key",
-    items: [
-        ["Heute ist ein Wochentag.", "Today is a weekday."],
-        ["Schönes Wochenende!", "Have a nice weekend!"],
-        ["Am Wochenende habe ich frei.", "At the weekend I am free."],
-        ["Am Montag arbeite ich.", "On Monday I work."],
-        ["Am Dienstag lerne ich Deutsch.", "On Tuesday I learn German."],
-        ["Am Mittwoch koche ich.", "On Wednesday I cook."],
-        ["Am Donnerstag schwimme ich.", "On Thursday I swim."],
-        ["Am Freitag gehe ich einkaufen.", "On Friday I go shopping."],
-        ["Am Samstag schlafe ich viel.", "On Saturday I sleep a lot."],
-        ["Am Sonntag treffe ich Freunde.", "On Sunday I meet friends."]
-    ]
-},
-    tageszeiten_monate: {
+
+    zeitangaben2sen: {
+        title: "⏳ WeekSent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Heute ist ein Wochentag.", "Today is a weekday."],
+            ["Schönes Wochenende!", "Have a nice weekend!"],
+            ["Am Wochenende habe ich frei.", "At the weekend I am free."],
+            ["Am Montag arbeite ich.", "On Monday I work."],
+            ["Am Dienstag lerne ich Deutsch.", "On Tuesday I learn German."],
+            ["Am Mittwoch koche ich.", "On Wednesday I cook."],
+            ["Am Donnerstag schwimme ich.", "On Thursday I swim."],
+            ["Am Freitag gehe ich einkaufen.", "On Friday I go shopping."],
+            ["Am Samstag schlafe ich viel.", "On Saturday I sleep a lot."],
+            ["Am Sonntag treffe ich Freunde.", "On Sunday I meet friends."]
+        ]
+    },
+
+    seasons: {
         title: "❄️ Seasons",
         layout: "phrase",
         speakType: "key",
         items: [
-			["der Frühling", "Spring"], ["der Sommer", "Summer"], ["der Herbst", "Autumn / Fall"], ["der Winter", "Winter"],
+            ["der Frühling", "Spring"], ["der Sommer", "Summer"], ["der Herbst", "Autumn / Fall"], ["der Winter", "Winter"]
+        ]
+    },
+
+    months: {
+        title: "🗓️ Months",
+        layout: "phrase",
+        speakType: "key",
+        items: [
             ["der Januar", "January", "https://em-content.zobj.net/source/microsoft-teams/363/fireworks_1f386.png"],
             ["der Februar", "February", "https://em-content.zobj.net/source/microsoft-teams/363/heart-with-ribbon_1f49d.png"],
             ["der März", "March", "https://em-content.zobj.net/source/microsoft-teams/363/seedling_1f331.png"],
             ["der April", "April", "https://em-content.zobj.net/source/microsoft-teams/363/hatching-chick_1f423.png"],
             ["der Mai", "May", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"],
-			["der Juni", "June", "https://em-content.zobj.net/source/microsoft-teams/363/hibiscus_1f33a.png"],
+            ["der Juni", "June", "https://em-content.zobj.net/source/microsoft-teams/363/hibiscus_1f33a.png"],
             ["der Juli", "July", "https://em-content.zobj.net/source/microsoft-teams/363/beach-with-umbrella_1f3d6-fe0f.png"],
             ["der August", "August", "https://em-content.zobj.net/source/microsoft-teams/363/watermelon_1f349.png"],
             ["der September", "September", "https://em-content.zobj.net/source/microsoft-teams/363/school_1f3eb.png"],
@@ -815,21 +805,23 @@ zeitangaben2sen: {
     },
 
     jahreszeiten_masse: {
-        title: "❄️ Seasons & Measures",
+        title: "📏 Measure",
         layout: "phrase",
         speakType: "key",
         items: [
-            ["ein Euro hundert Cent", "1 Euro = 100 Cents"],
-            ["ein Meter", "One meter (1 m)"], ["ein Zentimeter", "One centimeter (1 cm)"], ["ein Meter fünfzehn", "One meter fifteen (1.15 m)"],
+            ["ein Euro hundert Cent", "1 Euro = 100 Cents"], ["ein Meter", "One meter (1 m)"],
+            ["ein Zentimeter", "One centimeter (1 cm)"], ["ein Meter fünfzehn", "One meter fifteen (1.15 m)"],
             ["zweihundert Kilometer", "Two hundred kilometers (200 km)"], ["ein Quadratmeter", "One square meter (1 m²)"],
             ["ein Prozent", "One percent (1 %)"], ["ein Liter", "One liter (1 l)"], ["ein Gramm", "One gram (1 g)"],
             ["ein Pfund", "One pound / 500 grams"], ["ein Kilo", "One kilogram (1 kg)"],
-            ["ein Grad unter Null", "One degree below zero (-1°)"],
-            ["minus ein Grad", "Minus one degree (-1°)"],
-            ["vier Grad über Null", "Four degrees above zero (+4°)"],
-            ["plus vier Grad", "Plus four degrees (+4°)"]
+            ["ein Grad unter Null", "One degree below zero (-1°)"], ["minus ein Grad", "Minus one degree (-1°)"],
+            ["vier Grad über Null", "Four degrees above zero (+4°)"], ["plus vier Grad", "Plus four degrees (+4°)"]
         ]
     },
+
+    // ------------------------------------------
+    // 🐾 Animals & Nature
+    // ------------------------------------------
     animals1: {
         title: "🐾 Pets",
         layout: "phrase",
@@ -850,30 +842,30 @@ zeitangaben2sen: {
             ["die Ente", "The Duck", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
         ]
     },
-	
-	animals1s: {
-    title: "🐾",
-    layout: "sentence",
-    speakType: "key",
-    items: [
-        ["Der Hund bellt laut.", "The dog barks loudly.", "https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
-        ["Die Katze schläft hier.", "The cat sleeps here.", "https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
-        ["Der Vogel singt schön.", "The bird sings beautifully.", "https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
-        ["Der Fisch schwimmt im Wasser.", "The fish swims in the water.", "https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
-        ["Der Hamster frisst viel.", "The hamster eats a lot.", "https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
-        ["Das Kaninchen frisst Karotten.", "The rabbit eats carrots.", "https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
-        ["Die Kuh gibt Milch.", "The cow gives milk.", "https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
-        ["Das Schwein ist rosa.", "The pig is pink.", "https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
-        ["Das Pferd läuft schnell.", "The horse runs fast.", "https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
-        ["Das Schaf frisst Gras.", "The sheep eats grass.", "https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
-        ["Die Ziege meckert laut.", "The goat bleats loudly.", "https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
-        ["Das Huhn legt ein Ei.", "The chicken lays an egg.", "https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
-        ["Die Ente schwimmt gern.", "The duck likes to swim.", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
-    ]
-},
-	
+
+    animals1s: {
+        title: "🐾 PetsSent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Der Hund bellt laut.", "The dog barks loudly.", "https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
+            ["Die Katze schläft hier.", "The cat sleeps here.", "https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
+            ["Der Vogel singt schön.", "The bird sings beautifully.", "https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
+            ["Der Fisch schwimmt im Wasser.", "The fish swims in the water.", "https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
+            ["Der Hamster frisst viel.", "The hamster eats a lot.", "https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
+            ["Das Kaninchen frisst Karotten.", "The rabbit eats carrots.", "https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
+            ["Die Kuh gibt Milch.", "The cow gives milk.", "https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
+            ["Das Schwein ist rosa.", "The pig is pink.", "https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
+            ["Das Pferd läuft schnell.", "The horse runs fast.", "https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
+            ["Das Schaf frisst Gras.", "The sheep eats grass.", "https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
+            ["Die Ziege meckert laut.", "The goat bleats loudly.", "https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
+            ["Das Huhn legt ein Ei.", "The chicken lays an egg.", "https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
+            ["Die Ente schwimmt gern.", "The duck likes to swim.", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
+        ]
+    },
+
     animals2: {
-        title: "🐾 Animals",
+        title: "🦁 Zoo",
         layout: "phrase",
         speakType: "key",
         items: [
@@ -897,7 +889,7 @@ zeitangaben2sen: {
     },
 
     german_animals: {
-        title: "🇩🇪 Wildlife",
+        title: "🌲 Wildlife",
         layout: "phrase",
         speakType: "key",
         items: [
@@ -918,39 +910,15 @@ zeitangaben2sen: {
         ]
     },
 
-    countries: {
-        title: "🌍 Countries & Nationalities",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["Deutschland", "Germany"], 
-            ["deutsch", "German (adjective)"],
-            ["der Deutsche", "German man"], 
-            ["die Deutsche", "German woman"],
-            ["Europa", "Europe"], 
-            ["Europäer", "European man / people"], 
-            ["europäisch", "European (adjective)"],
-            ["die Türkei", "Turkey"], 
-            ["der Türke", "Turkish man"], 
-            ["die Türkin", "Turkish woman"], 
-            ["türkisch", "Turkish (adjective)"],
-            ["Finnland", "Finland"], 
-            ["der Finne", "Finnish man"], 
-            ["die Finnin", "Finnish woman"], 
-            ["finnisch", "Finnish (adjective)"],
-            ["Mexiko", "Mexico"], 
-            ["der Mexikaner", "Mexican man"], 
-            ["die Mexikanerin", "Mexican woman"], 
-            ["mexikanisch", "Mexican (adjective)"]
-        ]
-    },
-
+    // ------------------------------------------
+    // 🎨 General Concepts
+    // ------------------------------------------
     colors: {
         title: "🎨 Colors",
         layout: "word",
         speakType: "key",
         items: [
-			["schwarz", "Black", "https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"],
+            ["schwarz", "Black", "https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"],
             ["weiß", "White", "https://em-content.zobj.net/source/microsoft-teams/363/dove_1f54a-fe0f.png"],
             ["grau", "Grey", "https://em-content.zobj.net/source/microsoft-teams/363/rock_1faa8.png"],
             ["rot", "Red", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
@@ -962,21 +930,80 @@ zeitangaben2sen: {
     },
 
     directions: {
-        title: "➡️ Directions",
+        title: "➡️ Maps",
         layout: "word",
         speakType: "key",
         items: [
-			["der Norden", "The North", "https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"],
-			["der Süden", "The South", "https://em-content.zobj.net/source/microsoft-teams/363/down-arrow_2b07-fe0f.png"],
-			["der Westen", "The West", "https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"],
-			["der Osten", "The East", "https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"],
-			["links", "On the left", "https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-left_1f448.png"],
-			["rechts", "On the right", "https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-right_1f449.png"]
+            ["der Norden", "The North", "https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"],
+            ["der Süden", "The South", "https://em-content.zobj.net/source/microsoft-teams/363/down-arrow_2b07-fe0f.png"],
+            ["der Westen", "The West", "https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"],
+            ["der Osten", "The East", "https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"],
+            ["links", "On the left", "https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-left_1f448.png"],
+            ["rechts", "On the right", "https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-right_1f449.png"]
         ]
     },
 
-    food_restaurant: {
-        title: "🍏 Food, Drink & Restaurant",
+    countries: {
+        title: "🌍 World",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["Deutschland", "Germany"], ["deutsch", "German (adjective)"],
+            ["der Deutsche", "German man"], ["die Deutsche", "German woman"],
+            ["Europa", "Europe"], ["Europäer", "European man / people"], ["europäisch", "European (adjective)"],
+            ["die Türkei", "Turkey"], ["der Türke", "Turkish man"], ["die Türkin", "Turkish woman"], ["türkisch", "Turkish (adjective)"],
+            ["Finnland", "Finland"], ["der Finne", "Finnish man"], ["die Finnin", "Finnish woman"], ["finnisch", "Finnish (adjective)"],
+            ["Mexiko", "Mexico"], ["der Mexikaner", "Mexican man"], ["die Mexikanerin", "Mexican woman"], ["mexikanisch", "Mexican (adjective)"]
+        ]
+    },
+
+    // ------------------------------------------
+    // 🌳 Family (NEW)
+    // ------------------------------------------
+    family: {
+        title: "🌳 Family",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["die Familie", "the family"],
+            ["die Eltern", "the parents (plural)"],
+            ["der Vater", "the father"],
+            ["die Mutter", "the mother"],
+            ["der Sohn", "the son"],
+            ["die Tochter", "the daughter"],
+            ["der Bruder", "the brother"],
+            ["die Schwester", "the sister"],
+            ["die Großeltern", "the grandparents (plural)"],
+            ["der Großvater", "the grandfather"],
+            ["die Großmutter", "the grandmother"],
+            ["der Onkel", "the uncle"],
+            ["die Tante", "the aunt"],
+            ["der Cousin", "the cousin (male)"],
+            ["die Cousine", "the cousin (female)"]
+        ]
+    },
+
+    family_sen: {
+        title: "🌳 FamilySent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Meine Familie ist groß.", "My family is big."],
+            ["Das sind meine Eltern.", "These are my parents."],
+            ["Mein Vater heißt Thomas.", "My father's name is Thomas."],
+            ["Meine Mutter kocht gut.", "My mother cooks well."],
+            ["Ich habe einen Bruder.", "I have a brother."],
+            ["Meine Schwester studiert.", "My sister is studying."],
+            ["Mein Opa erzählt Geschichten.", "My grandpa tells stories."],
+            ["Meine Tante wohnt in Berlin.", "My aunt lives in Berlin."]
+        ]
+    },
+
+    // ------------------------------------------
+    // 🍎 Food & Drink (Split by Category)
+    // ------------------------------------------
+    food_produce: {
+        title: "🍎 FreshFood",
         layout: "phrase",
         speakType: "key",
         items: [
@@ -988,399 +1015,545 @@ zeitangaben2sen: {
             ["die Tomaten", "tomatoes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"],
             ["der Salat", "salad / lettuce", "https://em-content.zobj.net/source/microsoft-teams/363/green-salad_1f957.png"],
             ["das Obst", "fruit", "https://em-content.zobj.net/source/microsoft-teams/363/grapes_1f347.png"],
-            ["das Brot", "bread", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
-            ["die Brote", "breads (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
-            ["das Brötchen", "bread roll", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
-            ["die Brötchen", "bread rolls (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
-            ["die Butter", "butter", "https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"],
-            ["das Öl", "oil", "https://em-content.zobj.net/source/microsoft-teams/363/amphora_1f3fa.png"],
             ["das Fleisch", "meat", "https://em-content.zobj.net/source/microsoft-teams/363/cut-of-meat_1f969.png"],
             ["der Schinken", "ham", "https://cdn-icons-png.flaticon.com/512/706/706880.png"],
             ["die Schinken", "hams (plural)", "https://cdn-icons-png.flaticon.com/512/706/706880.png"],
             ["der Fisch", "fish", "https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
             ["die Fische", "fishes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
             ["das Hähnchen", "chicken", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
-            ["die Hähnchen", "chickens (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
-            ["das Bier", "beer", "https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"],
-            ["der Kaffee", "coffee", "https://cdn-icons-png.flaticon.com/512/924/924514.png"],
-            ["der Tee", "tea", "https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"],
-            ["der Saft", "juice", "https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"],
-            ["trinken", "to drink", "https://em-content.zobj.net/source/microsoft-teams/363/cup-with-straw_1f964.png"],
-            ["die Flasche", "bottle", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
-            ["die Flaschen", "bottles (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
+            ["die Hähnchen", "chickens (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"]
+        ]
+    },
+
+    food_pantry: {
+        title: "🍞 Pantry",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["das Brot", "bread", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
+            ["die Brote", "breads (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
+            ["das Brötchen", "bread roll", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
+            ["die Brötchen", "bread rolls (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
+            ["die Butter", "butter", "https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"],
+            ["das Öl", "oil", "https://em-content.zobj.net/source/microsoft-teams/363/amphora_1f3fa.png"],
             ["der Kuchen", "cake", "https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
             ["die Kuchen", "cakes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
             ["die Pommes frites", "french fries (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/french-fries_1f35f.png"],
             ["das Salz", "salt", "https://em-content.zobj.net/source/microsoft-teams/363/salt_1f9c2.png"],
+            ["die Lebensmittel", "groceries / food (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"]
+        ]
+    },
+
+    drinks: {
+        title: "☕ Drinks",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["das Bier", "beer", "https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"],
+            ["der Kaffee", "coffee", "https://cdn-icons-png.flaticon.com/512/924/924514.png"],
+            ["der Tee", "tea", "https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"],
+            ["der Saft", "juice", "https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"],
+            ["die Flasche", "bottle", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
+            ["die Flaschen", "bottles (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
+            ["trinken", "to drink", "https://em-content.zobj.net/source/microsoft-teams/363/cup-with-straw_1f964.png"],
+            ["der Durst", "thirst", "https://cdn-icons-png.flaticon.com/512/1864/1864846.png"]
+        ]
+    },
+
+    dining_terms: {
+        title: "🍽️ Dining",
+        layout: "phrase",
+        speakType: "key",
+        items: [
             ["bitter", "bitter", "https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
             ["der Appetit", "appetite", "https://em-content.zobj.net/source/microsoft-teams/363/drooling-face_1f924.png"],
             ["der Hunger", "hunger", "https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife-with-plate_1f37d-fe0f.png"],
-            ["der Durst", "thirst", "https://cdn-icons-png.flaticon.com/512/1864/1864846.png"],
             ["das Café", "café", "https://em-content.zobj.net/source/microsoft-teams/363/house-with-garden_1f3e1.png"],
             ["das Essen", "food / meal", "https://em-content.zobj.net/source/microsoft-teams/363/bento-box_1f371.png"],
             ["essen", "to eat", "https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife_1f374.png"],
             ["schmecken", "to taste", "https://www.iconarchive.com/download/i139323/microsoft/fluentui-emoji-flat/Face-Savoring-Food-Flat.1024.png"],
             ["grillen", "to grill / barbecue", "https://em-content.zobj.net/source/microsoft-teams/363/meat-on-bone_1f356.png"],
             ["die Speisekarte", "menu", "https://em-content.zobj.net/source/microsoft-teams/363/page-facing-up_1f4c4.png"],
-            ["der Kühlschrank", "refrigerator", "https://em-content.zobj.net/source/microsoft-teams/363/ice_1f9ca.png"],
-            ["die Lebensmittel", "groceries / food (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"]
+            ["der Kühlschrank", "refrigerator", "https://em-content.zobj.net/source/microsoft-teams/363/ice_1f9ca.png"]
         ]
     },
 
-scene_01: {
-    title: "💬1. 打招呼",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Guten Morgen, Herr Müller.", "Woman: Good morning, Mr. Müller.", "left"],
-        ["Wie geht es Ihnen?", "Woman: How are you?", "left"],
-        ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
-        ["Danke, gut!", "Man: Fine, thanks!", "right"],
-        ["Und Ihnen?", "Man: And you?", "right"],
-        ["Guten Morgen, Herr Müller,", "Woman: Good morning, Mr. Müller,", "left"],
-        ["wie geht es Ihnen?", "Woman: how are you?", "left"],
-        ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
-        ["Danke, gut!", "Man: Fine, thanks!", "right"],
-        ["Und Ihnen?", "Man: And you?", "right"],
-        ["Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
-        ["Guten Tag!", "Woman: Good day!", "left"],
-        ["Wie geht es Ihnen?", "Woman: How are you?", "left"],
-        ["Sehr gut, danke.", "Man: Very well, thanks.", "right"],
-        ["Und Ihnen?", "Man: And you?", "right"]
-    ]
-},
+    // ------------------------------------------
+    // 🏛️ Everyday Scenes (NEW)
+    // ------------------------------------------
+    supermarket: {
+        title: "🛒 Supermarket",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Supermarkt", "the supermarket"],
+            ["der Einkaufswagen", "the shopping cart"],
+            ["die Kasse", "the checkout counter"],
+            ["der Preis", "the price"],
+            ["das Angebot", "the special offer"],
+            ["die Plastiktüte", "the plastic bag"],
+            ["einkaufen", "to shop / buy"],
+            ["bezahlen", "to pay"],
+            ["kaufen", "to buy"],
+            ["verkäuflich", "for sale"]
+        ]
+    },
 
-scene_02: {
-    title: "💬2. 问候",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Hey, Lena!", "Man: Hey, Lena!", "right"],
-        ["Na, wie geht’s?", "Man: So, how's it going?", "right"],
-        ["Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
-        ["Hallo, Sarah.", "Man: Hello, Sarah.", "right"],
-        ["Wie geht’s dir?", "Man: How are you?", "right"],
-        ["Hi, Tom!", "Woman: Hi, Tom!", "left"],
-        ["Super, danke.", "Woman: Great, thanks.", "left"],
-        ["Und dir?", "Woman: And you?", "left"]
-    ]
-},
+    supermarket_sen: {
+        title: "🛒 SuperSent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Ich gehe in den Supermarkt.", "I am going to the supermarket."],
+            ["Wo ist die Kasse?", "Where is the checkout counter?"],
+            ["Das Brot kostet zwei Euro.", "The bread costs two euros."],
+            ["Kann ich mit Karte bezahlen?", "Can I pay with card?"]
+        ]
+    },
 
-scene_03: {
-    title: "💬3. 包包",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Oh, schön!", "Emma: Oh, beautiful!", "left"],
-        ["Hm?", "Nico: Hm?", "right"],
-        ["Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
-        ["Entschuldigung?", "Nico: Excuse me?", "right"],
-        ["Schön?", "Nico: Beautiful?", "right"],
-        ["Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
-        ["Emma, komm jetzt!", "Lisa: Emma, come now!", "left"],
-        ["Entschuldigung!", "Lisa: Excuse me!", "left"],
-        ["Adalbert-Stifter-Straße – Hallo!", "Nico: Adalbert-Stifter Street – Hello!", "right"]
-    ]
-},
+    school: {
+        title: "🏫 School",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["die Schule", "the school"],
+            ["der Lehrer", "the teacher (male)"],
+            ["die Lehrerin", "the teacher (female)"],
+            ["der Schüler", "the student"],
+            ["das Klassenzimmer", "the classroom"],
+            ["das Buch", "the book"],
+            ["der Stift", "the pen"],
+            ["die Hausaufgabe", "the homework"],
+            ["lernen", "to learn"],
+            ["verstehen", "to understand"]
+        ]
+    },
 
-scene_04: {
-    title: "💬4. 出租车",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Mist!", "Emma: Shoot!", "left"],
-        ["Ja, ich bin gut angekommen.", "Man: Yes, I arrived safely.", "right"],
-        ["Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: You can leave the documents for the meeting at the hotel.", "right"],
-        ["Cool!", "Emma: Cool!", "left"],
-        ["Noch mal!", "Emma: One more time!", "left"],
-        ["Ins Zentrum bitte.", "Man: To the city center, please.", "right"],
-        ["Zum Königshof.", "Man: To the Königshof.", "right"],
-        ["Ins Zentrum, zum Königshof.", "Taxi Driver: To the city center, to the Königshof.", "left"],
-        ["Ins Restaurant Königshof...", "Taxi Driver: To the Königshof restaurant...", "left"],
-        ["...oder zum Hotel Königshof?", "Taxi Driver: ...or to the Königshof hotel?", "left"],
-        ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
-        ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
-        ["Hey, stopp!", "Nico: Hey, stop!", "right"]
-    ]
-},
+    school_sen: {
+        title: "🏫 SchoolSent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Die Kinder gehen zur Schule.", "The children go to school."],
+            ["Der Lehrer ist sehr nett.", "The teacher is very nice."],
+            ["Ich lerne Deutsch.", "I am learning German."],
+            ["Ich verstehe die Aufgabe.", "I understand the task."]
+        ]
+    },
 
-scene_05: {
-    title: "💬5. 告别",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Tschüss, Martina.", "Man: Goodbye, Martina.", "left"],
-        ["Gute Reise!", "Man: Have a good trip!", "left"],
-        ["Mach’s gut, Herbert.", "Woman: Take care, Herbert.", "right"],
-        ["Bis bald!", "Woman: See you soon!", "right"],
-        ["Tschüss!", "Man: Bye!", "left"],
-        ["Auf Wiedersehen, Herr Tillmanns.", "Woman: Goodbye, Mr. Tillmanns.", "left"],
-        ["Gute Reise!", "Woman: Have a good trip!", "left"],
-        ["Danke schön!", "Man: Thank you very much!", "right"],
-        ["Auf Wiedersehen, Frau Scholl.", "Man: Goodbye, Ms. Scholl.", "right"]
-    ]
-},
+    museum: {
+        title: "🏛️ Museum",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["das Museum", "the museum"],
+            ["die Ausstellung", "the exhibition"],
+            ["das Kunstwerk", "the artwork"],
+            ["das Bild", "the painting / picture"],
+            ["die Eintrittskarte", "the entrance ticket"],
+            ["der Führer", "the guide"],
+            ["die Geschichte", "the history"],
+            ["fotografieren", "to photograph"],
+            ["besuchen", "to visit"]
+        ]
+    },
 
-scene_06: {
-    title: "💬6. 寻求帮助",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Alles okay?", "Lisa: Everything okay?", "left"],
-        ["Brauchst du Hilfe?", "Lisa: Do you need help?", "left"],
-        ["Hilfe, help?", "Lisa: Help, help?", "left"],
-        ["Do you need help?", "Lisa: Do you need help?", "left"],
-        ["Ja! Hilfe!", "Nico: Yes! Help!", "right"],
-        ["Wo ist die Tasche?", "Lisa: Where is the bag?", "left"],
-        ["Die Tasche ist … gone …", "Nico: The bag is... gone...", "right"],
-        ["... in the ... Taxi!", "Nico: ... in the... taxi!", "right"],
-        ["Die Tasche ist weg in dem Taxi?", "Lisa: The bag is gone in the taxi?", "left"],
-        ["Wohin willst du?", "Lisa: Where do you want to go?", "left"],
-        ["Wohin?", "Lisa: Where?", "left"],
-        ["Willst du ins Zentrum?", "Lisa: Do you want to go to the city center?", "left"],
-        ["Zentrum, ja!", "Nico: Center, yes!", "right"],
-        ["Yara.", "Nico: Yara.", "right"],
-        ["Wer ist Yara?", "Lisa: Who is Yara?", "left"],
-        ["Meine ... aunt?", "Nico: My... aunt?", "right"],
-        ["Deine Tante?", "Lisa: Your aunt?", "left"],
-        ["Nicht schlecht!", "Lisa: Not bad!", "left"],
-        ["Du willst zu deiner Tante?", "Lisa: You want to go to your aunt?", "left"],
-        ["Zu Yara?", "Lisa: To Yara?", "left"],
-        ["Hast du die Adresse?", "Lisa: Do you have the address?", "left"],
-        ["Adresse: Straße, Hausnummer?", "Lisa: Address: street, house number?", "left"],
-        ["Andel … Adelschiffstraße?", "Nico: Andel... Adelschiff Street?", "right"],
-        ["Die kenn ich nicht …", "Lisa: I don't know that one...", "left"],
-        ["Komm, wir helfen dir!", "Lisa: Come on, we'll help you!", "left"],
-        ["Yippie!", "Emma: Yippee!", "left"]
-    ]
-},
+    museum_sen: {
+        title: "🏛️ MuseumSent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Das Museum ist geöffnet.", "The museum is open."],
+            ["Eine Eintrittskarte bitte.", "One entrance ticket please."],
+            ["Hier darf man nicht fotografieren.", "Photos are not allowed here."],
+            ["Das Bild ist sehr schön.", "The painting is very beautiful."]
+        ]
+    },
 
-scene_07: {
-    title: "💬7. 家庭成员",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Emma!", "Emma: Emma!", "left"],
-        ["Mein Name ist Emma!", "Emma: My name is Emma!", "left"],
-        ["Und das ist meine Tante.", "Emma: And this is my aunt.", "left"],
-        ["Deine Mama?", "Nico: Your mom?", "right"],
-        ["Nein, Lisa ist nicht meine Mama.", "Emma: No, Lisa is not my mom.", "left"],
-        ["Sie ist meine Tante.", "Emma: She is my aunt.", "left"],
-        ["Meine Mama ... fliegt nach Amerika.", "Emma: My mom... is flying to America.", "left"],
-        ["Sie arbeitet da.", "Emma: She works there.", "left"],
-        ["Bitte!", "Emma: Here you go!", "left"],
-        ["Danke.", "Nico: Thank you.", "right"],
-        ["Nico.", "Nico: Nico.", "right"],
-        ["Mein Name ist Nico.", "Nico: My name is Nico.", "right"],
-        ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
-        ["Hallo, Emma.", "Nico: Hello, Emma.", "right"]
-    ]
-},
+    theater: {
+        title: "🎭 Theater",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["das Theater", "the theater"],
+            ["die Bühne", "the stage"],
+            ["der Schauspieler", "the actor"],
+            ["die Vorstellung", "the show / performance"],
+            ["der Platz", "the seat / place"],
+            ["die Pause", "the intermission"],
+            ["klatschen", "to applaud"],
+            ["reservieren", "to reserve"]
+        ]
+    },
 
-scene_08: {
-    title: "💬8. 加油站",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
-        ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
-        ["Hallo.", "Lisa: Hello.", "left"],
-        ["Also: Hallo, wie heißt du?", "Lisa: So: Hello, what's your name?", "left"],
-        ["Hallo, ich heiße Nico.", "Nico: Hello, my name is Nico.", "right"],
-        ["Und wie heißt du?", "Nico: And what's your name?", "right"],
-        ["Ich heiße Lisa.", "Lisa: My name is Lisa.", "left"],
-        ["Nein, du heißt Nico.", "Emma: No, your name is Nico.", "left"],
-        ["Das ist Emma.", "Lisa: This is Emma.", "left"],
-        ["Emma spinnt gerade.", "Lisa: Emma is being silly right now.", "left"],
-        ["Ich … heiße …", "Emma: My... name... is...", "left"],
-        ["Ey!", "Emma: Hey!", "left"],
-        ["Emma!", "Lisa: Emma!", "left"],
-        ["Aber jetzt ist das „N“ weg!", "Emma: But now the 'N' is gone!", "left"],
-        ["Das war Nico!", "Emma: That was Nico!", "left"],
-        ["Ich?", "Nico: Me?", "right"],
-        ["Moment bitte.", "Lisa: Just a moment, please.", "left"],
-        ["Ich muss noch kurz tanken.", "Lisa: I need to fill up the tank real quick.", "left"]
-    ]
-},
+    theater_sen: {
+        title: "🎭 TheaterSent",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Wir gehen heute ins Theater.", "We are going to the theater today."],
+            ["Wo ist mein Platz?", "Where is my seat?"],
+            ["Die Vorstellung beginnt um acht.", "The show begins at eight."],
+            ["Das Publikum klatscht.", "The audience applauds."]
+        ]
+    },
 
-scene_09: {
-    title: "💬9. 追司机",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
-        ["Nico! Stopp!", "Lisa & Nico: Nico! Stop!", "left"],
-        ["Sag mal, spinnst du?", "Taxi Driver: Hey, are you crazy?", "left"],
-        ["Was ist denn?", "Taxi Driver: What's going on?", "left"],
-        ["Die Tasche!", "Nico: The bag!", "right"],
-        ["Oh, oh …", "Emma: Oh, oh...", "left"],
-        ["Die Tasche?", "Taxi Driver: The bag?", "left"],
-        ["Welche Tasche?", "Taxi Driver: Which bag?", "left"],
-        ["Warte, Emma!", "Lisa: Wait, Emma!", "left"],
-        ["Die … die Tasche in there!", "Nico: The... the bag in there!", "right"],
-        ["Da ist keine Tasche.", "Taxi Driver: There is no bag there.", "left"],
-        ["Hallo, ich bin Lisa Brunner.", "Lisa: Hello, I am Lisa Brunner.", "left"],
-        ["Das ist Nico.", "Lisa: This is Nico.", "left"],
-        ["Nico sucht seine Tasche.", "Lisa: Nico is looking for his bag.", "left"],
-        ["Und?", "Taxi Driver: And?", "left"],
-        ["Ist Nicos Tasche in Ihrem Taxi?", "Lisa: Is Nico's bag in your taxi?", "left"],
-        ["Nicos Tasche? Nein.", "Taxi Driver: Nico's bag? No.", "left"],
-        ["Die Tasche ist nicht im Taxi.", "Taxi Driver: The bag is not in the taxi.", "left"],
-        ["Nein. Wo?", "Nico: No. Where?", "right"],
-        ["Keine Ahnung, wo deine Tasche is.", "Taxi Driver: No idea where your bag is.", "left"],
-        ["Hier ist die Tasche nicht.", "Taxi Driver: The bag is not here.", "left"],
-        ["Komm, wir suchen die Tasche!", "Lisa: Come on, let's look for the bag!", "left"],
-        ["Suchen. Komm, Nico!", "Lisa: Search. Come on, Nico!", "left"]
-    ]
-},
+    // ------------------------------------------
+    // 💬 Dialogues (Original Scenes)
+    // ------------------------------------------
+    scene_01: {
+        title: "💬 Greetings",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Guten Morgen, Herr Müller.", "Woman: Good morning, Mr. Müller.", "left"],
+            ["Wie geht es Ihnen?", "Woman: How are you?", "left"],
+            ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
+            ["Danke, gut!", "Man: Fine, thanks!", "right"],
+            ["Und Ihnen?", "Man: And you?", "right"],
+            ["Guten Morgen, Herr Müller,", "Woman: Good morning, Mr. Müller,", "left"],
+            ["wie geht es Ihnen?", "Woman: how are you?", "left"],
+            ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
+            ["Danke, gut!", "Man: Fine, thanks!", "right"],
+            ["Und Ihnen?", "Man: And you?", "right"],
+            ["Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
+            ["Guten Tag!", "Woman: Good day!", "left"],
+            ["Wie geht es Ihnen?", "Woman: How are you?", "left"],
+            ["Sehr gut, danke.", "Man: Very well, thanks.", "right"],
+            ["Und Ihnen?", "Man: And you?", "right"]
+        ]
+    },
 
-scene_10: {
-    title: "💬10. 来自哪里",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Hallo, Lisa!", "Max: Hello, Lisa!", "left"],
-        ["Hallo, Max, wie geht es dir?", "Lisa: Hello, Max, how are you?", "left"],
-        ["Super. Und dir?", "Max: Great. And you?", "left"],
-        ["Auch gut, danke.", "Lisa: Also good, thanks.", "left"],
-        ["Hi, Emma.", "Max: Hi, Emma.", "left"],
-        ["Hallo, Max.", "Emma: Hello, Max.", "left"],
-        ["Und du?", "Max: And you?", "left"],
-        ["Wer bist du?", "Max: Who are you?", "left"],
-        ["Ich bin Nico.", "Nico: I am Nico.", "right"],
-        ["Hallo, Nico.", "Max: Hello, Nico.", "left"],
-        ["Du kommst nicht aus Deutschland, oder?", "Max: You are not from Germany, right?", "left"],
-        ["Entschuldigung?", "Nico: Excuse me?", "right"],
-        ["Woher kommst du?", "Max: Where are you from?", "left"],
-        ["Ich bin Max...", "Max: I am Max...", "left"],
-        ["...und ich komme aus Deutschland.", "Max: ...and I come from Germany.", "left"],
-        ["Und ich bin Emma...", "Emma: And I am Emma...", "left"],
-        ["...und ich komme auch aus Deutschland.", "Emma: ...and I also come from Germany.", "left"],
-        ["Ich bin Nico.", "Nico: I am Nico.", "right"],
-        ["Ich komme aus ... Spain?", "Nico: I come from... Spain?", "right"],
-        ["Spanien?", "Max: Spain?", "left"],
-        ["Spanien, ja!", "Nico: Spain, yes!", "right"],
-        ["Ich komme aus Spanien.", "Nico: I come from Spain.", "right"],
-        ["Und woher kommst du genau?", "Max: And where exactly are you from?", "left"],
-        ["Woher?", "Nico: Where?", "right"],
-        ["Wo wohnst du in Spanien?", "Max: Where do you live in Spain?", "left"],
-        ["Wohnst du in Barcelona...", "Max: Do you live in Barcelona...", "left"],
-        ["...oder in Madrid?", "Max: ...or in Madrid?", "left"],
-        ["Sevilla!", "Nico: Seville!", "right"],
-        ["Du wohnst in Sevilla?", "Max: You live in Seville?", "left"],
-        ["Ich wohne in Sevilla.", "Nico: I live in Seville.", "right"]
-    ]
-},
+    scene_02: {
+        title: "💬 HowAreYou",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Hey, Lena!", "Man: Hey, Lena!", "right"],
+            ["Na, wie geht’s?", "Man: So, how's it going?", "right"],
+            ["Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
+            ["Hallo, Sarah.", "Man: Hello, Sarah.", "right"],
+            ["Wie geht’s dir?", "Man: How are you?", "right"],
+            ["Hi, Tom!", "Woman: Hi, Tom!", "left"],
+            ["Super, danke.", "Woman: Great, thanks.", "left"],
+            ["Und dir?", "Woman: And you?", "left"]
+        ]
+    },
 
-scene_12: {
-    title: "💬12. 解释困难",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Nico war auch am Flughafen.", "Lisa: Nico was also at the airport.", "left"],
-        ["Er hat ein Problem:", "Lisa: He has a problem:", "left"],
-        ["Seine Tasche ist weg.", "Lisa: His bag is gone.", "left"],
-        ["Oh. Und was machst du jetzt?", "Max: Oh. And what are you doing now?", "left"],
-        ["Ich suche meine Tante.", "Nico: I am looking for my aunt.", "right"],
-        ["Nicos Tante wohnt hier in Deutschland.", "Lisa: Nico's aunt lives here in Germany.", "left"],
-        ["Aber er hat die Adresse nicht.", "Lisa: But he doesn't have the address.", "left"],
-        ["Kannst du deine Tante anrufen?", "Max: Can you call your aunt?", "left"],
-        ["Meine Tasche ist weg.", "Nico: My bag is gone.", "right"],
-        ["Mein Telefon ist weg.", "Nico: My phone is gone.", "right"],
-        ["Und die Nummer ist weg.", "Nico: And the number is gone.", "right"],
-        ["Und deine Familie?", "Max: And your family?", "left"],
-        ["Kannst du deine Familie anrufen?", "Max: Can you call your family?", "left"],
-        ["Nein.", "Nico: No.", "right"],
-        ["Kann dein Vater nicht helfen?", "Emma: Can't your father help?", "left"],
-        ["Er ist doch bei der Polizei.", "Emma: He's with the police, after all.", "left"],
-        ["Gute Idee!", "Lisa: Good idea!", "left"],
-        ["Vater?", "Nico: Father?", "right"],
-        ["Mein Vater ist Polizist.", "Lisa: My father is a police officer.", "left"],
-        ["Police.", "Lisa: Police.", "left"],
-        ["Vielleicht hilft er uns.", "Lisa: Maybe he can help us.", "left"],
-        ["Moment!", "Lisa: Just a moment!", "left"]
-    ]
-},
+    scene_03: {
+        title: "💬 Bag",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Oh, schön!", "Emma: Oh, beautiful!", "left"],
+            ["Hm?", "Nico: Hm?", "right"],
+            ["Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
+            ["Entschuldigung?", "Nico: Excuse me?", "right"],
+            ["Schön?", "Nico: Beautiful?", "right"],
+            ["Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
+            ["Emma, komm jetzt!", "Lisa: Emma, come now!", "left"],
+            ["Entschuldigung!", "Lisa: Excuse me!", "left"],
+            ["Adalbert-Stifter-Straße – Hallo!", "Nico: Adalbert-Stifter Street – Hello!", "right"]
+        ]
+    },
 
-scene_13: {
-    title: "💬13. 致电警局",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Polizeirevier Ost, Brunner hier.", "Father: Police Station East, Brunner here.", "left"],
-        ["Ah, hallo, Lisa. Wie geht’s dir?", "Father: Ah, hello, Lisa. How are you?", "left"],
-        ["Was ist los?", "Father: What's wrong?", "left"],
-        ["Geht es Emma nicht gut?", "Father: Is Emma not doing well?", "left"],
-        ["Doch, keine Sorge!", "Lisa: Yes, don't worry!", "left"],
-        ["Emma geht es gut.", "Lisa: Emma is doing well.", "left"],
-        ["Aber Nico hat ein Problem.", "Lisa: But Nico has a problem.", "left"],
-        ["Er war auch am Flughafen.", "Lisa: He was also at the airport.", "left"],
-        ["Er kommt aus Spanien.", "Lisa: He comes from Spain.", "left"],
-        ["Ja, genau.", "Lisa: Yes, exactly.", "left"],
-        ["Er kommt aus Spanien...", "Lisa: He comes from Spain...", "left"],
-        ["...und er hat ein Problem.", "Lisa: ...and he has a problem.", "left"],
-        ["Seine Tasche ist weg...", "Lisa: His bag is gone...", "left"],
-        ["...und er spricht nicht gut Deutsch.", "Lisa: ...and he doesn't speak German well.", "left"],
-        ["Hat er Papiere?", "Father: Does he have documents?", "left"],
-        ["Einen Ausweis oder einen Pass?", "Father: An ID or a passport?", "left"],
-        ["Hast du einen Pass? Passport?", "Lisa: Do you have a passport? Passport?", "left"],
-        ["Nein.", "Nico: No.", "right"],
-        ["Nicos Pass ist in seiner Tasche.", "Lisa: Nico's passport is in his bag.", "left"],
-        ["Aber er hat ein Foto von seiner Tante.", "Lisa: But he has a photo of his aunt.", "left"],
-        ["Sie wohnt auch hier in Deutschland...", "Lisa: She also lives here in Germany...", "left"],
-        ["...aber Nico hat die Adresse nicht.", "Lisa: ...but Nico doesn't have the address.", "left"],
-        ["Meine Tante …", "Nico: My aunt...", "right"],
-        ["She has a bicycle shop.", "Nico: She has a bicycle shop.", "right"],
-        ["Seine Tante hat ein Geschäft...", "Lisa: His aunt has a shop...", "left"],
-        ["...ein Fahrradgeschäft.", "Lisa: ...a bicycle shop.", "left"],
-        ["Wir suchen also eine Adresse.", "Father: So we are looking for an address.", "left"],
-        ["Die Frau hat ein Fahrradgeschäft. Richtig?", "Father: The woman has a bicycle shop. Right?", "left"],
-        ["Okay. Dann komm doch mit Nico zur Polizei.", "Father: Okay. Then why don't you come to the police station with Nico.", "left"],
-        ["Danke, Papa! Bis später!", "Lisa: Thanks, Dad! See you later!", "left"],
-        ["Und?", "Max: And?", "left"],
-        ["Vielleicht kann mein Vater uns helfen.", "Lisa: Maybe my father can help us.", "left"],
-        ["Er hilft. He helps.", "Lisa: He helps. He helps.", "left"],
-        ["Super!", "Max: Super!", "left"],
-        ["Danke!", "Nico: Thank you!", "right"],
-        ["Mach’s gut, Lisa.", "Max: Take care, Lisa.", "left"],
-        ["Ciao, Emma.", "Max: Bye, Emma.", "left"],
-        ["Tschüss, Max!", "Lisa & Emma: Goodbye, Max!", "left"],
-        ["Ciao, Nico. Viel Erfolg!", "Max: Bye, Nico. Good luck!", "left"]
-    ]
-},
+    scene_04: {
+        title: "💬 Taxi",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Mist!", "Emma: Shoot!", "left"],
+            ["Ja, ich bin gut angekommen.", "Man: Yes, I arrived safely.", "right"],
+            ["Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: You can leave the documents for the meeting at the hotel.", "right"],
+            ["Cool!", "Emma: Cool!", "left"],
+            ["Noch mal!", "Emma: One more time!", "left"],
+            ["Ins Zentrum bitte.", "Man: To the city center, please.", "right"],
+            ["Zum Königshof.", "Man: To the Königshof.", "right"],
+            ["Ins Zentrum, zum Königshof.", "Taxi Driver: To the city center, to the Königshof.", "left"],
+            ["Ins Restaurant Königshof...", "Taxi Driver: To the Königshof restaurant...", "left"],
+            ["...oder zum Hotel Königshof?", "Taxi Driver: ...or to the Königshof hotel?", "left"],
+            ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
+            ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
+            ["Hey, stopp!", "Nico: Hey, stop!", "right"]
+        ]
+    },
 
-scene_14: {
-    title: "💬14. 数数字",
-    layout: "dialogue",
-    speakType: "key",
-    items: [
-        ["Wie ist die Hausnummer, Emma?", "Lisa: What's the house number, Emma?", "left"],
-        ["38 oder 83?", "Lisa: 38 or 83?", "left"],
-        ["Moment… 11.", "Emma: Wait... 11.", "left"],
-        ["Ah, ja.", "Lisa: Ah, yes.", "left"],
-        ["Dann sind wir richtig hier.", "Lisa: Then we are in the right place here.", "left"],
-        ["Da.", "Nico: There.", "right"],
-        ["Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
-        ["Wie viele?", "Nico: How many?", "right"],
-        ["Das sind 31 Zahlen.", "Emma: That makes 31 numbers.", "left"],
-        ["31 …", "Nico: 31...", "right"],
-        ["Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
-        ["Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
-        ["... sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: ... six, seven, eight, nine, ten, eleven, twelve.", "left"],
-        ["Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Nico: Six, seven, eight, neun, ten, eleven, twelve.", "right"],
-        ["Was ist das?", "Nico: What is this?", "right"],
-        ["Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
-        ["Geburtstag?", "Nico: Birthday?", "right"],
-        ["Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
-        ["Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
-        ["Ja, und das hier ist ein Geschenk.", "Lisa: Yes, and this here is a gift.", "left"],
-        ["Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
-        ["Tschüss, Emma!", "Nico: Bye, Emma!", "right"]
-    ]
-}
+    scene_05: {
+        title: "💬 Goodbye",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Tschüss, Martina.", "Man: Goodbye, Martina.", "left"],
+            ["Gute Reise!", "Man: Have a good trip!", "left"],
+            ["Mach’s gut, Herbert.", "Woman: Take care, Herbert.", "right"],
+            ["Bis bald!", "Woman: See you soon!", "right"],
+            ["Tschüss!", "Man: Bye!", "left"],
+            ["Auf Wiedersehen, Herr Tillmanns.", "Woman: Goodbye, Mr. Tillmanns.", "left"],
+            ["Gute Reise!", "Woman: Have a good trip!", "left"],
+            ["Danke schön!", "Man: Thank you very much!", "right"],
+            ["Auf Wiedersehen, Frau Scholl.", "Man: Goodbye, Ms. Scholl.", "right"]
+        ]
+    },
+
+    scene_06: {
+        title: "💬 Help",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Alles okay?", "Lisa: Everything okay?", "left"],
+            ["Brauchst du Hilfe?", "Lisa: Do you need help?", "left"],
+            ["Hilfe, help?", "Lisa: Help, help?", "left"],
+            ["Do you need help?", "Lisa: Do you need help?", "left"],
+            ["Ja! Hilfe!", "Nico: Yes! Help!", "right"],
+            ["Wo ist die Tasche?", "Lisa: Where is the bag?", "left"],
+            ["Die Tasche ist … gone …", "Nico: The bag is... gone...", "right"],
+            ["... in the ... Taxi!", "Nico: ... in the... taxi!", "right"],
+            ["Die Tasche ist weg in dem Taxi?", "Lisa: The bag is gone in the taxi?", "left"],
+            ["Wohin willst du?", "Lisa: Where do you want to go?", "left"],
+            ["Wohin?", "Lisa: Where?", "left"],
+            ["Willst du ins Zentrum?", "Lisa: Do you want to go to the city center?", "left"],
+            ["Zentrum, ja!", "Nico: Center, yes!", "right"],
+            ["Yara.", "Nico: Yara.", "right"],
+            ["Wer ist Yara?", "Lisa: Who is Yara?", "left"],
+            ["Meine ... aunt?", "Nico: My... aunt?", "right"],
+            ["Deine Tante?", "Lisa: Your aunt?", "left"],
+            ["Nicht schlecht!", "Lisa: Not bad!", "left"],
+            ["Du willst zu deiner Tante?", "Lisa: You want to go to your aunt?", "left"],
+            ["Zu Yara?", "Lisa: To Yara?", "left"],
+            ["Hast du die Adresse?", "Lisa: Do you have the address?", "left"],
+            ["Adresse: Straße, Hausnummer?", "Lisa: Address: street, house number?", "left"],
+            ["Andel … Adelschiffstraße?", "Nico: Andel... Adelschiff Street?", "right"],
+            ["Die kenn ich nicht …", "Lisa: I don't know that one...", "left"],
+            ["Komm, wir helfen dir!", "Lisa: Come on, we'll help you!", "left"],
+            ["Yippie!", "Emma: Yippee!", "left"]
+        ]
+    },
+
+    scene_07: {
+        title: "💬 Kinship",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Emma!", "Emma: Emma!", "left"],
+            ["Mein Name ist Emma!", "Emma: My name is Emma!", "left"],
+            ["Und das ist meine Tante.", "Emma: And this is my aunt.", "left"],
+            ["Deine Mama?", "Nico: Your mom?", "right"],
+            ["Nein, Lisa ist nicht meine Mama.", "Emma: No, Lisa is not my mom.", "left"],
+            ["Sie ist meine Tante.", "Emma: She is my aunt.", "left"],
+            ["Meine Mama ... fliegt nach Amerika.", "Emma: My mom... is flying to America.", "left"],
+            ["Sie arbeitet da.", "Emma: She works there.", "left"],
+            ["Bitte!", "Emma: Here you go!", "left"],
+            ["Danke.", "Nico: Thank you.", "right"],
+            ["Nico.", "Nico: Nico.", "right"],
+            ["Mein Name ist Nico.", "Nico: My name is Nico.", "right"],
+            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+            ["Hallo, Emma.", "Nico: Hello, Emma.", "right"]
+        ]
+    },
+
+    scene_08: {
+        title: "💬 GasStation",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
+            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+            ["Hallo.", "Lisa: Hello.", "left"],
+            ["Also: Hallo, wie heißt du?", "Lisa: So: Hello, what's your name?", "left"],
+            ["Hallo, ich heiße Nico.", "Nico: Hello, my name is Nico.", "right"],
+            ["Und wie heißt du?", "Nico: And what's your name?", "right"],
+            ["Ich heiße Lisa.", "Lisa: My name is Lisa.", "left"],
+            ["Nein, du heißt Nico.", "Emma: No, your name is Nico.", "left"],
+            ["Das ist Emma.", "Lisa: This is Emma.", "left"],
+            ["Emma spinnt gerade.", "Lisa: Emma is being silly right now.", "left"],
+            ["Ich … heiße …", "Emma: My... name... is...", "left"],
+            ["Ey!", "Emma: Hey!", "left"],
+            ["Emma!", "Lisa: Emma!", "left"],
+            ["Aber jetzt ist das „N“ weg!", "Emma: But now the 'N' is gone!", "left"],
+            ["Das war Nico!", "Emma: That was Nico!", "left"],
+            ["Ich?", "Nico: Me?", "right"],
+            ["Moment bitte.", "Lisa: Just a moment, please.", "left"],
+            ["Ich muss noch kurz tanken.", "Lisa: I need to fill up the tank real quick.", "left"]
+        ]
+    },
+
+    scene_09: {
+        title: "💬 Chase",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
+            ["Nico! Stopp!", "Lisa & Nico: Nico! Stop!", "left"],
+            ["Sag mal, spinnst du?", "Taxi Driver: Hey, are you crazy?", "left"],
+            ["Was ist denn?", "Taxi Driver: What's going on?", "left"],
+            ["Die Tasche!", "Nico: The bag!", "right"],
+            ["Oh, oh …", "Emma: Oh, oh...", "left"],
+            ["Die Tasche?", "Taxi Driver: The bag?", "left"],
+            ["Welche Tasche?", "Taxi Driver: Which bag?", "left"],
+            ["Warte, Emma!", "Lisa: Wait, Emma!", "left"],
+            ["Die … die Tasche in there!", "Nico: The... the bag in there!", "right"],
+            ["Da ist keine Tasche.", "Taxi Driver: There is no bag there.", "left"],
+            ["Hallo, ich bin Lisa Brunner.", "Lisa: Hello, I am Lisa Brunner.", "left"],
+            ["Das ist Nico.", "Lisa: This is Nico.", "left"],
+            ["Nico sucht seine Tasche.", "Lisa: Nico is looking for his bag.", "left"],
+            ["Und?", "Taxi Driver: And?", "left"],
+            ["Ist Nicos Tasche in Ihrem Taxi?", "Lisa: Is Nico's bag in your taxi?", "left"],
+            ["Nicos Tasche? Nein.", "Taxi Driver: Nico's bag? No.", "left"],
+            ["Die Tasche ist nicht im Taxi.", "Taxi Driver: The bag is not in the taxi.", "left"],
+            ["Nein. Wo?", "Nico: No. Where?", "right"],
+            ["Keine Ahnung, wo deine Tasche is.", "Taxi Driver: No idea where your bag is.", "left"],
+            ["Hier ist die Tasche nicht.", "Taxi Driver: The bag is not here.", "left"],
+            ["Komm, wir suchen die Tasche!", "Lisa: Come on, let's look for the bag!", "left"],
+            ["Suchen. Komm, Nico!", "Lisa: Search. Come on, Nico!", "left"]
+        ]
+    },
+
+    scene_10: {
+        title: "💬 Origin",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Hallo, Lisa!", "Max: Hello, Lisa!", "left"],
+            ["Hallo, Max, wie geht es dir?", "Lisa: Hello, Max, how are you?", "left"],
+            ["Super. Und dir?", "Max: Great. And you?", "left"],
+            ["Auch gut, danke.", "Lisa: Also good, thanks.", "left"],
+            ["Hi, Emma.", "Max: Hi, Emma.", "left"],
+            ["Hallo, Max.", "Emma: Hello, Max.", "left"],
+            ["Und du?", "Max: And you?", "left"],
+            ["Wer bist du?", "Max: Who are you?", "left"],
+            ["Ich bin Nico.", "Nico: I am Nico.", "right"],
+            ["Hallo, Nico.", "Max: Hello, Nico.", "left"],
+            ["Du kommst nicht aus Deutschland, oder?", "Max: You are not from Germany, right?", "left"],
+            ["Entschuldigung?", "Nico: Excuse me?", "right"],
+            ["Woher kommst du?", "Max: Where are you from?", "left"],
+            ["Ich bin Max...", "Max: I am Max...", "left"],
+            ["...und ich komme aus Deutschland.", "Max: ...and I come from Germany.", "left"],
+            ["Und ich bin Emma...", "Emma: And I am Emma...", "left"],
+            ["...und ich komme auch aus Deutschland.", "Emma: ...and I also come from Germany.", "left"],
+            ["Ich bin Nico.", "Nico: I am Nico.", "right"],
+            ["Ich komme aus ... Spain?", "Nico: I come from... Spain?", "right"],
+            ["Spanien?", "Max: Spain?", "left"],
+            ["Spanien, ja!", "Nico: Spain, yes!", "right"],
+            ["Ich komme aus Spanien.", "Nico: I come from Spain.", "right"],
+            ["Und woher kommst du genau?", "Max: And where exactly are you from?", "left"],
+            ["Woher?", "Nico: Where?", "right"],
+            ["Wo wohnst du in Spanien?", "Max: Where do you live in Spain?", "left"],
+            ["Wohnst du in Barcelona...", "Max: Do you live in Barcelona...", "left"],
+            ["...oder in Madrid?", "Max: ...or in Madrid?", "left"],
+            ["Sevilla!", "Nico: Seville!", "right"],
+            ["Du wohnst in Sevilla?", "Max: You live in Seville?", "left"],
+            ["Ich wohne in Sevilla.", "Nico: I live in Seville.", "right"]
+        ]
+    },
+
+    scene_11: {
+        title: "💬 Explain",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Nico war auch am Flughafen.", "Lisa: Nico was also at the airport.", "left"],
+            ["Er hat ein Problem:", "Lisa: He has a problem:", "left"],
+            ["Seine Tasche ist weg.", "Lisa: His bag is gone.", "left"],
+            ["Oh. Und was machst du jetzt?", "Max: Oh. And what are you doing now?", "left"],
+            ["Ich suche meine Tante.", "Nico: I am looking for my aunt.", "right"],
+            ["Nicos Tante wohnt hier in Deutschland.", "Lisa: Nico's aunt lives here in Germany.", "left"],
+            ["Aber er hat die Adresse nicht.", "Lisa: But he doesn't have the address.", "left"],
+            ["Kannst du deine Tante anrufen?", "Max: Can you call your aunt?", "left"],
+            ["Meine Tasche ist weg.", "Nico: My bag is gone.", "right"],
+            ["Mein Telefon ist weg.", "Nico: My phone is gone.", "right"],
+            ["Und die Nummer ist weg.", "Nico: And the number is gone.", "right"],
+            ["Und deine Familie?", "Max: And your family?", "left"],
+            ["Kannst du deine Familie anrufen?", "Max: Can you call your family?", "left"],
+            ["Nein.", "Nico: No.", "right"],
+            ["Kann dein Vater nicht helfen?", "Emma: Can't your father help?", "left"],
+            ["Er ist doch bei der Polizei.", "Emma: He's with the police, after all.", "left"],
+            ["Gute Idee!", "Lisa: Good idea!", "left"],
+            ["Vater?", "Nico: Father?", "right"],
+            ["Mein Vater ist Polizist.", "Lisa: My father is a police officer.", "left"],
+            ["Police.", "Lisa: Police.", "left"],
+            ["Vielleicht hilft er uns.", "Lisa: Maybe he can help us.", "left"],
+            ["Moment!", "Lisa: Just a moment!", "left"]
+        ]
+    },
+
+    scene_12: {
+        title: "💬 Police",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Polizeirevier Ost, Brunner hier.", "Father: Police Station East, Brunner here.", "left"],
+            ["Ah, hallo, Lisa. Wie geht’s dir?", "Father: Ah, hello, Lisa. How are you?", "left"],
+            ["Was ist los?", "Father: What's wrong?", "left"],
+            ["Geht es Emma nicht gut?", "Father: Is Emma not doing well?", "left"],
+            ["Doch, keine Sorge!", "Lisa: Yes, don't worry!", "left"],
+            ["Emma geht es gut.", "Lisa: Emma is doing well.", "left"],
+            ["Aber Nico hat ein Problem.", "Lisa: But Nico has a problem.", "left"],
+            ["Er war auch am Flughafen.", "Lisa: He was also at the airport.", "left"],
+            ["Er kommt aus Spanien.", "Lisa: He comes from Spain.", "left"],
+            ["Ja, genau.", "Lisa: Yes, exactly.", "left"],
+            ["Er kommt aus Spanien...", "Lisa: He comes from Spain...", "left"],
+            ["...und er hat ein Problem.", "Lisa: ...and he has a problem.", "left"],
+            ["Seine Tasche ist weg...", "Lisa: His bag is gone...", "left"],
+            ["...und er spricht nicht gut Deutsch.", "Lisa: ...and he doesn't speak German well.", "left"],
+            ["Hat er Papiere?", "Father: Does he have documents?", "left"],
+            ["Einen Ausweis oder einen Pass?", "Father: An ID or a passport?", "left"],
+            ["Hast du einen Pass? Passport?", "Lisa: Do you have a passport? Passport?", "left"],
+            ["Nein.", "Nico: No.", "right"],
+            ["Nicos Pass ist in seiner Tasche.", "Lisa: Nico's passport is in his bag.", "left"],
+            ["Aber er hat ein Foto von seiner Tante.", "Lisa: But he has a photo of his aunt.", "left"],
+            ["Sie wohnt auch hier in Deutschland...", "Lisa: She also lives here in Germany...", "left"],
+            ["...aber Nico hat die Adresse nicht.", "Lisa: ...but Nico doesn't have the address.", "left"],
+            ["Meine Tante …", "Nico: My aunt...", "right"],
+            ["She has a bicycle shop.", "Nico: She has a bicycle shop.", "right"],
+            ["Seine Tante hat ein Geschäft...", "Lisa: His aunt has a shop...", "left"],
+            ["...ein Fahrradgeschäft.", "Lisa: ...a bicycle shop.", "left"],
+            ["Wir suchen also eine Adresse.", "Father: So we are looking for an address.", "left"],
+            ["Die Frau hat ein Fahrradgeschäft. Richtig?", "Father: The woman has a bicycle shop. Right?", "left"],
+            ["Okay. Dann komm doch mit Nico zur Polizei.", "Father: Okay. Then why don't you come to the police station with Nico.", "left"],
+            ["Danke, Papa! Bis später!", "Lisa: Thanks, Dad! See you later!", "left"],
+            ["Und?", "Max: And?", "left"],
+            ["Vielleicht kann mein Vater uns helfen.", "Lisa: Maybe my father can help us.", "left"],
+            ["Er hilft. He helps.", "Lisa: He helps. He helps.", "left"],
+            ["Super!", "Max: Super!", "left"],
+            ["Danke!", "Nico: Thank you!", "right"],
+            ["Mach’s gut, Lisa.", "Max: Take care, Lisa.", "left"],
+            ["Ciao, Emma.", "Max: Bye, Emma.", "left"],
+            ["Tschüss, Max!", "Lisa & Emma: Goodbye, Max!", "left"],
+            ["Ciao, Nico. Viel Erfolg!", "Max: Bye, Nico. Good luck!", "left"]
+        ]
+    },
+
+    scene_13: {
+        title: "💬 Counting",
+        layout: "dialogue",
+        speakType: "key",
+        items: [
+            ["Wie ist die Hausnummer, Emma?", "Lisa: What's the house number, Emma?", "left"],
+            ["38 oder 83?", "Lisa: 38 or 83?", "left"],
+            ["Moment… 11.", "Emma: Wait... 11.", "left"],
+            ["Ah, ja.", "Lisa: Ah, yes.", "left"],
+            ["Dann sind wir richtig hier.", "Lisa: Then we are in the right place here.", "left"],
+            ["Da.", "Nico: There.", "right"],
+            ["Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
+            ["Wie viele?", "Nico: How many?", "right"],
+            ["Das sind 31 Zahlen.", "Emma: That makes 31 numbers.", "left"],
+            ["31 …", "Nico: 31...", "right"],
+            ["Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
+            ["Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
+            ["... sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: ... six, seven, eight, nine, ten, eleven, twelve.", "left"],
+            ["Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Nico: Six, seven, eight, neun, ten, eleven, twelve.", "right"],
+            ["Was ist das?", "Nico: What is this?", "right"],
+            ["Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
+            ["Geburtstag?", "Nico: Birthday?", "right"],
+            ["Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
+            ["Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
+            ["Ja, und das hier ist ein Geschenk.", "Lisa: Yes, and this here is a gift.", "left"],
+            ["Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
+            ["Tschüss, Emma!", "Nico: Bye, Emma!", "right"]
+        ]
+    }
 
 };
-
 // ==========================================
 // 核心状态控制中心
 // ==========================================
