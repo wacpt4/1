@@ -33,7 +33,7 @@
     --chat-right-bg: #e8e5ff;
     --chat-avatar-bg: #5f4bb6;
 
-    /* 🎮 连连看练习模式专属颜色 */
+    /* 🎮 练习模式与拼词模式通用颜色 */
     --match-selected: #cbd5e1;
     --match-success-bg: #e2fbe8;
     --match-success-border: #22c55e;
@@ -41,6 +41,13 @@
     --match-error-bg: #fef2f2;
     --match-error-border: #ef4444;
     --match-error-text: #b91c1c;
+
+    /* 🧩 拼词/提示框专属适配 */
+    --builder-prompt-bg: rgba(255, 255, 255, 0.6);
+    --builder-zone-bg: rgba(255, 255, 255, 0.3);
+    --hint-bg: rgba(34, 197, 94, 0.15);
+    --hint-border: #22c55e;
+    --hint-text: #15803d;
 }
 
 [data-theme="dark"] {
@@ -73,9 +80,16 @@
     --match-success-bg: rgba(34, 197, 94, 0.2);
     --match-success-border: #22c55e;
     --match-success-text: #86efac;
-    --match-error-bg: rgba(239, 68, 68, 0.15);
+    --match-error-bg: rgba(239, 68, 68, 0.2);
     --match-error-border: #f87171;
     --match-error-text: #fca5a5;
+
+    /* 🧩 拼词/提示框深色模式优化（解决“吃字”与颜色对冲） */
+    --builder-prompt-bg: rgba(255, 255, 255, 0.08);
+    --builder-zone-bg: rgba(0, 0, 0, 0.25);
+    --hint-bg: rgba(34, 197, 94, 0.2);
+    --hint-border: #4ade80;
+    --hint-text: #86efac;
 }
 
 body {
@@ -118,7 +132,7 @@ button:hover { background: var(--card-hover-bg); }
     display: block;
     margin-left: auto;
     margin-right: auto;
-    pointer-events: none; /* 放置误触拖拽图片 */
+    pointer-events: none;
 }
 
 /* ==========================================
@@ -244,7 +258,7 @@ button:hover { background: var(--card-hover-bg); }
     display: flex;
     gap: 8px;
 }
-.autoplay-btn, .practice-mode-btn { 
+.autoplay-btn, .practice-mode-btn, .builder-mode-btn, .image-mode-btn { 
     font-size: 14px; 
     padding: 10px 18px; 
     border-radius: 20px; 
@@ -255,24 +269,25 @@ button:hover { background: var(--card-hover-bg); }
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
     transition: opacity 0.2s, transform 0.2s, background 0.2s;
 }
-.autoplay-btn:hover, .practice-mode-btn:hover { 
+.autoplay-btn:hover, .practice-mode-btn:hover, .builder-mode-btn:hover, .image-mode-btn:hover { 
     background: #4f46e5;
     transform: scale(1.05);
 }
-.autoplay-btn.playing, .practice-mode-btn.active { 
+.autoplay-btn.playing, .practice-mode-btn.active, .builder-mode-btn.active, .image-mode-btn.active { 
     background: #ef4444; 
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
 }
 .empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
 
 /* ==========================================
-   🎮 连连看练习模式专属 UI 布局 
+   🎮 练习模式 UI 布局 (连连看 & 拼词 & 听音选图)
    ========================================== */
 .practice-container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.4);
+    padding: 24px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 24px;
     box-shadow: var(--card-shadow);
     backdrop-filter: blur(10px);
@@ -285,6 +300,34 @@ button:hover { background: var(--card-hover-bg); }
     padding: 0 5px;
 }
 .practice-header h3 { margin: 0; color: var(--text-main); font-size: 1.2rem; }
+
+/* 🏹 翻页控制控件 */
+.page-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.nav-arrow {
+    padding: 5px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    border: 1px solid var(--card-border);
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.15s, background 0.2s;
+}
+.nav-arrow:hover:not(:disabled) {
+    transform: scale(1.1);
+    background: var(--card-hover-bg);
+}
+.nav-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .practice-board {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -303,6 +346,7 @@ button:hover { background: var(--card-hover-bg); }
     text-align: center;
     background: var(--card-bg);
     border: 2px solid var(--card-border);
+    color: var(--text-main);
     box-shadow: var(--card-shadow);
     cursor: pointer;
     transition: background 0.2s, border-color 0.2s, color 0.2s, opacity 0.3s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -318,6 +362,7 @@ button:hover { background: var(--card-hover-bg); }
     background: var(--card-hover-bg);
     box-shadow: var(--card-hover-shadow);
 }
+
 /* 选中状态 */
 .practice-card.selected {
     background: var(--match-selected) !important;
@@ -342,6 +387,199 @@ button:hover { background: var(--card-hover-bg); }
     color: var(--match-error-text) !important;
 }
 
+/* ==========================================
+   🧩 多邻国风格：拼词/拼单词 UI 样式（适配主题）
+   ========================================== */
+.builder-target-prompt {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--text-card-big);
+    margin-bottom: 20px;
+    text-align: center;
+    line-height: 1.4;
+    padding: 14px;
+    background: var(--builder-prompt-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.speaker-btn {
+    background: var(--btn-bg);
+    color: var(--btn-color);
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.15s;
+}
+.speaker-btn:hover {
+    transform: scale(1.1);
+    background: var(--card-hover-bg);
+}
+
+.builder-answer-zone {
+    min-height: 65px;
+    background: var(--builder-zone-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    transition: border-color 0.3s, background 0.3s;
+}
+
+.builder-answer-zone.error {
+    border-color: var(--match-error-border) !important;
+    background: var(--match-error-bg) !important;
+    animation: errorShake 0.4s ease-in-out;
+}
+
+.builder-answer-zone.success {
+    border-color: var(--match-success-border) !important;
+    background: var(--match-success-bg) !important;
+}
+
+.correct-answer-hint {
+    margin-bottom: 15px;
+    padding: 12px 18px;
+    background: var(--hint-bg);
+    border: 1px solid var(--hint-border);
+    border-radius: 12px;
+    color: var(--hint-text);
+    font-weight: bold;
+    font-size: 1.05rem;
+    text-align: center;
+    display: none;
+    box-shadow: var(--card-shadow);
+}
+.correct-answer-hint.show {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.builder-pool-zone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    min-height: 80px;
+    margin-bottom: 20px;
+}
+
+.tile-btn {
+    padding: 10px 18px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 14px;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    color: var(--text-main);
+    cursor: pointer;
+    transition: transform 0.15s, background 0.2s, border-color 0.2s;
+    user-select: none;
+}
+
+.tile-btn:hover {
+    transform: translateY(-2px);
+    background: var(--card-hover-bg);
+}
+
+.tile-btn.disabled {
+    opacity: 0.2;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+}
+
+.builder-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-check {
+    background: #22c55e;
+    color: white;
+    font-weight: bold;
+    padding: 12px 30px;
+    border-radius: 16px;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+.btn-check:hover { background: #16a34a; }
+
+.btn-clear {
+    background: var(--btn-bg);
+    color: var(--text-main);
+    padding: 12px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+}
+
+/* ==========================================
+   🖼️ 听音选图模式专属样式
+   ========================================== */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.image-choice-card {
+    background: var(--card-bg);
+    border: 3px solid var(--card-border);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    min-height: 140px;
+}
+
+.image-choice-card:hover {
+    transform: translateY(-3px);
+    background: var(--card-hover-bg);
+}
+
+.image-choice-card img {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+.image-choice-card.success {
+    animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    background: var(--match-success-bg) !important;
+    border-color: var(--match-success-border) !important;
+}
+
+.image-choice-card.error {
+    animation: errorShake 0.4s ease-in-out;
+    background: var(--match-error-bg) !important;
+    border-color: var(--match-error-border) !important;
+}
+
 @keyframes successPop {
     0% { transform: scale(1); }
     50% { transform: scale(1.06); }
@@ -354,11 +592,19 @@ button:hover { background: var(--card-hover-bg); }
     40%, 80% { transform: translateX(6px); }
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 600px) {
     .play-panel { left: 10px; top: 15px; }
     .header { padding-top: 65px; }
     .practice-board { gap: 12px; }
     .practice-card { padding: 14px 8px; font-size: 0.95rem; min-height: 32px; }
+    .tile-btn { padding: 8px 12px; font-size: 0.95rem; }
+    .image-choice-card { min-height: 110px; padding: 10px; }
+    .image-choice-card img { max-height: 90px; }
 }
 </style>
 </head>
@@ -366,7 +612,9 @@ button:hover { background: var(--card-hover-bg); }
 
 <div class="play-panel">
     <button id="autoPlayBtn" class="autoplay-btn" onclick="toggleAutoPlay()">▶</button>
-    <button id="practiceBtn" class="practice-mode-btn" onclick="togglePracticeMode()">🎮 练习</button>
+    <button id="practiceBtn" class="practice-mode-btn" onclick="togglePracticeMode()">🎮 连连看</button>
+    <button id="builderBtn" class="builder-mode-btn" onclick="toggleBuilderMode()">🧩 拼词</button>
+    <button id="imageBtn" class="image-mode-btn" onclick="toggleImageMode()">🖼️ 选图</button>
 </div>
 
 <div class="header">
@@ -380,92 +628,12 @@ button:hover { background: var(--card-hover-bg); }
 
 <script>
 // ==========================================
-// 💡 数据源（支持在第三/四项填入图片 URL）
-// 格式：[德语, 翻译, 图片URL(可选)]
+// 💡 数据源
 // ==========================================
 const appData = {
-animals: {
-    title: "🐾 Animals",
-    layout: "phrase",
-    speakType: "key",
-    items: [
-
-        // --- 🏠 宠物 (Common Pets) ---
-        ["der Hund", "The Dog", "https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
-        ["die Katze", "The Cat", "https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
-        ["der Vogel", "The Bird", "https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
-        ["der Fisch", "The Fish", "https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
-        ["der Hamster", "The Hamster", "https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
-        ["das Kaninchen", "The Rabbit", "https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
-
-        // --- 🐄 农场动物 (Farm Animals) ---
-        ["die Kuh", "The Cow", "https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
-        ["das Schwein", "The Pig", "https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
-        ["das Pferd", "The Horse", "https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
-        ["das Schaf", "The Sheep", "https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
-        ["die Ziege", "The Goat", "https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
-        ["das Huhn", "The Chicken", "https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
-        ["die Ente", "The Duck", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"],
-
-        // --- 🌍 世界野生动物 (Wild Animals) ---
-        ["der Löwe", "The Lion", "https://em-content.zobj.net/source/microsoft-teams/363/lion_1f981.png"],
-        ["der Tiger", "The Tiger", "https://em-content.zobj.net/source/microsoft-teams/363/tiger_1f405.png"],
-        ["der Bär", "The Bear", "https://em-content.zobj.net/source/microsoft-teams/363/bear_1f43b.png"],
-        ["der Affe", "The Monkey", "https://em-content.zobj.net/source/microsoft-teams/363/monkey_1f412.png"],
-        ["der Elefant", "The Elephant", "https://em-content.zobj.net/source/microsoft-teams/363/elephant_1f418.png"],
-        ["die Giraffe", "The Giraffe", "https://em-content.zobj.net/source/microsoft-teams/363/giraffe_1f992.png"],
-        ["das Zebra", "The Zebra", "https://em-content.zobj.net/source/microsoft-teams/363/zebra_1f993.png"],
-
-        // --- 🐞 小动物 (Small Animals) ---
-        ["der Schmetterling", "The Butterfly", "https://em-content.zobj.net/source/microsoft-teams/363/butterfly_1f98b.png"],
-        ["die Biene", "The Bee", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"],
-        ["der Käfer", "The Beetle", "https://em-content.zobj.net/source/microsoft-teams/363/beetle_1fab2.png"],
-        ["die Spinne", "The Spider", "https://em-content.zobj.net/source/microsoft-teams/363/spider_1f577-fe0f.png"],
-        ["die Schnecke", "The Snail", "https://em-content.zobj.net/source/microsoft-teams/363/snail_1f40c.png"],
-
-        // --- 🌊 海洋动物 (Sea Animals) ---
-        ["der Delfin", "The Dolphin", "https://em-content.zobj.net/source/microsoft-teams/363/dolphin_1f42c.png"],
-        ["der Wal", "The Whale", "https://em-content.zobj.net/source/microsoft-teams/363/whale_1f40b.png"],
-        ["der Hai", "The Shark", "https://em-content.zobj.net/source/microsoft-teams/363/shark_1f988.png"],
-        ["die Schildkröte", "The Turtle", "https://em-content.zobj.net/source/microsoft-teams/363/turtle_1f422.png"]
-    ]
-},
-
-
-german_animals: {
-    title: "🇩🇪 German Wildlife",
-    layout: "phrase",
-    speakType: "key",
-    items: [
-
-        // --- 🌲 德国森林动物 (Forest Animals) ---
-        ["der Hirsch", "The Stag", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfRQatYYwJUuGZXWeb7OY64jD4jmKOQeMImIq-yqZi4w&s=10"],
-        ["das Reh", "The Roe Deer", "https://cdn-ilbamed.nitrocdn.com/cDunbKRFwbKoFAKUGFpmRYmvLJoAWJCm/assets/images/optimized/rev-db8508d/elen-hunting.bg/wp-content/uploads/2024/06/roe-deer.jpg"],
-        ["das Wildschwein", "The Wild Boar", "https://em-content.zobj.net/source/microsoft-teams/363/boar_1f417.png"],
-        ["der Fuchs", "The Fox", "https://em-content.zobj.net/source/microsoft-teams/363/fox_1f98a.png"],
-        ["der Igel", "The Hedgehog", "https://em-content.zobj.net/source/microsoft-teams/363/hedgehog_1f994.png"],
-        ["der Wolf", "The Wolf", "https://em-content.zobj.net/source/microsoft-teams/363/wolf_1f43a.png"],
-        ["der Biber", "The Beaver", "https://em-content.zobj.net/source/microsoft-teams/363/beaver_1f9ab.png"],
-
-		["das Eichhörnchen", "The Squirrel", "https://www.vetmed.wisc.edu/wp-content/uploads/2022/01/joshua-j-cotten-XQqbauEeors-unsplash-2048x1365.jpg"],
-
-        // --- 🐦 德国鸟类 (German Birds) ---
-		["der Storch", "The Stork", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQoUPh99p297hu7uXC2CaPZCOUyDAXHdrIrnFichSK5bApEXTymKn6oB1SZ-bUPdz-HCUtApxQ5QTZvD3baHWa_mfaqv-OsRFfaOT56CcsZQ&s=10"],
-		
-        ["der Adler", "The Eagle", "https://em-content.zobj.net/source/microsoft-teams/363/eagle_1f985.png"],
-        ["die Eule", "The Owl", "https://em-content.zobj.net/source/microsoft-teams/363/owl_1f989.png"],
-        ["der Schwan", "The Swan", "https://em-content.zobj.net/source/microsoft-teams/363/swan_1f9a2.png"],
-
-        // --- 🐸 德国水域动物 (German Water Animals) ---
-        ["der Frosch", "The Frog", "https://em-content.zobj.net/source/microsoft-teams/363/frog_1f438.png"],
-
-        // --- 🐝 德国花园动物 (Garden Animals) ---
-        ["der Marienkäfer", "The Ladybug", "https://em-content.zobj.net/source/microsoft-teams/363/lady-beetle_1f41e.png"]
-    ]
-},
 
     alphabet: {
-        title: "🔤 字母表",
+        title: "🔤 ABC",
         layout: "word",
         speakType: "key", 
         items: [
@@ -478,61 +646,79 @@ german_animals: {
         ]
     },
 
-    numbers: {
-        title: "🔢 数字",
-        layout: "word",
-        speakType: "value", 
-        items: [
-            ["0", "null"], ["1", "eins"], ["2", "zwei"], ["3", "drei"], ["4", "vier"],
-            ["5", "fünf"], ["6", "sechs"], ["7", "sieben"], ["8", "acht"], ["9", "neun"], ["10", "zehn"],
-            ["11", "elf"], ["12", "zwölf"], ["13", "dreizehn"], ["14", "vierzehn"], ["15", "fünfzehn"],
-            ["16", "sechzehn"], ["17", "siebzehn"], ["18", "achtzehn"], ["19", "neunzehn"], ["20", "zwanzig"],
-            ["30", "dreißig"], ["40", "vierzig"], ["50", "fünfzig"], 
-            ["60", "sechzig"], ["70", "siebzig"], ["80", "achtzig"], ["90", "neunzig"],
-            ["100", "hundert"],
-            ["21", "einundzwanzig"],  
-            ["22", "zweiundzwanzig"],
-            ["23", "dreiundzwanzig"],
-            ["24", "vierundzwanzig"],
-            ["25", "fünfundzwanzig"],
-            ["26", "sechsundzwanzig"], 
-            ["27", "siebenundzwanzig"],
-            ["28", "achtundzwanzig"],
-            ["29", "neunundzwanzig"]
-        ]
-    },
-
-// --- 1. 数字基础 (0-19) ---
-    numbers_basic: {
-        title: "🔢 Basic Numbers (0-19)",
+	numbers: {
+        title: "🔢 0-12",
         layout: "word",
         speakType: "key", 
         items: [
-            ["null", "0 (Zero)"], ["eins", "1 (One)"], ["zwei", "2 (Two)"], ["drei", "3 (Three)"], ["vier", "4 (Four)"], 
-            ["fünf", "5 (Five)"], ["sechs", "6 (Six)"], ["sieben", "7 (Seven)"], ["acht", "8 (Eight)"], ["neun", "9 (Nine)"], 
-            ["zehn", "10 (Ten)"], ["elf", "11 (Eleven)"], ["zwölf", "12 (Twelve)"], ["dreizehn", "13 (Thirteen)"], 
-            ["vierzehn", "14 (Fourteen)"], ["fünfzehn", "15 (Fifteen)"], ["sechzehn", "16 (Sixteen)"], 
-            ["siebzehn", "17 (Seventeen)"], ["achtzehn", "18 (Eighteen)"], ["neunzehn", "19 (Nineteen)"]
+            ["null", "0 (Zero)"], ["eins", "1 (One)"], ["zwei", "2 (Two)"], ["drei", "3 (Three)"], ["vier", "4 (Four)"],
+            ["fünf", "5 (Five)"], ["sechs", "6 (Six)"], ["sieben", "7 (Seven)"], ["acht", "8 (Eight)"], ["neun", "9 (Nine)"], ["zehn", "10 (Ten)"],
+            ["elf", "11 (Eleven)"], ["zwölf", "12 (Twelve)"]
         ]
     },
 
-    // --- 2. 高阶数字与序数词 ---
-    numbers_advanced: {
-        title: "🔢 Big Numbers & Ordinals",
+    numbers_teens: {
+        title: "🔢 Teens",
+        layout: "word",
+        speakType: "key",
+        items: [
+            ["dreizehn", "13 (Thirteen)"],
+            ["vierzehn", "14 (Fourteen)"],
+            ["fünfzehn", "15 (Fifteen)"],
+            ["sechzehn", "16 (Sixteen)"],
+            ["siebzehn", "17 (Seventeen)"],
+            ["achtzehn", "18 (Eighteen)"],
+            ["neunzehn", "19 (Nineteen)"]
+        ]
+    },
+
+    numbers_tens: {
+        title: "🔢 Tens",
+        layout: "word",
+        speakType: "key",
+        items: [
+            ["zwanzig", "20 (Twenty)"],
+            ["dreißig", "30 (Thirty)"],
+            ["vierzig", "40 (Forty)"],
+            ["fünfzig", "50 (Fifty)"],
+            ["sechzig", "60 (Sixty)"],
+            ["siebzig", "70 (Seventy)"],
+            ["achtzig", "80 (Eighty)"],
+            ["neunzig", "90 (Ninety)"]
+        ]
+    },
+
+    numbers_30s: {
+        title: "🔢 30-39",
         layout: "phrase",
         speakType: "key",
         items: [
-            ["zwanzig", "20 (Twenty)"], ["einundzwanzig", "21 (Twenty-one)"], ["dreißig", "30 (Thirty)"], ["vierzig", "40 (Forty)"],
-            ["fünfzig", "50 (Fifty)"], ["sechzig", "60 (Sixty)"], ["siebzig", "70 (Seventy)"], ["achtzig", "80 (Eighty)"],
-            ["neunzig", "90 (Ninety)"], ["hundert", "100 (One hundred)"], ["hunderteins", "101 (One hundred and one)"], ["zweihundert", "200 (Two hundred)"],
+            ["dreißig", "30 (Thirty)"],
+            ["einunddreißig", "31 (Thirty-one)"],
+            ["zweiunddreißig", "32 (Thirty-two)"],
+            ["dreiunddreißig", "33 (Thirty-three)"],
+            ["vierunddreißig", "34 (Thirty-four)"],
+            ["fünfunddreißig", "35 (Thirty-five)"],
+            ["sechsunddreißig", "36 (Thirty-six)"],
+            ["siebenunddreißig", "37 (Thirty-seven)"],
+            ["achtunddreißig", "38 (Thirty-eight)"],
+            ["neununddreißig", "39 (Thirty-nine)"]
+        ]
+    },
+
+    numbers_advanced: {
+        title: "🔢 Big&Th",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+			["hundert", "100 (One hundred)"], ["hunderteins", "101 (One hundred and one)"], ["zweihundert", "200 (Two hundred)"],
             ["tausend", "1,000 (One thousand)"], ["eine Million", "1,000,000 (One million)"], ["eine Milliarde", "1,000,000,000 (One billion)"],
             ["erste", "1st (First)"], ["zweite", "2nd (Second)"], ["dritte", "3rd (Third)"], ["vierte", "4th (Fourth)"]
         ]
     },
 
-    // --- 3. 日期与年份表达 ---
     date_expressions: {
-        title: "📅 Dates & Years",
+        title: "📅 Dates",
         layout: "sentence",
         speakType: "key",
         items: [
@@ -545,9 +731,8 @@ german_animals: {
         ]
     },
 
-    // --- 4. 时间与时钟 ---
     uhrzeit: {
-        title: "🕒 Time & Clock",
+        title: "🕒 Clock",
         layout: "phrase",
         speakType: "key",
         items: [
@@ -564,58 +749,76 @@ german_animals: {
         ]
     },
 
-    // --- 5. 时间计量与星期 ---
     zeitangaben: {
-        title: "⏳ Time Units & Weekdays",
+        title: "⏳ Time",
         layout: "phrase",
         speakType: "key",
         items: [
+            ["der Morgen", "The morning", "https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-cloud_26c5.png"],
+            ["der Vormittag", "The forenoon / morning", "https://em-content.zobj.net/source/microsoft-teams/363/sun-with-face_1f31e.png"],
+            ["der Mittag", "The noon / midday", "https://em-content.zobj.net/source/microsoft-teams/363/sun_2600-fe0f.png"],
+            ["der Nachmittag", "The afternoon", "https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-small-cloud_1f324-fe0f.png"],
+            ["der Abend", "The evening", "https://em-content.zobj.net/source/microsoft-teams/363/sunset_1f307.png"],
+            ["die Nacht", "The night", "https://em-content.zobj.net/source/microsoft-teams/363/crescent-moon_1f319.png"],
             ["die Sekunde", "The second"], ["die Minute", "The minute"], ["die Stunde", "The hour"],
             ["der Tag", "The day"], ["die Woche", "The week"], ["das Jahr", "The year"],
+        ]
+    },
+
+    zeitangaben2: {
+        title: "⏳ Week",
+        layout: "phrase",
+        speakType: "key",
+        items: [
             ["der Wochentag", "The weekday"], ["das Wochenende", "The weekend"], ["am Wochenende", "At the weekend"],
             ["der Montag", "Monday"], ["der Dienstag", "Tuesday"], ["der Mittwoch", "Wednesday"],
             ["der Donnerstag", "Thursday"], ["der Freitag", "Friday"], ["der Samstag", "Saturday"],
             ["der Sonntag", "Sunday"]
         ]
     },
-
-// --- 6. 一天时间段与月份 ---
+zeitangaben2sen: {
+    title: "⏳",
+    layout: "sentence",
+    speakType: "key",
+    items: [
+        ["Heute ist ein Wochentag.", "Today is a weekday."],
+        ["Schönes Wochenende!", "Have a nice weekend!"],
+        ["Am Wochenende habe ich frei.", "At the weekend I am free."],
+        ["Am Montag arbeite ich.", "On Monday I work."],
+        ["Am Dienstag lerne ich Deutsch.", "On Tuesday I learn German."],
+        ["Am Mittwoch koche ich.", "On Wednesday I cook."],
+        ["Am Donnerstag schwimme ich.", "On Thursday I swim."],
+        ["Am Freitag gehe ich einkaufen.", "On Friday I go shopping."],
+        ["Am Samstag schlafe ich viel.", "On Saturday I sleep a lot."],
+        ["Am Sonntag treffe ich Freunde.", "On Sunday I meet friends."]
+    ]
+},
     tageszeiten_monate: {
-        title: "🌅 Dayparts & Months",
+        title: "❄️ Seasons",
         layout: "phrase",
         speakType: "key",
         items: [
-// --- 🌅 一天的时间段 (逻辑：从晨光到深夜) ---
-            ["der Morgen", "The morning", "https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-cloud_26c5.png"], // 🌅 06:00-09:00 清晨日出
-            ["der Vormittag", "The forenoon / morning", "https://em-content.zobj.net/source/microsoft-teams/363/sun-with-face_1f31e.png"], // ☀️ 09:00-12:00 艳阳上午
-            ["der Mittag", "The noon / midday", "https://em-content.zobj.net/source/microsoft-teams/363/sun_2600-fe0f.png"], // 🍕 12:00 午饭时间
-			["der Nachmittag", "The afternoon", "https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-small-cloud_1f324-fe0f.png"], // 🌤️ 午后斜阳 / 充实的下午
-            ["der Abend", "The evening", "https://em-content.zobj.net/source/microsoft-teams/363/sunset_1f307.png"], // 🌇 18:00-21:00 傍晚日落
-            ["die Nacht", "The night", "https://em-content.zobj.net/source/microsoft-teams/363/crescent-moon_1f319.png"], // 🌙 21:00+ 深夜月亮
-
-            // --- 📅 12 个月份 (逻辑：四季轮转 + 标志性节日/事件) ---
-            ["der Januar", "January", "https://em-content.zobj.net/source/microsoft-teams/363/fireworks_1f386.png"], // 🎆 1月：元旦新年烟花
-            ["der Februar", "February", "https://em-content.zobj.net/source/microsoft-teams/363/heart-with-ribbon_1f49d.png"], // 💝 2月：情人节
-            ["der März", "March", "https://em-content.zobj.net/source/microsoft-teams/363/seedling_1f331.png"], // 🌱 3月：初春发芽
-            ["der April", "April", "https://em-content.zobj.net/source/microsoft-teams/363/hatching-chick_1f423.png"], // 🐣 4月：复活节小鸡/破壳
-            ["der Mai", "May", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"], // 🐝 5月：盛春蜜蜂采蜜
-			["der Juni", "June", "https://em-content.zobj.net/source/microsoft-teams/363/hibiscus_1f33a.png"], // 🌺 6月：盛夏花朵，夏日初绽
-            ["der Juli", "July", "https://em-content.zobj.net/source/microsoft-teams/363/beach-with-umbrella_1f3d6-fe0f.png"], // 🏖️ 7月：暑假海滩度假
-            ["der August", "August", "https://em-content.zobj.net/source/microsoft-teams/363/watermelon_1f349.png"], // 🍉 8月：酷暑吃西瓜
-            ["der September", "September", "https://em-content.zobj.net/source/microsoft-teams/363/school_1f3eb.png"], // 🏫 9月：开学季
-            ["der Oktober", "October", "https://em-content.zobj.net/source/microsoft-teams/363/jack-o-lantern_1f383.png"], // 🎃 10月：万圣节南瓜
-            ["der November", "November", "https://em-content.zobj.net/source/microsoft-teams/363/maple-leaf_1f341.png"], // 🍁 11月：深秋枫叶
-            ["der Dezember", "December", "https://em-content.zobj.net/source/microsoft-teams/363/christmas-tree_1f384.png"] // 🎄 12月：圣诞节
+			["der Frühling", "Spring"], ["der Sommer", "Summer"], ["der Herbst", "Autumn / Fall"], ["der Winter", "Winter"],
+            ["der Januar", "January", "https://em-content.zobj.net/source/microsoft-teams/363/fireworks_1f386.png"],
+            ["der Februar", "February", "https://em-content.zobj.net/source/microsoft-teams/363/heart-with-ribbon_1f49d.png"],
+            ["der März", "March", "https://em-content.zobj.net/source/microsoft-teams/363/seedling_1f331.png"],
+            ["der April", "April", "https://em-content.zobj.net/source/microsoft-teams/363/hatching-chick_1f423.png"],
+            ["der Mai", "May", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"],
+			["der Juni", "June", "https://em-content.zobj.net/source/microsoft-teams/363/hibiscus_1f33a.png"],
+            ["der Juli", "July", "https://em-content.zobj.net/source/microsoft-teams/363/beach-with-umbrella_1f3d6-fe0f.png"],
+            ["der August", "August", "https://em-content.zobj.net/source/microsoft-teams/363/watermelon_1f349.png"],
+            ["der September", "September", "https://em-content.zobj.net/source/microsoft-teams/363/school_1f3eb.png"],
+            ["der Oktober", "October", "https://em-content.zobj.net/source/microsoft-teams/363/jack-o-lantern_1f383.png"],
+            ["der November", "November", "https://em-content.zobj.net/source/microsoft-teams/363/maple-leaf_1f341.png"],
+            ["der Dezember", "December", "https://em-content.zobj.net/source/microsoft-teams/363/christmas-tree_1f384.png"]
         ]
     },
 
-    // --- 7. 季节、货币与度量衡 ---
     jahreszeiten_masse: {
         title: "❄️ Seasons & Measures",
         layout: "phrase",
         speakType: "key",
         items: [
-            ["der Frühling", "Spring"], ["der Sommer", "Summer"], ["der Herbst", "Autumn / Fall"], ["der Winter", "Winter"],
             ["ein Euro hundert Cent", "1 Euro = 100 Cents"],
             ["ein Meter", "One meter (1 m)"], ["ein Zentimeter", "One centimeter (1 cm)"], ["ein Meter fünfzehn", "One meter fifteen (1.15 m)"],
             ["zweihundert Kilometer", "Two hundred kilometers (200 km)"], ["ein Quadratmeter", "One square meter (1 m²)"],
@@ -627,8 +830,94 @@ german_animals: {
             ["plus vier Grad", "Plus four degrees (+4°)"]
         ]
     },
+    animals1: {
+        title: "🐾 Pets",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Hund", "The Dog", "https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
+            ["die Katze", "The Cat", "https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
+            ["der Vogel", "The Bird", "https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
+            ["der Fisch", "The Fish", "https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
+            ["der Hamster", "The Hamster", "https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
+            ["das Kaninchen", "The Rabbit", "https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
+            ["die Kuh", "The Cow", "https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
+            ["das Schwein", "The Pig", "https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
+            ["das Pferd", "The Horse", "https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
+            ["das Schaf", "The Sheep", "https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
+            ["die Ziege", "The Goat", "https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
+            ["das Huhn", "The Chicken", "https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
+            ["die Ente", "The Duck", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
+        ]
+    },
+	
+	animals1s: {
+    title: "🐾",
+    layout: "sentence",
+    speakType: "key",
+    items: [
+        ["Der Hund bellt laut.", "The dog barks loudly.", "https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
+        ["Die Katze schläft hier.", "The cat sleeps here.", "https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
+        ["Der Vogel singt schön.", "The bird sings beautifully.", "https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
+        ["Der Fisch schwimmt im Wasser.", "The fish swims in the water.", "https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
+        ["Der Hamster frisst viel.", "The hamster eats a lot.", "https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
+        ["Das Kaninchen frisst Karotten.", "The rabbit eats carrots.", "https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
+        ["Die Kuh gibt Milch.", "The cow gives milk.", "https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
+        ["Das Schwein ist rosa.", "The pig is pink.", "https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
+        ["Das Pferd läuft schnell.", "The horse runs fast.", "https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
+        ["Das Schaf frisst Gras.", "The sheep eats grass.", "https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
+        ["Die Ziege meckert laut.", "The goat bleats loudly.", "https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
+        ["Das Huhn legt ein Ei.", "The chicken lays an egg.", "https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
+        ["Die Ente schwimmt gern.", "The duck likes to swim.", "https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
+    ]
+},
+	
+    animals2: {
+        title: "🐾 Animals",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Löwe", "The Lion", "https://em-content.zobj.net/source/microsoft-teams/363/lion_1f981.png"],
+            ["der Tiger", "The Tiger", "https://em-content.zobj.net/source/microsoft-teams/363/tiger_1f405.png"],
+            ["der Bär", "The Bear", "https://em-content.zobj.net/source/microsoft-teams/363/bear_1f43b.png"],
+            ["der Affe", "The Monkey", "https://em-content.zobj.net/source/microsoft-teams/363/monkey_1f412.png"],
+            ["der Elefant", "The Elephant", "https://em-content.zobj.net/source/microsoft-teams/363/elephant_1f418.png"],
+            ["die Giraffe", "The Giraffe", "https://em-content.zobj.net/source/microsoft-teams/363/giraffe_1f992.png"],
+            ["das Zebra", "The Zebra", "https://em-content.zobj.net/source/microsoft-teams/363/zebra_1f993.png"],
+            ["der Schmetterling", "The Butterfly", "https://em-content.zobj.net/source/microsoft-teams/363/butterfly_1f98b.png"],
+            ["die Biene", "The Bee", "https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"],
+            ["der Käfer", "The Beetle", "https://em-content.zobj.net/source/microsoft-teams/363/beetle_1fab2.png"],
+            ["die Spinne", "The Spider", "https://em-content.zobj.net/source/microsoft-teams/363/spider_1f577-fe0f.png"],
+            ["die Schnecke", "The Snail", "https://em-content.zobj.net/source/microsoft-teams/363/snail_1f40c.png"],
+            ["der Delfin", "The Dolphin", "https://em-content.zobj.net/source/microsoft-teams/363/dolphin_1f42c.png"],
+            ["der Wal", "The Whale", "https://em-content.zobj.net/source/microsoft-teams/363/whale_1f40b.png"],
+            ["der Hai", "The Shark", "https://em-content.zobj.net/source/microsoft-teams/363/shark_1f988.png"],
+            ["die Schildkröte", "The Turtle", "https://em-content.zobj.net/source/microsoft-teams/363/turtle_1f422.png"]
+        ]
+    },
 
-    // --- 8. 国家与国籍 (🌟 完整拆分男/女词卡) ---
+    german_animals: {
+        title: "🇩🇪 Wildlife",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Hirsch", "The Stag", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfRQatYYwJUuGZXWeb7OY64jD4jmKOQeMImIq-yqZi4w&s=10"],
+            ["das Reh", "The Roe Deer", "https://cdn-ilbamed.nitrocdn.com/cDunbKRFwbKoFAKUGFpmRYmvLJoAWJCm/assets/images/optimized/rev-db8508d/elen-hunting.bg/wp-content/uploads/2024/06/roe-deer.jpg"],
+            ["das Wildschwein", "The Wild Boar", "https://em-content.zobj.net/source/microsoft-teams/363/boar_1f417.png"],
+            ["der Fuchs", "The Fox", "https://em-content.zobj.net/source/microsoft-teams/363/fox_1f98a.png"],
+            ["der Igel", "The Hedgehog", "https://em-content.zobj.net/source/microsoft-teams/363/hedgehog_1f994.png"],
+            ["der Wolf", "The Wolf", "https://em-content.zobj.net/source/microsoft-teams/363/wolf_1f43a.png"],
+            ["der Biber", "The Beaver", "https://em-content.zobj.net/source/microsoft-teams/363/beaver_1f9ab.png"],
+            ["das Eichhörnchen", "The Squirrel", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWsBcpr3fOLvJGBmR1YuYKUXjxaPn4Z-a5-0OJa4mzPuYbxAwDex6N4EQ&s=10"],
+            ["der Storch", "The Stork", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQoUPh99p297hu7uXC2CaPZCOUyDAXHdrIrnFichSK5bApEXTymKn6oB1SZ-bUPdz-HCUtApxQ5QTZvD3baHWa_mfaqv-OsRFfaOT56CcsZQ&s=10"],
+            ["der Adler", "The Eagle", "https://em-content.zobj.net/source/microsoft-teams/363/eagle_1f985.png"],
+            ["die Eule", "The Owl", "https://em-content.zobj.net/source/microsoft-teams/363/owl_1f989.png"],
+            ["der Schwan", "The Swan", "https://em-content.zobj.net/source/microsoft-teams/363/swan_1f9a2.png"],
+            ["der Frosch", "The Frog", "https://em-content.zobj.net/source/microsoft-teams/363/frog_1f438.png"],
+            ["der Marienkäfer", "The Ladybug", "https://em-content.zobj.net/source/microsoft-teams/363/lady-beetle_1f41e.png"]
+        ]
+    },
+
     countries: {
         title: "🌍 Countries & Nationalities",
         layout: "phrase",
@@ -656,470 +945,439 @@ german_animals: {
         ]
     },
 
-// --- 9. 颜色与方位 ---
-    colors_directions: {
-        title: "🎨 Colors & Directions",
+    colors: {
+        title: "🎨 Colors",
         layout: "word",
         speakType: "key",
         items: [
-			// --- 🎨 颜色 (微软 3D 纯色与画材，100% 稳定加载) ---
-			["schwarz", "Black", "https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"], // 🐈‍⬛ 黑色 (3D黑猫)
-            ["weiß", "White", "https://em-content.zobj.net/source/microsoft-teams/363/dove_1f54a-fe0f.png"], // 🕊️ 白色 (3D白鸽)
-            ["grau", "Grey", "https://em-content.zobj.net/source/microsoft-teams/363/rock_1faa8.png"], // 🪨 灰色 (3D灰石)
-            ["rot", "Red", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"], // 🍎 红色
-            ["blau", "Blue", "https://em-content.zobj.net/source/microsoft-teams/363/blue-book_1f4d8.png"], // 📘 蓝色
-            ["gelb", "Yellow", "https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"], // 🍋 黄色
-            ["grün", "Green", "https://em-content.zobj.net/source/microsoft-teams/363/green-apple_1f34f.png"], // 🍏 绿色
-            ["braun", "Brown", "https://em-content.zobj.net/source/microsoft-teams/363/wood_1fab5.png"], // 🪵 棕色/木色
-
-            // --- 🧭 方位 (指南针与方向箭头) ---
-            ["der Norden", "The North", "https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"], // ⬆️ 北方 (向上)
-            ["der Süden", "The South", "https://em-content.zobj.net/source/microsoft-teams/363/down-arrow_2b07-fe0f.png"], // ⬇️ 南方 (向下)
-            ["der Westen", "The West", "https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"], // ⬅️ 西方 (向左)
-            ["der Osten", "The East", "https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"] // ➡️ 东方 (向右)
+			["schwarz", "Black", "https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"],
+            ["weiß", "White", "https://em-content.zobj.net/source/microsoft-teams/363/dove_1f54a-fe0f.png"],
+            ["grau", "Grey", "https://em-content.zobj.net/source/microsoft-teams/363/rock_1faa8.png"],
+            ["rot", "Red", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
+            ["blau", "Blue", "https://em-content.zobj.net/source/microsoft-teams/363/blue-book_1f4d8.png"],
+            ["gelb", "Yellow", "https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
+            ["grün", "Green", "https://em-content.zobj.net/source/microsoft-teams/363/green-apple_1f34f.png"],
+            ["braun", "Brown", "https://em-content.zobj.net/source/microsoft-teams/363/wood_1fab5.png"]
         ]
     },
 
-    a_words: {
-        title: "🏷️ 高频单词",
-        layout: "phrase",
-        speakType: "key", 
-        items: [
-            ["der Freund", "朋友 (阳性)"], ["die Familie", "家庭 (阴性)"], ["die Ehefrau", "妻子 (阴性)"], 
-            ["die Kinder", "孩子们 (复数)"], ["das Alter", "年龄 (中性)"], ["der Urlaub", "假期 (阳性)"], 
-            ["die Wohnung", "公寓 (阴性)"], ["das Meer", "大海 (中性)"], ["der Wohnraum", "起居室 (阳性)"], 
-            ["die Küche", "厨房 (阴性)"], ["das Bad", "浴室 (中性)"], ["das Formular", "表格 (中性)"], 
-            ["die Lösungen", "答案；解决方案 (复数)"], ["der Antwortbogen", "答题卡 (阳性)"], ["die Anzahl", "数量 (阴性)"], 
-            ["die Person", "人 (阴性)"], ["die Umgebung", "环境；周边 (阴性)"], ["der Bahnhof", "火车站 (阳性)"], 
-            ["die Frau", "女士；妻子 (阴性)"], ["die Freundin", "女朋友 (阴性)"], ["der Satz", "句子 (阳性)"], 
-            ["das Land", "国家 (中性)"], ["der Wohnort", "居住地 (阳性)"], ["die Sprache", "语言 (阴性)"], 
-            ["der Beruf", "职业 (阳性)"], ["das Hobby", "爱好 (中性)"], ["der Prüfer", "考官 (阳性)"], 
-            ["der Kollege", "同事 (阳性)"], ["das Wort", "单词 (中性)"], ["die Prüfungsnummer", "考号 (阴性)"], 
-            ["die Information", "信息 (阴性)"], ["die Wortkarte", "单词卡 (阴性)"], ["das Thema", "主题 (中性)"], 
-            ["der Kandidat", "考生 (阳性)"], ["das Wochenende", "周末 (中性)"], ["der Feierabend", "下班休闲时间 (阳性)"], 
-            ["der Sport", "运动 (阳性)"], ["das Fernsehen", "看电视 (中性)"], ["der Arbeitsplatz", "工作岗位 (阳性)"], 
-            ["die Pause", "休息 (阴性)"], ["die Firma", "公司 (阴性)"], ["der Computer", "电脑 (阳性)"], 
-            ["der Punkt", "分数；点 (阳性)"], ["die Gruppe", "小组 (阴性)"], ["Flugzeug", "飞机 (中性)"], 
-            ["Zug", "火车 (阳性)"], ["Auto", "汽车 (中性)"], ["brauchen", "需要 (及物动词)"], 
-            ["anreisen", "抵达 (不及物动词)"], ["abreisen", "启程 (不及物动词)"], ["besuchen", "拜访 (及物动词)"], 
-            ["abholen", "接人/取物 (及物动词)"], ["fragen", "提问 (及物动词)"], ["antworten", "回答 (不及物动词)"], 
-            ["kontrollieren", "检查；核对 (及物动词)"], ["buchstabieren", "拼写 (及物动词)"]
-        ]
-    },
-    b_phrases: {
-        title: "📂 核心短语/填表",
-        layout: "phrase",
-        speakType: "key", 
-        items: [
-            ["drei Kinder", "三个孩子"], ["Alter der Kinder", "孩子们的年龄"], ["zwei bis sieben Jahre alt", "2 到 7 岁"], 
-            ["Ostsee Urlaub", "波罗的海假期"], ["drei Wochen Urlaub", "三周假期"], ["ruhige Wohnung", "安静的公寓"], 
-            ["am Meer", "在海边"], ["zwei Schlafzimmer", "两间卧室"], ["nach Deutschland kommen", "来德国"], 
-            ["fünf fehlenden Informationen", "5 条缺失的信息"], ["Anzahl der Personen", "人数"], ["davon Kinder", "其中儿童"], 
-            ["Anreise", "抵达；行程 (填表高频)"], ["Abreise", "离开；启程 (填表高频)"], ["Ferienwohnungen", "度假公寓 (复数)"], 
-            ["nächste Woche", "下周"], ["zu Hause sein", "在家"], ["maximal zehn Punkte", "最多 10分"], 
-            ["sich vorstellen", "自我介绍"], ["laut lesen", "大声朗读"], ["maximal", "最多的；最大的 (形容词)"], 
-            ["circa / ca.", "大约；大概 (副词)"], ["Minuten", "分钟 (复数)"]
-        ]
-    },
-    c_sentences: {
-        title: "🗣️ 常用交流句型",
-        layout: "sentence",
+    directions: {
+        title: "➡️ Directions",
+        layout: "word",
         speakType: "key",
         items: [
-            ["Brauchen Sie eine Küche?", "您需要厨房吗？"],
-            ["Wie reisen Sie an?", "您将如何抵达？"],
-            ["Ich kann dich nicht am Bahnhof abholen.", "我不能去火车站接你。"],
-            ["Du kannst mit dem Bus zu meiner Wohnung kommen.", "你可以坐公交车来我的公寓。"],
-            ["Du kannst mit der U-Bahn zu meiner Wohnung kommen.", "你可以坐地铁来我的公寓。"],
-            ["Meine Frau ist zu Hause.", "我的妻子在家。"],
-            ["Meine Freundin ist zu Hause.", "我的女朋友在家。"],
-            ["Bitte sprechen Sie langsam.", "请您说慢一点。"]
+			["der Norden", "The North", "https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"],
+			["der Süden", "The South", "https://em-content.zobj.net/source/microsoft-teams/363/down-arrow_2b07-fe0f.png"],
+			["der Westen", "The West", "https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"],
+			["der Osten", "The East", "https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"],
+			["links", "On the left", "https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-left_1f448.png"],
+			["rechts", "On the right", "https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-right_1f449.png"]
         ]
     },
-    d_long_sentences: {
-        title: "🚨 考场指令与求助长句",
-        layout: "long-sentence",
-        speakType: "key",
-        items: [
-            [
-                "vom fünfundzwanzigsten Juni bis zum fünfzehnten Juli", 
-                "从 6 月 25 日到 7 月 15 日（💡 听力与书写考试高频复杂时间结构）"
-            ],
-            [
-                "Füllen Sie das Formular sorgfältig aus.", 
-                "请您仔细地填写这份表格。（💡 考官核心阅读/写作指令）"
-            ],
-            [
-                "Ich kenne das Wort nicht. Was bedeutet das?", 
-                "我不认识这个单词。请问它是什么意思？（💡 口语考试万能求助句型）"
-            ],
-            [
-                "Bitte, wiederholen Sie.", 
-                "请您重复一遍。（💡 没听清考官或搭档说话时的必备礼貌用语）"
-            ]
-        ]
-    },
-// ========================================================
-// 💡 A1 电影剧本级别全量对话卡片（精简去噪 + 德英对照版）
-// ========================================================
-food_restaurant: {
+
+    food_restaurant: {
         title: "🍏 Food, Drink & Restaurant",
         layout: "phrase",
         speakType: "key",
         items: [
-// --- Fruits & Vegetables ---
-            ["der Apfel", "apple", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"], // 🍎 苹果 (单数)
-            ["die Äpfel", "apples (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"], // 🍎 苹果 (复数)
-            ["die Birne", "pear", "https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"], // 🍐 梨 (单数)
-            ["die Birnen", "pears (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"], // 🍐 梨 (复数)
-            ["die Tomate", "tomato", "https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"], // 🍅 番茄 (单数)
-            ["die Tomaten", "tomatoes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"], // 🍅 番茄 (复数)
-            ["der Salat", "salad / lettuce", "https://em-content.zobj.net/source/microsoft-teams/363/green-salad_1f957.png"], // 🥗 生菜/沙拉
-            ["das Obst", "fruit", "https://em-content.zobj.net/source/microsoft-teams/363/grapes_1f347.png"], // 🍇 水果 (总称)
-
-            // --- Bakery & Staples ---
-            ["das Brot", "bread", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"], // 🍞 面包 (单数)
-            ["die Brote", "breads (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"], // 🍞 面包 (复数)
-            ["das Brötchen", "bread roll", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"], // 🥖 小面包
-            ["die Brötchen", "bread rolls (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"], // 🥖 小面包 (复数)
-            ["die Butter", "butter", "https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"], // 🧈 黄油
-            ["das Öl", "oil", "https://em-content.zobj.net/source/microsoft-teams/363/amphora_1f3fa.png"], // 🏺 罐装油
-
-// --- Meat & Fish ---
-            ["das Fleisch", "meat", "https://em-content.zobj.net/source/microsoft-teams/363/cut-of-meat_1f969.png"], // 🥩 肉
-            ["der Schinken", "ham", "https://cdn-icons-png.flaticon.com/512/706/706880.png"], // 🥩 火腿 (单数)
-            ["die Schinken", "hams (plural)", "https://cdn-icons-png.flaticon.com/512/706/706880.png"], // 🥩 火腿 (复数)
-            ["der Fisch", "fish", "https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"], // 🐟 鱼 (单数)
-            ["die Fische", "fishes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"], // 🐟 鱼 (复数)
-            ["das Hähnchen", "chicken", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"], // 🍗 烤鸡 (单数)
-            ["die Hähnchen", "chickens (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"], // 🍗 烤鸡 (复数)
-
-            // --- Drinks & Beverages ---
-            ["das Bier", "beer", "https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"], // 🍺 啤酒
-            ["der Kaffee", "coffee", "https://cdn-icons-png.flaticon.com/512/924/924514.png"], // ☕ 咖啡 (已修复)
-            ["der Tee", "tea", "https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"], // 🍵 茶
-            ["der Saft", "juice", "https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"], // 🧃 果汁
-            ["trinken", "to drink", "https://em-content.zobj.net/source/microsoft-teams/363/cup-with-straw_1f964.png"], // 🥤 喝
-            ["die Flasche", "bottle", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"], // 🍼 瓶子 (单数)
-            ["die Flaschen", "bottles (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"], // 🍼 瓶子 (复数)
-
-            // --- Sweets, Sides & Seasonings ---
-            ["der Kuchen", "cake", "https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"], // 🍰 蛋糕 (单数)
-            ["die Kuchen", "cakes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"], // 🍰 蛋糕 (复数)
-            ["die Pommes frites", "french fries (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/french-fries_1f35f.png"], // 🍟 薯条
-            ["das Salz", "salt", "https://em-content.zobj.net/source/microsoft-teams/363/salt_1f9c2.png"], // 🧂 盐
-            ["bitter", "bitter", "https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"], // 🍋 苦/酸涩
-
-            // --- Dining & Body Sensations ---
-            ["der Appetit", "appetite", "https://em-content.zobj.net/source/microsoft-teams/363/drooling-face_1f924.png"], // 🤤 食欲
-            ["der Hunger", "hunger", "https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife-with-plate_1f37d-fe0f.png"], // 🍽️ 饥饿
-            ["der Durst", "thirst", "https://cdn-icons-png.flaticon.com/512/1864/1864846.png"], // 🥛/💧 口渴 (已修复)
-            ["das Café", "café", "https://em-content.zobj.net/source/microsoft-teams/363/house-with-garden_1f3e1.png"], // ☕/🏘️ 咖啡馆
-            ["das Essen", "food / meal", "https://em-content.zobj.net/source/microsoft-teams/363/bento-box_1f371.png"], // 🍱 膳食
-            ["essen", "to eat", "https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife_1f374.png"], // 🍴 吃
-            ["schmecken", "to taste", "https://www.iconarchive.com/download/i139323/microsoft/fluentui-emoji-flat/Face-Savoring-Food-Flat.1024.png"], // 😋 品尝/味道好 (已修复)
-            ["grillen", "to grill / barbecue", "https://em-content.zobj.net/source/microsoft-teams/363/meat-on-bone_1f356.png"], // 🍖 烧烤
-            ["die Speisekarte", "menu", "https://em-content.zobj.net/source/microsoft-teams/363/page-facing-up_1f4c4.png"], // 📄 菜单
-
-            // --- Household & General ---
-            ["der Kühlschrank", "refrigerator", "https://em-content.zobj.net/source/microsoft-teams/363/ice_1f9ca.png"], // 🧊 冰箱
-            ["die Lebensmittel", "groceries / food (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"] // 🛍️ 食品杂货
-        ]
-    },
-	
-	food_chat: {
-        title: "💬 Kochen in der Küche",
-        layout: "dialogue", 
-        speakType: "key",
-        items: [
-            // --- Scene 1: Hunger and checking the fridge ---
-            ["Ich habe Hunger.", "Nico: I am hungry.", "right"],
-            ["Hast du auch Appetit?", "Nico: Do you also have an appetite?", "right"],
-            ["Ja, ich habe großen Hunger!", "Lisa: Yes, I am very hungry!", "left"],
-            ["Was haben wir im Kühlschrank?", "Lisa: What do we have in the refrigerator?", "left"],
-            ["Mal sehen, wo sind die Lebensmittel?", "Nico: Let's see, where are the groceries?", "right"],
-            ["Hier ist die Butter.", "Nico: Here is the butter.", "right"],
-            ["Und hier ist das Öl.", "Nico: And here is the oil.", "right"],
-
-            // --- Scene 2: Checking Fruits and Vegetables ---
-            ["Haben wir auch Gemüse und Obst?", "Lisa: Do we have vegetables and fruit too?", "left"],
-            ["Ja, hier ist eine Tomate.", "Nico: Yes, here is a tomato.", "right"],
-            ["Und ich sehe eine Birne.", "Nico: And I see a pear.", "right"],
-            ["Gibt es auch einen Apfel?", "Lisa: Is there also an apple?", "left"],
-            ["Nein, wir haben keinen Apfel.", "Nico: No, we don't have an apple.", "right"],
-            ["Aber der Salat hier ist frisch.", "Nico: But the salad here is fresh.", "right"],
-
-            // --- Scene 3: Deciding on the Main Course ---
-            ["Möchtest du Fleisch essen?", "Lisa: Would you like to eat meat?", "left"],
-            ["Hier ist noch Schinken.", "Lisa: There is still some ham here.", "left"],
-            ["Ich mag keinen Schinken.", "Nico: I don't like ham.", "right"],
-            ["Können wir das Hähnchen grillen?", "Nico: Can we grill the chicken?", "right"],
-            ["Gute Idee! Wir grillen das Hähnchen.", "Lisa: Good idea! We'll grill the chicken.", "left"],
-            ["Und dazu machen wir Pommes frites.", "Lisa: And we'll make french fries with it.", "left"],
-            ["Super! Brauchen wir noch Salz?", "Nico: Super! Do we still need salt?", "right"],
-            ["Ja, gib mir bitte das Salz.", "Lisa: Yes, please give me the salt.", "left"],
-
-            // --- Scene 4: Thirst and Drinks ---
-            ["Ich habe jetzt auch Durst.", "Nico: I am thirsty now too.", "right"],
-            ["Möchtest du ein Bier trinken?", "Lisa: Would you like to drink a beer?", "left"],
-            ["Nein danke, ich trinke lieber einen Saft.", "Nico: No thanks, I prefer to drink a juice.", "right"],
-            ["Hier ist eine Flasche Wasser für dich.", "Lisa: Here is a bottle of water for you.", "left"],
-            ["Ich trinke einen Kaffee.", "Lisa: I'll drink a coffee.", "left"],
-            ["Oder vielleicht einen Tee?", "Nico: Or maybe a tea?", "right"],
-
-            // --- Scene 5: Evaluation and Dessert ---
-            ["Das Essen riecht gut.", "Nico: The food smells good.", "right"],
-            ["Wie schmeckt es dir?", "Lisa: How does it taste to you?", "left"],
-            ["Es schmeckt sehr gut!", "Nico: It tastes very good!", "right"],
-            ["Der Salat ist nicht bitter.", "Nico: The salad is not bitter.", "right"],
-            ["Möchtest du noch ein Brötchen?", "Lisa: Would you like another bread roll?", "left"],
-            ["Nein danke, ich bin satt.", "Nico: No thanks, I'm full.", "right"],
-            ["Aber wir haben noch Kuchen!", "Lisa: But we still have cake!", "left"],
-            ["Schön, dann gehen wir später ins Café.", "Nico: Nice, then we'll go to the café later.", "right"]
+            ["der Apfel", "apple", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
+            ["die Äpfel", "apples (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
+            ["die Birne", "pear", "https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"],
+            ["die Birnen", "pears (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"],
+            ["die Tomate", "tomato", "https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"],
+            ["die Tomaten", "tomatoes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"],
+            ["der Salat", "salad / lettuce", "https://em-content.zobj.net/source/microsoft-teams/363/green-salad_1f957.png"],
+            ["das Obst", "fruit", "https://em-content.zobj.net/source/microsoft-teams/363/grapes_1f347.png"],
+            ["das Brot", "bread", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
+            ["die Brote", "breads (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
+            ["das Brötchen", "bread roll", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
+            ["die Brötchen", "bread rolls (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
+            ["die Butter", "butter", "https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"],
+            ["das Öl", "oil", "https://em-content.zobj.net/source/microsoft-teams/363/amphora_1f3fa.png"],
+            ["das Fleisch", "meat", "https://em-content.zobj.net/source/microsoft-teams/363/cut-of-meat_1f969.png"],
+            ["der Schinken", "ham", "https://cdn-icons-png.flaticon.com/512/706/706880.png"],
+            ["die Schinken", "hams (plural)", "https://cdn-icons-png.flaticon.com/512/706/706880.png"],
+            ["der Fisch", "fish", "https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
+            ["die Fische", "fishes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
+            ["das Hähnchen", "chicken", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
+            ["die Hähnchen", "chickens (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
+            ["das Bier", "beer", "https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"],
+            ["der Kaffee", "coffee", "https://cdn-icons-png.flaticon.com/512/924/924514.png"],
+            ["der Tee", "tea", "https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"],
+            ["der Saft", "juice", "https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"],
+            ["trinken", "to drink", "https://em-content.zobj.net/source/microsoft-teams/363/cup-with-straw_1f964.png"],
+            ["die Flasche", "bottle", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
+            ["die Flaschen", "bottles (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
+            ["der Kuchen", "cake", "https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
+            ["die Kuchen", "cakes (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
+            ["die Pommes frites", "french fries (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/french-fries_1f35f.png"],
+            ["das Salz", "salt", "https://em-content.zobj.net/source/microsoft-teams/363/salt_1f9c2.png"],
+            ["bitter", "bitter", "https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
+            ["der Appetit", "appetite", "https://em-content.zobj.net/source/microsoft-teams/363/drooling-face_1f924.png"],
+            ["der Hunger", "hunger", "https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife-with-plate_1f37d-fe0f.png"],
+            ["der Durst", "thirst", "https://cdn-icons-png.flaticon.com/512/1864/1864846.png"],
+            ["das Café", "café", "https://em-content.zobj.net/source/microsoft-teams/363/house-with-garden_1f3e1.png"],
+            ["das Essen", "food / meal", "https://em-content.zobj.net/source/microsoft-teams/363/bento-box_1f371.png"],
+            ["essen", "to eat", "https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife_1f374.png"],
+            ["schmecken", "to taste", "https://www.iconarchive.com/download/i139323/microsoft/fluentui-emoji-flat/Face-Savoring-Food-Flat.1024.png"],
+            ["grillen", "to grill / barbecue", "https://em-content.zobj.net/source/microsoft-teams/363/meat-on-bone_1f356.png"],
+            ["die Speisekarte", "menu", "https://em-content.zobj.net/source/microsoft-teams/363/page-facing-up_1f4c4.png"],
+            ["der Kühlschrank", "refrigerator", "https://em-content.zobj.net/source/microsoft-teams/363/ice_1f9ca.png"],
+            ["die Lebensmittel", "groceries / food (plural)", "https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"]
         ]
     },
 
+scene_01: {
+    title: "💬1. 打招呼",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Guten Morgen, Herr Müller.", "Woman: Good morning, Mr. Müller.", "left"],
+        ["Wie geht es Ihnen?", "Woman: How are you?", "left"],
+        ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
+        ["Danke, gut!", "Man: Fine, thanks!", "right"],
+        ["Und Ihnen?", "Man: And you?", "right"],
+        ["Guten Morgen, Herr Müller,", "Woman: Good morning, Mr. Müller,", "left"],
+        ["wie geht es Ihnen?", "Woman: how are you?", "left"],
+        ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
+        ["Danke, gut!", "Man: Fine, thanks!", "right"],
+        ["Und Ihnen?", "Man: And you?", "right"],
+        ["Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
+        ["Guten Tag!", "Woman: Good day!", "left"],
+        ["Wie geht es Ihnen?", "Woman: How are you?", "left"],
+        ["Sehr gut, danke.", "Man: Very well, thanks.", "right"],
+        ["Und Ihnen?", "Man: And you?", "right"]
+    ]
+},
 
-    dialogues_all: {
-        title: "💬 Nico's Weg",
-        layout: "dialogue", 
-        speakType: "key",
-        items: [
-            // --- Scene 1: Formal Greetings (Office & Business) ---
-            ["Guten Morgen, Herr Müller.", "Woman: Good morning, Mr. Müller, how are you?", "left"],
-			["Wie geht es Ihnen?", "Woman: How are you?", "left"],
-            ["Guten Morgen, Frau Schneider.", "Man: Good morning, Ms. Schneider.", "right"],
-			["Danke, gut! Und Ihnen?", "Man: Fine, thanks! And you?", "right"],
-            ["Guten Morgen, Herr Müller, wie geht es Ihnen?", "Woman: Good morning, Mr. Müller, how are you?", "left"],
-            ["Guten Morgen, Frau Schneider. Danke, gut! Und Ihnen?", "Man: Good morning, Ms. Schneider. Fine, thanks! And you?", "right"],
-            ["Guten Tag, Frau Kamp.", "Man: Good day, Ms. Kamp.", "right"],
-            ["Guten Tag! Wie geht es Ihnen?", "Woman: Good day! How are you?", "left"],
-            ["Sehr gut, danke. Und Ihnen?", "Man: Very well, thanks. And you?", "right"],
+scene_02: {
+    title: "💬2. 问候",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Hey, Lena!", "Man: Hey, Lena!", "right"],
+        ["Na, wie geht’s?", "Man: So, how's it going?", "right"],
+        ["Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
+        ["Hallo, Sarah.", "Man: Hello, Sarah.", "right"],
+        ["Wie geht’s dir?", "Man: How are you?", "right"],
+        ["Hi, Tom!", "Woman: Hi, Tom!", "left"],
+        ["Super, danke.", "Woman: Great, thanks.", "left"],
+        ["Und dir?", "Woman: And you?", "left"]
+    ]
+},
 
-            // --- Scene 2: Informal Greetings (Family & Friends) ---
-            ["Hey, Lena! Na, wie geht’s?", "Man: Hey, Lena! So, how's it going?", "right"],
-            ["Hallo, Opa!", "Woman: Hello, Grandpa!", "left"],
-            ["Hallo, Sarah. Wie geht’s dir?", "Man: Hello, Sarah. How are you?", "right"],
-            ["Hi, Tom! Super, danke. Und dir?", "Woman: Hi, Tom! Great, thanks. And you?", "left"],
+scene_03: {
+    title: "💬3. 包包",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Oh, schön!", "Emma: Oh, beautiful!", "left"],
+        ["Hm?", "Nico: Hm?", "right"],
+        ["Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
+        ["Entschuldigung?", "Nico: Excuse me?", "right"],
+        ["Schön?", "Nico: Beautiful?", "right"],
+        ["Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
+        ["Emma, komm jetzt!", "Lisa: Emma, come now!", "left"],
+        ["Entschuldigung!", "Lisa: Excuse me!", "left"],
+        ["Adalbert-Stifter-Straße – Hallo!", "Nico: Adalbert-Stifter Street – Hello!", "right"]
+    ]
+},
 
-            // --- Scene 3: The Beautiful Bag ---
-            ["Oh, schön!", "Emma: Oh, beautiful!", "left"],
-            ["Hm?", "Nico: Hm?", "right"],
-            ["Die Tasche ist schön!", "Emma: The bag is beautiful!", "left"],
-            ["Entschuldigung? Schön?", "Nico: Excuse me? Beautiful?", "right"],
-            ["Ja, die Tasche!", "Emma: Yes, the bag!", "left"],
-            ["Emma, komm jetzt! Entschuldigung!", "Lisa: Emma, come now! Excuse me!", "left"],
-            ["Adalbert-Stifter-Straße – Hallo!", "Nico: Adalbert-Stifter Street – Hello!", "right"],
+scene_04: {
+    title: "💬4. 出租车",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Mist!", "Emma: Shoot!", "left"],
+        ["Ja, ich bin gut angekommen.", "Man: Yes, I arrived safely.", "right"],
+        ["Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: You can leave the documents for the meeting at the hotel.", "right"],
+        ["Cool!", "Emma: Cool!", "left"],
+        ["Noch mal!", "Emma: One more time!", "left"],
+        ["Ins Zentrum bitte.", "Man: To the city center, please.", "right"],
+        ["Zum Königshof.", "Man: To the Königshof.", "right"],
+        ["Ins Zentrum, zum Königshof.", "Taxi Driver: To the city center, to the Königshof.", "left"],
+        ["Ins Restaurant Königshof...", "Taxi Driver: To the Königshof restaurant...", "left"],
+        ["...oder zum Hotel Königshof?", "Taxi Driver: ...or to the Königshof hotel?", "left"],
+        ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
+        ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
+        ["Hey, stopp!", "Nico: Hey, stop!", "right"]
+    ]
+},
 
-            // --- Scene 4: The Taxi & Meeting Plans ---
-            ["Mist!", "Emma: Shoot!", "left"],
-            ["Ja, ich bin gut angekommen.", "Man: Yes, I arrived safely.", "right"],
-            ["Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.", "Man: You can leave the documents for the meeting at the hotel.", "right"],
-            ["Cool! Noch mal!", "Emma: Cool! One more time!", "left"],
-            ["Ins Zentrum bitte. Zum Königshof.", "Man: To the city center, please. To the Königshof.", "right"],
-            ["Ins Zentrum, zum Königshof.", "Taxi Driver: To the city center, to the Königshof.", "left"],
-            ["Ins Restaurant Königshof oder zum Hotel Königshof?", "Taxi Driver: To the Königshof restaurant or to the Königshof hotel?", "left"],
-            ["Hotel Königshof.", "Man: Hotel Königshof.", "right"],
-            ["Okay, kein Problem.", "Taxi Driver: Okay, no problem.", "left"],
-            ["Hey, stopp!", "Nico: Hey, stop!", "right"],
+scene_05: {
+    title: "💬5. 告别",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Tschüss, Martina.", "Man: Goodbye, Martina.", "left"],
+        ["Gute Reise!", "Man: Have a good trip!", "left"],
+        ["Mach’s gut, Herbert.", "Woman: Take care, Herbert.", "right"],
+        ["Bis bald!", "Woman: See you soon!", "right"],
+        ["Tschüss!", "Man: Bye!", "left"],
+        ["Auf Wiedersehen, Herr Tillmanns.", "Woman: Goodbye, Mr. Tillmanns.", "left"],
+        ["Gute Reise!", "Woman: Have a good trip!", "left"],
+        ["Danke schön!", "Man: Thank you very much!", "right"],
+        ["Auf Wiedersehen, Frau Scholl.", "Man: Goodbye, Ms. Scholl.", "right"]
+    ]
+},
 
-			// --- Scene 5: Goodbyes at the Station (Ultra-Fine Split) ---
-            ["Tschüss, Martina.", "Man: Goodbye, Martina.", "left"],
-            ["Gute Reise!", "Man: Have a good trip!", "left"],
-            ["Mach’s gut, Herbert.", "Woman: Take care, Herbert.", "right"],
-            ["Bis bald!", "Woman: See you soon!", "right"],
-            ["Tschüss!", "Man: Bye!", "left"],
-            ["Auf Wiedersehen, Herr Tillmanns.", "Woman: Goodbye, Mr. Tillmanns.", "left"],
-            ["Gute Reise!", "Woman: Have a good trip!", "left"],
-            ["Danke schön!", "Man: Thank you very much!", "right"],
-            ["Auf Wiedersehen, Frau Scholl.", "Man: Goodbye, Ms. Scholl.", "right"],
+scene_06: {
+    title: "💬6. 寻求帮助",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Alles okay?", "Lisa: Everything okay?", "left"],
+        ["Brauchst du Hilfe?", "Lisa: Do you need help?", "left"],
+        ["Hilfe, help?", "Lisa: Help, help?", "left"],
+        ["Do you need help?", "Lisa: Do you need help?", "left"],
+        ["Ja! Hilfe!", "Nico: Yes! Help!", "right"],
+        ["Wo ist die Tasche?", "Lisa: Where is the bag?", "left"],
+        ["Die Tasche ist … gone …", "Nico: The bag is... gone...", "right"],
+        ["... in the ... Taxi!", "Nico: ... in the... taxi!", "right"],
+        ["Die Tasche ist weg in dem Taxi?", "Lisa: The bag is gone in the taxi?", "left"],
+        ["Wohin willst du?", "Lisa: Where do you want to go?", "left"],
+        ["Wohin?", "Lisa: Where?", "left"],
+        ["Willst du ins Zentrum?", "Lisa: Do you want to go to the city center?", "left"],
+        ["Zentrum, ja!", "Nico: Center, yes!", "right"],
+        ["Yara.", "Nico: Yara.", "right"],
+        ["Wer ist Yara?", "Lisa: Who is Yara?", "left"],
+        ["Meine ... aunt?", "Nico: My... aunt?", "right"],
+        ["Deine Tante?", "Lisa: Your aunt?", "left"],
+        ["Nicht schlecht!", "Lisa: Not bad!", "left"],
+        ["Du willst zu deiner Tante?", "Lisa: You want to go to your aunt?", "left"],
+        ["Zu Yara?", "Lisa: To Yara?", "left"],
+        ["Hast du die Adresse?", "Lisa: Do you have the address?", "left"],
+        ["Adresse: Straße, Hausnummer?", "Lisa: Address: street, house number?", "left"],
+        ["Andel … Adelschiffstraße?", "Nico: Andel... Adelschiff Street?", "right"],
+        ["Die kenn ich nicht …", "Lisa: I don't know that one...", "left"],
+        ["Komm, wir helfen dir!", "Lisa: Come on, we'll help you!", "left"],
+        ["Yippie!", "Emma: Yippee!", "left"]
+    ]
+},
 
-            // --- Scene 6: Offering Help & Looking for Yara ---
-            ["Alles okay?", "Lisa: Everything okay?", "left"],
-            ["Brauchst du Hilfe?", "Lisa: Do you need help?", "left"],
-            ["Hilfe, help? Do you need help?", "Lisa: Help, help? Do you need help?", "left"],
-            ["Ja! Hilfe!", "Nico: Yes! Help!", "right"],
-            ["Wo ist die Tasche?", "Lisa: Where is the bag?", "left"],
-            ["Die Tasche ist … gone … in the ... Taxi!", "Nico: The bag is... gone... in the... taxi!", "right"],
-            ["Die Tasche ist weg in dem Taxi?", "Lisa: The bag is gone in the taxi?", "left"],
-            ["Wohin willst du?", "Lisa: Where do you want to go?", "left"],
-            ["Wohin? Willst du ins Zentrum?", "Lisa: Where? Do you want to go to the city center?", "left"],
-            ["Zentrum, ja!", "Nico: Center, yes!", "right"],
-            ["Yara.", "Nico: Yara.", "right"],
-            ["Wer ist Yara?", "Lisa: Who is Yara?", "left"],
-            ["Meine ... aunt?", "Nico: My... aunt?", "right"],
-            ["Deine Tante?", "Lisa: Your aunt?", "left"],
-            ["Nicht schlecht!", "Lisa: Not bad!", "left"],
-            ["Du willst zu deiner Tante? Zu Yara?", "Lisa: You want to go to your aunt? To Yara?", "left"],
-            ["Hast du die Adresse?", "Lisa: Do you have the address?", "left"],
-            ["Adresse: Straße, Hausnummer?", "Lisa: Address: street, house number?", "left"],
-            ["Andel … Adelschiffstraße?", "Nico: Andel... Adelschiff Street?", "right"],
-            ["Die kenn ich nicht …", "Lisa: I don't know that one...", "left"],
-            ["Komm, wir helfen dir!", "Lisa: Come on, we'll help you!", "left"],
-            ["Yippie!", "Emma: Yippee!", "left"],
+scene_07: {
+    title: "💬7. 家庭成员",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Emma!", "Emma: Emma!", "left"],
+        ["Mein Name ist Emma!", "Emma: My name is Emma!", "left"],
+        ["Und das ist meine Tante.", "Emma: And this is my aunt.", "left"],
+        ["Deine Mama?", "Nico: Your mom?", "right"],
+        ["Nein, Lisa ist nicht meine Mama.", "Emma: No, Lisa is not my mom.", "left"],
+        ["Sie ist meine Tante.", "Emma: She is my aunt.", "left"],
+        ["Meine Mama ... fliegt nach Amerika.", "Emma: My mom... is flying to America.", "left"],
+        ["Sie arbeitet da.", "Emma: She works there.", "left"],
+        ["Bitte!", "Emma: Here you go!", "left"],
+        ["Danke.", "Nico: Thank you.", "right"],
+        ["Nico.", "Nico: Nico.", "right"],
+        ["Mein Name ist Nico.", "Nico: My name is Nico.", "right"],
+        ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+        ["Hallo, Emma.", "Nico: Hello, Emma.", "right"]
+    ]
+},
 
-            // --- Scene 7: Emma Explains Her Family ---
-            ["Emma! Mein Name ist Emma!", "Emma: Emma! My name is Emma!", "left"],
-            ["Und das ist meine Tante.", "Emma: And this is my aunt.", "left"],
-            ["Deine Mama?", "Nico: Your mom?", "right"],
-            ["Nein, Lisa ist nicht meine Mama.", "Emma: No, Lisa is not my mom.", "left"],
-            ["Sie ist meine Tante.", "Emma: She is my aunt.", "left"],
-            ["Meine Mama ... fliegt nach Amerika.", "Emma: My mom... is flying to America.", "left"],
-            ["Sie arbeitet da.", "Emma: She works there.", "left"],
-            ["Bitte!", "Emma: Here you go!", "left"],
-            ["Danke.", "Nico: Thank you.", "right"],
-            ["Nico.", "Nico: Nico.", "right"],
-            ["Mein Name ist Nico.", "Nico: My name is Nico.", "right"],
-            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
-            ["Hallo, Emma.", "Nico: Hello, Emma.", "right"],
+scene_08: {
+    title: "💬8. 加油站",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
+        ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
+        ["Hallo.", "Lisa: Hello.", "left"],
+        ["Also: Hallo, wie heißt du?", "Lisa: So: Hello, what's your name?", "left"],
+        ["Hallo, ich heiße Nico.", "Nico: Hello, my name is Nico.", "right"],
+        ["Und wie heißt du?", "Nico: And what's your name?", "right"],
+        ["Ich heiße Lisa.", "Lisa: My name is Lisa.", "left"],
+        ["Nein, du heißt Nico.", "Emma: No, your name is Nico.", "left"],
+        ["Das ist Emma.", "Lisa: This is Emma.", "left"],
+        ["Emma spinnt gerade.", "Lisa: Emma is being silly right now.", "left"],
+        ["Ich … heiße …", "Emma: My... name... is...", "left"],
+        ["Ey!", "Emma: Hey!", "left"],
+        ["Emma!", "Lisa: Emma!", "left"],
+        ["Aber jetzt ist das „N“ weg!", "Emma: But now the 'N' is gone!", "left"],
+        ["Das war Nico!", "Emma: That was Nico!", "left"],
+        ["Ich?", "Nico: Me?", "right"],
+        ["Moment bitte.", "Lisa: Just a moment, please.", "left"],
+        ["Ich muss noch kurz tanken.", "Lisa: I need to fill up the tank real quick.", "left"]
+    ]
+},
 
-            // --- Scene 8: The Introduction Confusion at the Gas Station ---
-            ["Ich heiße Nico.", "Lisa: My name is Nico.", "left"],
-            ["Hallo, Nico.", "Emma: Hello, Nico.", "left"],
-            ["Hallo.", "Lisa: Hello.", "left"],
-            ["Also: Hallo, wie heißt du?", "Lisa: So: Hello, what's your name?", "left"],
-            ["Hallo, ich heiße Nico.", "Nico: Hello, my name is Nico.", "right"],
-            ["Und wie heißt du?", "Nico: And what's your name?", "right"],
-            ["Ich heiße Lisa.", "Lisa: My name is Lisa.", "left"],
-            ["Nein, du heißt Nico.", "Emma: No, your name is Nico.", "left"],
-            ["Das ist Emma. Emma spinnt gerade.", "Lisa: This is Emma. Emma is being silly right now.", "left"],
-            ["Ich … heiße …", "Emma: My... name... is...", "left"],
-            ["Ey!", "Emma: Hey!", "left"],
-            ["Emma!", "Lisa: Emma!", "left"],
-            ["Aber jetzt ist das „N“ weg!", "Emma: But now the 'N' is gone!", "left"],
-            ["Das war Nico!", "Emma: That was Nico!", "left"],
-            ["Ich?", "Nico: Me?", "right"],
-            ["Moment bitte.", "Lisa: Just a moment, please.", "left"],
-            ["Ich muss noch kurz tanken.", "Lisa: I need to fill up the tank real quick.", "left"],
+scene_09: {
+    title: "💬9. 追司机",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
+        ["Nico! Stopp!", "Lisa & Nico: Nico! Stop!", "left"],
+        ["Sag mal, spinnst du?", "Taxi Driver: Hey, are you crazy?", "left"],
+        ["Was ist denn?", "Taxi Driver: What's going on?", "left"],
+        ["Die Tasche!", "Nico: The bag!", "right"],
+        ["Oh, oh …", "Emma: Oh, oh...", "left"],
+        ["Die Tasche?", "Taxi Driver: The bag?", "left"],
+        ["Welche Tasche?", "Taxi Driver: Which bag?", "left"],
+        ["Warte, Emma!", "Lisa: Wait, Emma!", "left"],
+        ["Die … die Tasche in there!", "Nico: The... the bag in there!", "right"],
+        ["Da ist keine Tasche.", "Taxi Driver: There is no bag there.", "left"],
+        ["Hallo, ich bin Lisa Brunner.", "Lisa: Hello, I am Lisa Brunner.", "left"],
+        ["Das ist Nico.", "Lisa: This is Nico.", "left"],
+        ["Nico sucht seine Tasche.", "Lisa: Nico is looking for his bag.", "left"],
+        ["Und?", "Taxi Driver: And?", "left"],
+        ["Ist Nicos Tasche in Ihrem Taxi?", "Lisa: Is Nico's bag in your taxi?", "left"],
+        ["Nicos Tasche? Nein.", "Taxi Driver: Nico's bag? No.", "left"],
+        ["Die Tasche ist nicht im Taxi.", "Taxi Driver: The bag is not in the taxi.", "left"],
+        ["Nein. Wo?", "Nico: No. Where?", "right"],
+        ["Keine Ahnung, wo deine Tasche is.", "Taxi Driver: No idea where your bag is.", "left"],
+        ["Hier ist die Tasche nicht.", "Taxi Driver: The bag is not here.", "left"],
+        ["Komm, wir suchen die Tasche!", "Lisa: Come on, let's look for the bag!", "left"],
+        ["Suchen. Komm, Nico!", "Lisa: Search. Come on, Nico!", "left"]
+    ]
+},
 
-            // --- Scene 9: Catching the Taxi Driver ---
-            ["Taxi! Stopp!", "Nico: Taxi! Stop!", "right"],
-            ["Nico! Stopp!", "Lisa & Nico: Nico! Stop!", "left"],
-            ["Sag mal, spinnst du? Was ist denn?", "Taxi Driver: Hey, are you crazy? What's going on?", "left"],
-            ["Die Tasche!", "Nico: The bag!", "right"],
-            ["Oh, oh …", "Emma: Oh, oh...", "left"],
-            ["Die Tasche? Welche Tasche?", "Taxi Driver: The bag? Which bag?", "left"],
-            ["Warte, Emma!", "Lisa: Wait, Emma!", "left"],
-            ["Die … die Tasche in there!", "Nico: The... the bag in there!", "right"],
-            ["Da ist keine Tasche.", "Taxi Driver: There is no bag there.", "left"],
-            ["Hallo, ich bin Lisa Brunner.", "Lisa: Hello, I am Lisa Brunner.", "left"],
-            ["Das ist Nico. Nico sucht seine Tasche.", "Lisa: This is Nico. Nico is looking for his bag.", "left"],
-            ["Und?", "Taxi Driver: And?", "left"],
-            ["Ist Nicos Tasche in Ihrem Taxi?", "Lisa: Is Nico's bag in your taxi?", "left"],
-            ["Nicos Tasche? Nein.", "Taxi Driver: Nico's bag? No.", "left"],
-            ["Die Tasche ist nicht im Taxi.", "Taxi Driver: The bag is not in the taxi.", "left"],
-            ["Nein. Wo?", "Nico: No. Where?", "right"],
-            ["Keine Ahnung, wo deine Tasche is.", "Taxi Driver: No idea where your bag is.", "left"],
-            ["Hier ist die Tasche nicht.", "Taxi Driver: The bag is not here.", "left"],
-            ["Komm, wir suchen die Tasche!", "Lisa: Come on, let's look for the bag!", "left"],
-            ["Suchen. Komm, Nico!", "Lisa: Search. Come on, Nico!", "left"],
+scene_10: {
+    title: "💬10. 来自哪里",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Hallo, Lisa!", "Max: Hello, Lisa!", "left"],
+        ["Hallo, Max, wie geht es dir?", "Lisa: Hello, Max, how are you?", "left"],
+        ["Super. Und dir?", "Max: Great. And you?", "left"],
+        ["Auch gut, danke.", "Lisa: Also good, thanks.", "left"],
+        ["Hi, Emma.", "Max: Hi, Emma.", "left"],
+        ["Hallo, Max.", "Emma: Hello, Max.", "left"],
+        ["Und du?", "Max: And you?", "left"],
+        ["Wer bist du?", "Max: Who are you?", "left"],
+        ["Ich bin Nico.", "Nico: I am Nico.", "right"],
+        ["Hallo, Nico.", "Max: Hello, Nico.", "left"],
+        ["Du kommst nicht aus Deutschland, oder?", "Max: You are not from Germany, right?", "left"],
+        ["Entschuldigung?", "Nico: Excuse me?", "right"],
+        ["Woher kommst du?", "Max: Where are you from?", "left"],
+        ["Ich bin Max...", "Max: I am Max...", "left"],
+        ["...und ich komme aus Deutschland.", "Max: ...and I come from Germany.", "left"],
+        ["Und ich bin Emma...", "Emma: And I am Emma...", "left"],
+        ["...und ich komme auch aus Deutschland.", "Emma: ...and I also come from Germany.", "left"],
+        ["Ich bin Nico.", "Nico: I am Nico.", "right"],
+        ["Ich komme aus ... Spain?", "Nico: I come from... Spain?", "right"],
+        ["Spanien?", "Max: Spain?", "left"],
+        ["Spanien, ja!", "Nico: Spain, yes!", "right"],
+        ["Ich komme aus Spanien.", "Nico: I come from Spain.", "right"],
+        ["Und woher kommst du genau?", "Max: And where exactly are you from?", "left"],
+        ["Woher?", "Nico: Where?", "right"],
+        ["Wo wohnst du in Spanien?", "Max: Where do you live in Spain?", "left"],
+        ["Wohnst du in Barcelona...", "Max: Do you live in Barcelona...", "left"],
+        ["...oder in Madrid?", "Max: ...or in Madrid?", "left"],
+        ["Sevilla!", "Nico: Seville!", "right"],
+        ["Du wohnst in Sevilla?", "Max: You live in Seville?", "left"],
+        ["Ich wohne in Sevilla.", "Nico: I live in Seville.", "right"]
+    ]
+},
 
-            // --- Scene 10: Meeting Max ---
-            ["Hallo, Lisa!", "Max: Hello, Lisa!", "left"],
-            ["Hallo, Max, wie geht es dir?", "Lisa: Hello, Max, how are you?", "left"],
-            ["Super. Und dir?", "Max: Great. And you?", "left"],
-            ["Auch gut, danke.", "Lisa: Also good, thanks.", "left"],
-            ["Hi, Emma.", "Max: Hi, Emma.", "left"],
-            ["Hallo, Max.", "Emma: Hello, Max.", "left"],
-            ["Und du? Wer bist du?", "Max: And you? Who are you?", "left"],
-            ["Ich bin Nico.", "Nico: I am Nico.", "right"],
-            ["Hallo, Nico.", "Max: Hello, Nico.", "left"],
-            ["Du kommst nicht aus Deutschland, oder?", "Max: You are not from Germany, right?", "left"],
-            ["Entschuldigung?", "Nico: Excuse me?", "right"],
-            ["Woher kommst du?", "Max: Where are you from?", "left"],
-            ["Ich bin Max und ich komme aus Deutschland.", "Max: I am Max and I come from Germany.", "left"],
-            ["Und ich bin Emma und ich komme auch aus Deutschland.", "Emma: And I am Emma and I also come from Germany.", "left"],
-            ["Ich bin Nico.", "Nico: I am Nico.", "right"],
-            ["Ich komme aus ... Spain?", "Nico: I come from... Spain?", "right"],
-            ["Spanien?", "Max: Spain?", "left"],
-            ["Spanien, ja!", "Nico: Spain, yes!", "right"],
-            ["Ich komme aus Spanien.", "Nico: I come from Spain.", "right"],
-            ["Und woher kommst du genau?", "Max: And where exactly are you from?", "left"],
-            ["Woher?", "Nico: Where?", "right"],
-            ["Wo wohnst du in Spanien?", "Max: Where do you live in Spain?", "left"],
-            ["Wohnst du in Barcelona oder in Madrid?", "Max: Do you live in Barcelona or in Madrid?", "left"],
-            ["Sevilla!", "Nico: Seville!", "right"],
-            ["Du wohnst in Sevilla?", "Max: You live in Seville?", "left"],
-            ["Ich wohne in Sevilla.", "Nico: I live in Seville.", "right"],
+scene_12: {
+    title: "💬12. 解释困难",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Nico war auch am Flughafen.", "Lisa: Nico was also at the airport.", "left"],
+        ["Er hat ein Problem:", "Lisa: He has a problem:", "left"],
+        ["Seine Tasche ist weg.", "Lisa: His bag is gone.", "left"],
+        ["Oh. Und was machst du jetzt?", "Max: Oh. And what are you doing now?", "left"],
+        ["Ich suche meine Tante.", "Nico: I am looking for my aunt.", "right"],
+        ["Nicos Tante wohnt hier in Deutschland.", "Lisa: Nico's aunt lives here in Germany.", "left"],
+        ["Aber er hat die Adresse nicht.", "Lisa: But he doesn't have the address.", "left"],
+        ["Kannst du deine Tante anrufen?", "Max: Can you call your aunt?", "left"],
+        ["Meine Tasche ist weg.", "Nico: My bag is gone.", "right"],
+        ["Mein Telefon ist weg.", "Nico: My phone is gone.", "right"],
+        ["Und die Nummer ist weg.", "Nico: And the number is gone.", "right"],
+        ["Und deine Familie?", "Max: And your family?", "left"],
+        ["Kannst du deine Familie anrufen?", "Max: Can you call your family?", "left"],
+        ["Nein.", "Nico: No.", "right"],
+        ["Kann dein Vater nicht helfen?", "Emma: Can't your father help?", "left"],
+        ["Er ist doch bei der Polizei.", "Emma: He's with the police, after all.", "left"],
+        ["Gute Idee!", "Lisa: Good idea!", "left"],
+        ["Vater?", "Nico: Father?", "right"],
+        ["Mein Vater ist Polizist.", "Lisa: My father is a police officer.", "left"],
+        ["Police.", "Lisa: Police.", "left"],
+        ["Vielleicht hilft er uns.", "Lisa: Maybe he can help us.", "left"],
+        ["Moment!", "Lisa: Just a moment!", "left"]
+    ]
+},
 
-            // --- Scene 12: Explaining the Problem to Max ---
-            ["Nico war auch am Flughafen.", "Lisa: Nico was also at the airport.", "left"],
-            ["Er hat ein Problem: Seine Tasche ist weg.", "Lisa: He has a problem: His bag is gone.", "left"],
-            ["Oh. Und was machst du jetzt?", "Max: Oh. And what are you doing now?", "left"],
-            ["Ich suche meine Tante.", "Nico: I am looking for my aunt.", "right"],
-            ["Nicos Tante wohnt hier in Deutschland.", "Lisa: Nico's aunt lives here in Germany.", "left"],
-            ["Aber er hat die Adresse nicht.", "Lisa: But he doesn't have the address.", "left"],
-            ["Kannst du deine Tante anrufen?", "Max: Can you call your aunt?", "left"],
-            ["Meine Tasche ist weg.", "Nico: My bag is gone.", "right"],
-            ["Mein Telefon ist weg.", "Nico: My phone is gone.", "right"],
-            ["Und die Nummer ist weg.", "Nico: And the number is gone.", "right"],
-            ["Und deine Familie?", "Max: And your family?", "left"],
-            ["Kannst du deine Familie anrufen?", "Max: Can you call your family?", "left"],
-            ["Nein.", "Nico: No.", "right"],
-            ["Kann dein Vater nicht helfen?", "Emma: Can't your father help?", "left"],
-            ["Er ist doch bei der Polizei.", "Emma: He's with the police, after all.", "left"],
-            ["Gute Idee!", "Lisa: Good idea!", "left"],
-            ["Vater?", "Nico: Father?", "right"],
-            ["Mein Vater ist Polizist.", "Lisa: My father is a police officer.", "left"],
-            ["Police. Vielleicht hilft er uns. Moment!", "Lisa: Police. Maybe he can help us. Just a moment!", "left"],
+scene_13: {
+    title: "💬13. 致电警局",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Polizeirevier Ost, Brunner hier.", "Father: Police Station East, Brunner here.", "left"],
+        ["Ah, hallo, Lisa. Wie geht’s dir?", "Father: Ah, hello, Lisa. How are you?", "left"],
+        ["Was ist los?", "Father: What's wrong?", "left"],
+        ["Geht es Emma nicht gut?", "Father: Is Emma not doing well?", "left"],
+        ["Doch, keine Sorge!", "Lisa: Yes, don't worry!", "left"],
+        ["Emma geht es gut.", "Lisa: Emma is doing well.", "left"],
+        ["Aber Nico hat ein Problem.", "Lisa: But Nico has a problem.", "left"],
+        ["Er war auch am Flughafen.", "Lisa: He was also at the airport.", "left"],
+        ["Er kommt aus Spanien.", "Lisa: He comes from Spain.", "left"],
+        ["Ja, genau.", "Lisa: Yes, exactly.", "left"],
+        ["Er kommt aus Spanien...", "Lisa: He comes from Spain...", "left"],
+        ["...und er hat ein Problem.", "Lisa: ...and he has a problem.", "left"],
+        ["Seine Tasche ist weg...", "Lisa: His bag is gone...", "left"],
+        ["...und er spricht nicht gut Deutsch.", "Lisa: ...and he doesn't speak German well.", "left"],
+        ["Hat er Papiere?", "Father: Does he have documents?", "left"],
+        ["Einen Ausweis oder einen Pass?", "Father: An ID or a passport?", "left"],
+        ["Hast du einen Pass? Passport?", "Lisa: Do you have a passport? Passport?", "left"],
+        ["Nein.", "Nico: No.", "right"],
+        ["Nicos Pass ist in seiner Tasche.", "Lisa: Nico's passport is in his bag.", "left"],
+        ["Aber er hat ein Foto von seiner Tante.", "Lisa: But he has a photo of his aunt.", "left"],
+        ["Sie wohnt auch hier in Deutschland...", "Lisa: She also lives here in Germany...", "left"],
+        ["...aber Nico hat die Adresse nicht.", "Lisa: ...but Nico doesn't have the address.", "left"],
+        ["Meine Tante …", "Nico: My aunt...", "right"],
+        ["She has a bicycle shop.", "Nico: She has a bicycle shop.", "right"],
+        ["Seine Tante hat ein Geschäft...", "Lisa: His aunt has a shop...", "left"],
+        ["...ein Fahrradgeschäft.", "Lisa: ...a bicycle shop.", "left"],
+        ["Wir suchen also eine Adresse.", "Father: So we are looking for an address.", "left"],
+        ["Die Frau hat ein Fahrradgeschäft. Richtig?", "Father: The woman has a bicycle shop. Right?", "left"],
+        ["Okay. Dann komm doch mit Nico zur Polizei.", "Father: Okay. Then why don't you come to the police station with Nico.", "left"],
+        ["Danke, Papa! Bis später!", "Lisa: Thanks, Dad! See you later!", "left"],
+        ["Und?", "Max: And?", "left"],
+        ["Vielleicht kann mein Vater uns helfen.", "Lisa: Maybe my father can help us.", "left"],
+        ["Er hilft. He helps.", "Lisa: He helps. He helps.", "left"],
+        ["Super!", "Max: Super!", "left"],
+        ["Danke!", "Nico: Thank you!", "right"],
+        ["Mach’s gut, Lisa.", "Max: Take care, Lisa.", "left"],
+        ["Ciao, Emma.", "Max: Bye, Emma.", "left"],
+        ["Tschüss, Max!", "Lisa & Emma: Goodbye, Max!", "left"],
+        ["Ciao, Nico. Viel Erfolg!", "Max: Bye, Nico. Good luck!", "left"]
+    ]
+},
 
-            // --- Scene 13: Calling Lisa's Father (The Police) ---
-            ["Polizeirevier Ost, Brunner hier.", "Father: Police Station East, Brunner here.", "left"],
-            ["Ah, hallo, Lisa. Wie geht’s dir?", "Father: Ah, hello, Lisa. How are you?", "left"],
-            ["Was ist los? Geht es Emma nicht gut?", "Father: What's wrong? Is Emma not doing well?", "left"],
-            ["Doch, keine Sorge! Emma geht es gut.", "Lisa: Yes, don't worry! Emma is doing well.", "left"],
-            ["Aber Nico hat ein Problem.", "Lisa: But Nico has a problem.", "left"],
-            ["Er war auch am Flughafen.", "Lisa: He was also at the airport.", "left"],
-            ["Er kommt aus Spanien.", "Lisa: He comes from Spain.", "left"],
-            ["Ja, genau.", "Lisa: Yes, exactly.", "left"],
-            ["Er kommt aus Spanien und er hat ein Problem.", "Lisa: He comes from Spain and he has a problem.", "left"],
-            ["Seine Tasche ist weg und er spricht nicht gut Deutsch.", "Lisa: His bag is gone and he doesn't speak German well.", "left"],
-            ["Hat er Papiere?", "Father: Does he have documents?", "left"],
-            ["Einen Ausweis oder einen Pass?", "Father: An ID or a passport?", "left"],
-            ["Hast du einen Pass? Passport?", "Lisa: Do you have a passport? Passport?", "left"],
-            ["Nein.", "Nico: No.", "right"],
-            ["Nicos Pass ist in seiner Tasche.", "Lisa: Nico's passport is in his bag.", "left"],
-            ["Aber er hat ein Foto von seiner Tante.", "Lisa: But he has a photo of his aunt.", "left"],
-            ["Sie wohnt auch hier in Deutschland, aber Nico hat die Adresse nicht.", "Lisa: She also lives here in Germany, but Nico doesn't have the address.", "left"],
-            ["Meine Tante … She has a bicycle shop.", "Nico: My aunt... She has a bicycle shop.", "right"],
-            ["Seine Tante hat ein Geschäft, ein Fahrradgeschäft.", "Lisa: His aunt has a shop, a bicycle shop.", "left"],
-            ["Wir suchen also eine Adresse.", "Father: So we are looking for an address.", "left"],
-            ["Die Frau hat ein Fahrradgeschäft. Richtig?", "Father: The woman has a bicycle shop. Right?", "left"],
-            ["Okay. Dann komm doch mit Nico zur Polizei.", "Father: Okay. Then why don't you come to the police station with Nico.", "left"],
-            ["Danke, Papa! Bis später!", "Lisa: Thanks, Dad! See you later!", "left"],
-            ["Und?", "Max: And?", "left"],
-            ["Vielleicht kann mein Vater uns helfen.", "Lisa: Maybe my father can help us.", "left"],
-            ["Er hilft. He helps.", "Lisa: He helps. He helps.", "left"],
-            ["Super!", "Max: Super!", "left"],
-            ["Danke!", "Nico: Thank you!", "right"],
-            ["Mach’s gut, Lisa. Ciao, Emma.", "Max: Take care, Lisa. Bye, Emma.", "left"],
-            ["Tschüss, Max!", "Lisa & Emma: Goodbye, Max!", "left"],
-            ["Ciao, Nico. Viel Erfolg!", "Max: Bye, Nico. Good luck!", "left"],
-
-            // --- Scene 14: Arriving at the House & Counting Numbers ---
-            ["Wie ist die Hausnummer, Emma? 38 oder 83?", "Lisa: What's the house number, Emma? 38 or 83?", "left"],
-            ["Moment… 11.", "Emma: Wait... 11.", "left"],
-            ["Ah, ja. Dann sind wir richtig hier.", "Lisa: Ah, yes. Then we are in the right place here.", "left"],
-            ["Da.", "Nico: There.", "right"],
-            ["Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
-            ["Wie viele?", "Nico: How many?", "right"],
-            ["Das sind 31 Zahlen.", "Emma: That makes 31 numbers.", "left"],
-            ["31 …", "Nico: 31...", "right"],
-            ["Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
-            ["Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
-            ["... sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: ... six, seven, eight, nine, ten, eleven, twelve.", "left"],
-            ["Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Nico: Six, seven, eight, nine, ten, eleven, twelve.", "right"],
-            ["Was ist das?", "Nico: What is this?", "right"],
-            ["Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
-            ["Geburtstag?", "Nico: Birthday?", "right"],
-            ["Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
-            ["Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
-            ["Ja, und das hier ist ein Geschenk.", "Lisa: Yes, and this here is a gift.", "left"],
-            ["Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
-            ["Tschüss, Emma!", "Nico: Bye, Emma!", "right"]
-        ]
-    }
-
+scene_14: {
+    title: "💬14. 数数字",
+    layout: "dialogue",
+    speakType: "key",
+    items: [
+        ["Wie ist die Hausnummer, Emma?", "Lisa: What's the house number, Emma?", "left"],
+        ["38 oder 83?", "Lisa: 38 or 83?", "left"],
+        ["Moment… 11.", "Emma: Wait... 11.", "left"],
+        ["Ah, ja.", "Lisa: Ah, yes.", "left"],
+        ["Dann sind wir richtig hier.", "Lisa: Then we are in the right place here.", "left"],
+        ["Da.", "Nico: There.", "right"],
+        ["Wie viele Zahlen sind das?", "Emma: How many numbers are there?", "left"],
+        ["Wie viele?", "Nico: How many?", "right"],
+        ["Das sind 31 Zahlen.", "Emma: That makes 31 numbers.", "left"],
+        ["31 …", "Nico: 31...", "right"],
+        ["Eins, zwei, drei, vier, fünf …", "Emma: One, two, three, four, five...", "left"],
+        ["Eins, zwei, drei, vier, fünf.", "Nico: One, two, three, four, five.", "right"],
+        ["... sechs, sieben, acht, neun, zehn, elf, zwölf.", "Emma: ... six, seven, eight, nine, ten, eleven, twelve.", "left"],
+        ["Sechs, sieben, acht, neun, zehn, elf, zwölf.", "Nico: Six, seven, eight, neun, ten, eleven, twelve.", "right"],
+        ["Was ist das?", "Nico: What is this?", "right"],
+        ["Eine Einladung zum Geburtstag von Charlotte.", "Emma: An invitation to Charlotte's birthday party.", "left"],
+        ["Geburtstag?", "Nico: Birthday?", "right"],
+        ["Happy birthday to you …", "Emma: Happy birthday to you...", "left"],
+        ["Ah, Geburtstag!", "Nico: Ah, birthday!", "right"],
+        ["Ja, und das hier ist ein Geschenk.", "Lisa: Yes, and this here is a gift.", "left"],
+        ["Tschüss, Nico! Bis morgen!", "Emma: Bye, Nico! See you tomorrow!", "left"],
+        ["Tschüss, Emma!", "Nico: Bye, Emma!", "right"]
+    ]
+}
 
 };
 
@@ -1135,6 +1393,21 @@ let practiceItemsAll = [];
 let practiceGroupIndex = 0;
 let selectedGermanCard = null;
 let selectedTranslationCard = null;
+
+// 🧩 拼词/拼单词模式状态
+let isBuilderModeActive = false;
+let builderItemsAll = [];
+let builderIndex = 0;
+let builderTokensPool = [];
+let builderSelectedTokens = [];
+let builderExpectedTokens = [];
+let builderErrorCount = 0;
+
+// 🖼️ 听音选图练习模式状态
+let isImageModeActive = false;
+let imageModeItemsAll = [];
+let imageModeIndex = 0;
+
 let isAnimating = false;
 
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
@@ -1279,7 +1552,10 @@ function stopAutoplay() {
 }
 
 function toggleAutoPlay() {
-    if (isPracticeModeActive) { quitPracticeMode(); } 
+    if (isPracticeModeActive) quitPracticeMode();
+    if (isBuilderModeActive) quitBuilderMode();
+    if (isImageModeActive) quitImageMode();
+
     if (isAutoplayRunning) {
         stopAutoplay();
     } else {
@@ -1297,6 +1573,8 @@ function toggleAutoPlay() {
 // ==========================================
 function togglePracticeMode() {
     if (isAutoplayRunning) stopAutoplay(); 
+    if (isBuilderModeActive) quitBuilderMode();
+    if (isImageModeActive) quitImageMode();
 
     const btn = document.getElementById('practiceBtn');
     if (isPracticeModeActive) {
@@ -1313,7 +1591,7 @@ function quitPracticeMode() {
     isPracticeModeActive = false;
     isAnimating = false;
     const btn = document.getElementById('practiceBtn');
-    btn.innerHTML = "🎮 练习";
+    btn.innerHTML = "🎮 连连看";
     btn.classList.remove('active');
     
     clearPracticeView();
@@ -1355,9 +1633,20 @@ function initPracticeGame() {
     renderPracticeGroup();
 }
 
+function navigatePracticeGroup(step) {
+    if (isAnimating) return;
+    const totalGroups = Math.ceil(practiceItemsAll.length / 8);
+    const newIndex = practiceGroupIndex + step;
+    if (newIndex >= 0 && newIndex < totalGroups) {
+        practiceGroupIndex = newIndex;
+        renderPracticeGroup();
+    }
+}
+
 function renderPracticeGroup() {
     const startIdx = practiceGroupIndex * 8;
     const currentGroup = practiceItemsAll.slice(startIdx, startIdx + 8);
+    const totalGroups = Math.ceil(practiceItemsAll.length / 8);
 
     if (currentGroup.length === 0) {
         alert("🎉 太棒了！本页的所有内容全部练习完毕！");
@@ -1371,11 +1660,13 @@ function renderPracticeGroup() {
     practiceBox.id = 'practice-box';
     practiceBox.className = 'practice-container';
 
-    const totalGroups = Math.ceil(practiceItemsAll.length / 8);
     practiceBox.innerHTML = `
         <div class="practice-header">
             <h3>🎮 连连看模式 (${practiceGroupIndex + 1}/${totalGroups} 组)</h3>
-            <span style="font-size:13px; opacity:0.75; letter-spacing:0.3px;"> 🚀</span>
+            <div class="page-controls">
+                <button class="nav-arrow" ${practiceGroupIndex === 0 ? 'disabled' : ''} onclick="navigatePracticeGroup(-1)">◀</button>
+                <button class="nav-arrow" ${practiceGroupIndex >= totalGroups - 1 ? 'disabled' : ''} onclick="navigatePracticeGroup(1)">▶</button>
+            </div>
         </div>
         <div class="practice-board">
             <div class="practice-column" id="german-col"></div>
@@ -1482,6 +1773,410 @@ function checkMatch() {
 }
 
 // ==========================================
+// 🧩 多邻国风格：拼词/拼单词练习模式
+// ==========================================
+function toggleBuilderMode() {
+    if (isAutoplayRunning) stopAutoplay();
+    if (isPracticeModeActive) quitPracticeMode();
+    if (isImageModeActive) quitImageMode();
+
+    const btn = document.getElementById('builderBtn');
+    if (isBuilderModeActive) {
+        quitBuilderMode();
+    } else {
+        isBuilderModeActive = true;
+        btn.innerHTML = "❌ 退出";
+        btn.classList.add('active');
+        initBuilderGame();
+    }
+}
+
+function quitBuilderMode() {
+    isBuilderModeActive = false;
+    isAnimating = false;
+    const btn = document.getElementById('builderBtn');
+    btn.innerHTML = "🧩 拼词";
+    btn.classList.remove('active');
+
+    clearBuilderView();
+    switchPage(currentActivePageId);
+}
+
+function clearBuilderView() {
+    const existBox = document.getElementById('builder-box');
+    if (existBox) existBox.remove();
+}
+
+function initBuilderGame() {
+    clearBuilderView();
+
+    let sourceItems = [];
+    if (currentActivePageId === 'review') {
+        sourceItems = starredItems.map(x => ({
+            german: x.data[0],
+            translation: x.data[1],
+            layout: x.layout
+        }));
+    } else {
+        const layoutStyle = appData[currentActivePageId].layout || 'word';
+        sourceItems = appData[currentActivePageId].items.map(x => ({
+            german: x[0],
+            translation: x[1],
+            layout: layoutStyle
+        }));
+    }
+
+    if (sourceItems.length === 0) {
+        alert("当前页面没有可以练习的内容哦！");
+        quitBuilderMode();
+        return;
+    }
+
+    builderItemsAll = sourceItems;
+    builderIndex = 0;
+
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.setProperty('display', 'none', 'important');
+        p.classList.remove('show');
+    });
+
+    renderBuilderQuestion();
+}
+
+function navigateBuilderQuestion(step) {
+    if (isAnimating) return;
+    const newIndex = builderIndex + step;
+    if (newIndex >= 0 && newIndex < builderItemsAll.length) {
+        builderIndex = newIndex;
+        renderBuilderQuestion();
+    }
+}
+
+function renderBuilderQuestion() {
+    clearBuilderView();
+    builderErrorCount = 0;
+
+    if (builderIndex >= builderItemsAll.length) {
+        alert("🎉 太棒了！您已完成本组所有拼词/拼单词练习！");
+        quitBuilderMode();
+        return;
+    }
+
+    const currentItem = builderItemsAll[builderIndex];
+    const germanText = currentItem.german;
+    const translationText = currentItem.translation;
+    const layout = currentItem.layout;
+
+    const isSentenceMode = (layout === 'sentence' || layout === 'long-sentence' || layout === 'dialogue');
+
+    if (isSentenceMode) {
+        builderExpectedTokens = germanText.trim().split(/\s+/);
+    } else {
+        builderExpectedTokens = germanText.trim().split('');
+    }
+
+    builderTokensPool = builderExpectedTokens.map((token, idx) => ({ id: idx, token: token }));
+    builderTokensPool.sort(() => Math.random() - 0.5);
+    builderSelectedTokens = [];
+
+    const builderBox = document.createElement('div');
+    builderBox.id = 'builder-box';
+    builderBox.className = 'practice-container';
+
+    const modeTitle = isSentenceMode ? "🧩 拼词成句" : "🧩 单词拼写";
+
+    builderBox.innerHTML = `
+        <div class="practice-header">
+            <h3>${modeTitle} (${builderIndex + 1}/${builderItemsAll.length})</h3>
+            <div class="page-controls">
+                <button class="nav-arrow" ${builderIndex === 0 ? 'disabled' : ''} onclick="navigateBuilderQuestion(-1)">◀</button>
+                <button class="nav-arrow" ${builderIndex >= builderItemsAll.length - 1 ? 'disabled' : ''} onclick="navigateBuilderQuestion(1)">▶</button>
+            </div>
+        </div>
+        <div class="builder-target-prompt">
+            <span>${translationText}</span>
+            <button class="speaker-btn" title="听读音" onclick="speakCurrentTarget()">🔊</button>
+        </div>
+        <div class="builder-answer-zone" id="builder-answer-zone"></div>
+        <div class="correct-answer-hint" id="correct-hint">💡 正确答案：${germanText}</div>
+        <div class="builder-pool-zone" id="builder-pool-zone"></div>
+        <div class="builder-actions">
+            <button class="btn-clear" onclick="clearBuilderSelection()">🔄 重置</button>
+            <button class="btn-check" onclick="checkBuilderAnswer()">✅ 检查答案</button>
+        </div>
+    `;
+
+    const pagesContainer = document.getElementById('pagesContainer');
+    pagesContainer.appendChild(builderBox);
+
+    renderBuilderTiles();
+}
+
+function speakCurrentTarget() {
+    if (builderItemsAll[builderIndex]) {
+        speak(builderItemsAll[builderIndex].german);
+    }
+}
+
+function renderBuilderTiles() {
+    const answerZone = document.getElementById('builder-answer-zone');
+    const poolZone = document.getElementById('builder-pool-zone');
+
+    if (!answerZone || !poolZone) return;
+
+    answerZone.innerHTML = '';
+    poolZone.innerHTML = '';
+
+    const currentItem = builderItemsAll[builderIndex];
+    const layout = currentItem ? currentItem.layout : 'word';
+    const isSingleCharToken = !(layout === 'sentence' || layout === 'long-sentence' || layout === 'dialogue');
+
+    builderSelectedTokens.forEach((item, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'tile-btn';
+        btn.innerText = item.token === ' ' ? '␣' : item.token;
+        btn.onclick = () => {
+            if (!isSingleCharToken) {
+                speak(item.token);
+            }
+            builderSelectedTokens.splice(index, 1);
+            renderBuilderTiles();
+        };
+        answerZone.appendChild(btn);
+    });
+
+    builderTokensPool.forEach((item) => {
+        const btn = document.createElement('button');
+        btn.className = 'tile-btn';
+        btn.innerText = item.token === ' ' ? '␣' : item.token;
+
+        const isSelected = builderSelectedTokens.some(s => s.id === item.id);
+        if (isSelected) {
+            btn.classList.add('disabled');
+        } else {
+            btn.onclick = () => {
+                if (!isSingleCharToken) {
+                    speak(item.token);
+                }
+                builderSelectedTokens.push(item);
+                renderBuilderTiles();
+            };
+        }
+        poolZone.appendChild(btn);
+    });
+}
+
+function clearBuilderSelection() {
+    builderSelectedTokens = [];
+    renderBuilderTiles();
+}
+
+function checkBuilderAnswer() {
+    if (isAnimating) return;
+
+    const answerZone = document.getElementById('builder-answer-zone');
+    const hint = document.getElementById('correct-hint');
+    const currentItem = builderItemsAll[builderIndex];
+    const layout = currentItem.layout;
+
+    const isSentenceMode = (layout === 'sentence' || layout === 'long-sentence' || layout === 'dialogue');
+
+    const userAnswer = builderSelectedTokens.map(t => t.token).join(isSentenceMode ? ' ' : '');
+    const correctAnswer = currentItem.german.trim();
+
+    if (userAnswer === correctAnswer) {
+        isAnimating = true;
+        if (hint) hint.classList.remove('show');
+        answerZone.classList.add('success');
+        speak(correctAnswer, () => {
+            setTimeout(() => {
+                builderIndex++;
+                isAnimating = false;
+                renderBuilderQuestion();
+            }, 500);
+        });
+    } else {
+        builderErrorCount++;
+        isAnimating = true;
+        answerZone.classList.add('error');
+
+        if (builderErrorCount >= 3 && hint) {
+            hint.classList.add('show');
+        }
+
+        setTimeout(() => {
+            answerZone.classList.remove('error');
+            isAnimating = false;
+        }, 500);
+    }
+}
+
+// ==========================================
+// 🖼️ 听音选图练习模式（只取当前分组图片）
+// ==========================================
+function toggleImageMode() {
+    if (isAutoplayRunning) stopAutoplay();
+    if (isPracticeModeActive) quitPracticeMode();
+    if (isBuilderModeActive) quitBuilderMode();
+
+    const btn = document.getElementById('imageBtn');
+    if (isImageModeActive) {
+        quitImageMode();
+    } else {
+        isImageModeActive = true;
+        btn.innerHTML = "❌ 退出";
+        btn.classList.add('active');
+        initImageGame();
+    }
+}
+
+function quitImageMode() {
+    isImageModeActive = false;
+    isAnimating = false;
+    const btn = document.getElementById('imageBtn');
+    btn.innerHTML = "🖼️ 选图";
+    btn.classList.remove('active');
+
+    clearImageView();
+    switchPage(currentActivePageId);
+}
+
+function clearImageView() {
+    const existBox = document.getElementById('image-box');
+    if (existBox) existBox.remove();
+}
+
+function initImageGame() {
+    clearImageView();
+
+    let rawList = [];
+    if (currentActivePageId === 'review') {
+        starredItems.forEach(x => {
+            const isDialogue = x.layout === 'dialogue';
+            const img = isDialogue ? x.data[3] : x.data[2];
+            if (img) {
+                rawList.push({ german: x.data[0], translation: x.data[1], imgUrl: img });
+            }
+        });
+    } else {
+        const page = appData[currentActivePageId];
+        const isDialogue = page.layout === 'dialogue';
+        page.items.forEach(item => {
+            const img = isDialogue ? item[3] : item[2];
+            if (img) {
+                rawList.push({ german: item[0], translation: item[1], imgUrl: img });
+            }
+        });
+    }
+
+    if (rawList.length < 2) {
+        alert("当前分组带有图片的卡片不足 2 张，无法生成选图测验哦！请切换到图片较多的分组。");
+        quitImageMode();
+        return;
+    }
+
+    imageModeItemsAll = rawList.sort(() => Math.random() - 0.5);
+    imageModeIndex = 0;
+
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.setProperty('display', 'none', 'important');
+        p.classList.remove('show');
+    });
+
+    renderImageQuestion();
+}
+
+function navigateImageQuestion(step) {
+    if (isAnimating) return;
+    const newIndex = imageModeIndex + step;
+    if (newIndex >= 0 && newIndex < imageModeItemsAll.length) {
+        imageModeIndex = newIndex;
+        renderImageQuestion();
+    }
+}
+
+function renderImageQuestion() {
+    clearImageView();
+
+    if (imageModeIndex >= imageModeItemsAll.length) {
+        alert("🎉 恭喜！你已完成本组听音选图测试！");
+        quitImageMode();
+        return;
+    }
+
+    const currentCorrect = imageModeItemsAll[imageModeIndex];
+
+    // 🎯 仅从当前分组（imageModeItemsAll）中过滤出干扰选项，不再跨分组抽图
+    let localDistractorsPool = imageModeItemsAll.filter(item => item.german !== currentCorrect.german);
+    localDistractorsPool = localDistractorsPool.sort(() => Math.random() - 0.5);
+
+    // 最多取 3 个干扰项（如果当前分组图片较少，取实际可用的最大数量）
+    let distractors = localDistractorsPool.slice(0, 3);
+    let options = [currentCorrect, ...distractors].sort(() => Math.random() - 0.5);
+
+    const imageBox = document.createElement('div');
+    imageBox.id = 'image-box';
+    imageBox.className = 'practice-container';
+
+    imageBox.innerHTML = `
+        <div class="practice-header">
+            <h3>👂 听音选图 (${imageModeIndex + 1}/${imageModeItemsAll.length})</h3>
+            <div class="page-controls">
+                <button class="nav-arrow" ${imageModeIndex === 0 ? 'disabled' : ''} onclick="navigateImageQuestion(-1)">◀</button>
+                <button class="nav-arrow" ${imageModeIndex >= imageModeItemsAll.length - 1 ? 'disabled' : ''} onclick="navigateImageQuestion(1)">▶</button>
+            </div>
+        </div>
+        <div class="builder-target-prompt">
+            <span>请听发音并选择对应图片</span>
+            <button class="speaker-btn" title="播放读音" onclick="speakImageTarget()">🔊</button>
+        </div>
+        <div class="image-grid" id="image-grid"></div>
+    `;
+
+    const pagesContainer = document.getElementById('pagesContainer');
+    pagesContainer.appendChild(imageBox);
+
+    const grid = document.getElementById('image-grid');
+
+    options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = 'image-choice-card';
+        card.innerHTML = `<img src="${opt.imgUrl}" alt="choice">`;
+        card.onclick = () => { if(!isAnimating) checkImageChoice(card, opt.german, currentCorrect.german); };
+        grid.appendChild(card);
+    });
+
+    setTimeout(() => {
+        speakImageTarget();
+    }, 300);
+}
+
+function speakImageTarget() {
+    if (imageModeItemsAll[imageModeIndex]) {
+        speak(imageModeItemsAll[imageModeIndex].german);
+    }
+}
+
+function checkImageChoice(cardElement, chosenGerman, correctGerman) {
+    if (chosenGerman === correctGerman) {
+        isAnimating = true;
+        cardElement.classList.add('success');
+        setTimeout(() => {
+            imageModeIndex++;
+            isAnimating = false;
+            renderImageQuestion();
+        }, 600);
+    } else {
+        isAnimating = true;
+        cardElement.classList.add('error');
+        setTimeout(() => {
+            cardElement.classList.remove('error');
+            isAnimating = false;
+        }, 500);
+    }
+}
+
+// ==========================================
 // 初始化 DOM 渲染引擎与页面切换逻辑
 // ==========================================
 const tabsContainer = document.getElementById('tabsContainer');
@@ -1584,6 +2279,16 @@ function switchPage(pageId) {
             p.style.setProperty('display', 'none', 'important');
         });
         initPracticeGame();
+    } else if (isBuilderModeActive) {
+        document.querySelectorAll('.page').forEach(p => {
+            p.style.setProperty('display', 'none', 'important');
+        });
+        initBuilderGame();
+    } else if (isImageModeActive) {
+        document.querySelectorAll('.page').forEach(p => {
+            p.style.setProperty('display', 'none', 'important');
+        });
+        initImageGame();
     } else {
         const targetPage = document.getElementById(`page-${pageId}`);
         if (targetPage) targetPage.classList.add('show');
