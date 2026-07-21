@@ -320,20 +320,6 @@ body {
 .correct-answer { color: var(--correct-border); font-weight: 700; }
 .user-answer { color: var(--error-border); font-weight: 700; text-decoration: line-through; }
 
-.wrong-badge {
-  position: absolute;
-  top: 14px;
-  right: 48px;
-  font-size: 11px;
-  background: var(--error-bg);
-  color: var(--error-border);
-  border: 1px solid var(--error-border);
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-weight: 700;
-  animation: fadeIn 0.3s ease;
-}
-
 /* ==================== 底部固定控制面板 Bottom Shelf ==================== */
 .bottom-panel {
   position: fixed;
@@ -420,7 +406,6 @@ body {
 button.btn {
   padding: 10px 12px;
   border-radius: var(--radius-sm);
-  border: none;
   background: var(--chip-bg);
   color: var(--text-main);
   font-family: inherit;
@@ -448,43 +433,25 @@ button.btn-primary {
   flex: 1;
 }
 
-button.btn-warn {
-  background: rgba(245, 158, 11, 0.15);
-  color: #d97706;
-  border-color: rgba(245, 158, 11, 0.3);
-}
-
 /* ⚡ 跳页专区 Jump Input Group */
 .jump-box {
   display: flex;
   align-items: center;
-  background: var(--chip-bg);
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
-  padding: 2px 4px;
+  gap: 4px;
 }
 
 .jump-input {
-  width: 38px;
-  border: none;
-  background: transparent;
+  width: 42px;
+  height: 38px;
+  border: 1px solid var(--card-border);
+  background: var(--chip-bg);
+  border-radius: var(--radius-sm);
   color: var(--text-main);
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
   text-align: center;
   outline: none;
-}
-
-.jump-btn {
-  background: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 #result-toast {
@@ -548,15 +515,14 @@ button.btn-warn {
     <!-- 跳页功能 -->
     <div class="jump-box">
       <input id="jumpInput" class="jump-input" type="number" min="1" placeholder="页">
-      <button id="jumpBtn" class="jump-btn">Go</button>
+      <button id="jumpBtn" class="btn" title="跳转">Go</button>
     </div>
 
     <!-- 提交主按钮 -->
-    <button id="submitBtn" class="btn btn-primary">🎯</button>
+    <button id="submitBtn" class="btn btn-primary">🎯Submit</button>
 
     <!-- 功能切换 -->
     <div class="btn-group">
-      <button id="redoBtn" class="btn btn-warn" title="重做错题">❌</button>
       <button id="favModeBtn" class="btn" title="收藏夹">⭐</button>
       <button id="allModeBtn" class="btn" title="返回全部">🏠</button>
     </div>
@@ -670,24 +636,134 @@ function triggerConfetti(targetElem) {
 
 /* ==================== 题库数据 ==================== */
 const ALL_QUESTIONS = [
-  { "sentence": "The ground is extremely **wet**.", "answer": "waterlogged" },
-  { "sentence": "The company plans to **engage** more staff.", "answer": "recruit" },
-  { "sentence": "The method **draws on** multiple data sources.", "answer": "is based on" },
-  { "sentence": "Researchers were able to **determine** the source of the error.", "answer": "pinpoint" },
-  { "sentence": "He was **unwilling** to cooperate.", "answer": "drag his feet" },
-  { "sentence": "The team attempted to **devise** a new solution.", "answer": "formulate" },
-  { "sentence": "Events are presented in **chronological** order.", "answer": "time order" },
-  { "sentence": "The theory aims to **transcend** traditional categories.", "answer": "go beyond" },
-  { "sentence": "The report examined a recent **aviation disaster**.", "answer": "air crash" },
-  { "sentence": "The total **cost** of the project was significant.", "answer": "financial outlay" },
-  { "sentence": "The crops depend on **synthetic fertilizer**.", "answer": "chemical fertilizer" },
-  { "sentence": "She decided to **start doing** research independently.", "answer": "have a go at" },
-  { "sentence": "The term has a specific **meaning**.", "answer": "connotation" },
-  { "sentence": "The response was given **promptly**.", "answer": "immediately" }
+{ "sentence": "Scientists continue to **investigate** the phenomenon.", "answer": "explore" },
+{ "sentence": "The experiment seeks to **determine** the main contributing factors.", "answer": "establish" },
+{ "sentence": "The changes may **undermine** stability.", "answer": "diminish" },
+{ "sentence": "The region experienced **cold temperatures**.", "answer": "freezing weather" },
+{ "sentence": "The project **began** in early 2020.", "answer": "got going" },
+{ "sentence": "The researchers **carried out** a series of trials.", "answer": "conducted" },
+{ "sentence": "Waste is often **dumped irresponsibly**.", "answer": "disposed of improperly" },
+{ "sentence": "The data was carefully **analyzed**.", "answer": "evaluated" },
+{ "sentence": "Engineers worked to **devise** an innovative design.", "answer": "come up with" },
+{ "sentence": "Local **inhabitants** were interviewed.", "answer": "residents" },
+{ "sentence": "The building suffered severe **gale damage**.", "answer": "damage caused by strong winds" },
+{ "sentence": "The information is **accessible** to the public.", "answer": "easy to understand" },
+{ "sentence": "The study **draws on** previous research.", "answer": "makes use of" },
+{ "sentence": "Farmers rely heavily on **pesticides**.", "answer": "chemical substances used to kill insects" },
+{ "sentence": "The system **is made up of** several components.", "answer": "consists of" },
+{ "sentence": "The report **misrepresented** the findings.", "answer": "exaggerated" },
+{ "sentence": "The ecosystem is extremely **fragile**.", "answer": "vulnerable" },
+{ "sentence": "The experiment involved several human **subjects**.", "answer": "volunteers" },
+{ "sentence": "The treatment targets common **ailments**.", "answer": "illnesses" },
+{ "sentence": "The data was collected **prior to** the intervention.", "answer": "before" },
+{ "sentence": "One potential **pitfall** is the lack of reliable data.", "answer": "drawback" },
+{ "sentence": "The plan was successfully **carried out**.", "answer": "executed" },
+{ "sentence": "The policy led to an unexpected **outcome**.", "answer": "result" },
+{ "sentence": "The results were found to be **inaccurate**.", "answer": "distorted" },
+{ "sentence": "The firm decided to **employ** new workers.", "answer": "appoint" },
+{ "sentence": "The institution was **established** decades ago.", "answer": "set up" },
+{ "sentence": "Each **spouse** contributed to the household.", "answer": "partner" },
+{ "sentence": "The changes were **drastic**.", "answer": "radical" },
+{ "sentence": "Researchers chosen to **collaborate with** international teams.", "answer": "team up with" },
+{ "sentence": "Without intervention, the conflict may **fester**.", "answer": "worsen over time" },
+{ "sentence": "The class was **divided into** groups.", "answer": "made up of" },
+{ "sentence": "Researchers analyzed **demographic** data.", "answer": "family size statistics" },
+{ "sentence": "The disease has **long-term** effects.", "answer": "chronic" },
+{ "sentence": "Only **fragments** of the fossil remain.", "answer": "incomplete remains" },
+{ "sentence": "The project is funded by **civil** authorities.", "answer": "municipal" },
+{ "sentence": "The experiment failed; **consequently**, the theory was revised.", "answer": "therefore" },
+{ "sentence": "The theory is widely accepted, **whereas** the alternative remains controversial.", "answer": "however" },
+{ "sentence": "Workers reported severe **fatigue**.", "answer": "exhaustion" },
+{ "sentence": "The number of **siblings** affects family size.", "answer": "brothers and sisters" },
+{ "sentence": "The resource is easily **accessible**.", "answer": "available" },
+{ "sentence": "The method is rather **banal**.", "answer": "dull" },
+{ "sentence": "Prices increased **drastically** over a short period.", "answer": "sharply" },
+{ "sentence": "Renewable energy can **replace** fossil fuels.", "answer": "substitute" },
+{ "sentence": "The results remained **consistent**.", "answer": "constant" },
+{ "sentence": "The company was **established** in 1995.", "answer": "founded" },
+{ "sentence": "The results were **analyzed** in detail.", "answer": "assessed" },
+{ "sentence": "The policy was **carried out** across multiple regions.", "answer": "implemented" },
+{ "sentence": "The package was delivered by a **courier**.", "answer": "carrier" },
+{ "sentence": "The main **trap** lies in overgeneralisation.", "answer": "disadvantage" },
+{ "sentence": "The study will **investigate** the effects of pollution on marine life.", "answer": "look into" },
+{ "sentence": "Lack of funding remains a major **handicap**.", "answer": "hindrance" },
+{ "sentence": "The government sought to **increase security**.", "answer": "produce unforgeable banknotes" },
+{ "sentence": "The musical **composition** was performed live.", "answer": "scored work" },
+{ "sentence": "This ability is **innate**.", "answer": "built-in" },
+{ "sentence": "The long hours caused extreme **tiredness**.", "answer": "drowsiness" },
+{ "sentence": "The analysis helps **determine** the nature of the disease.", "answer": "diagnose" },
+{ "sentence": "Experts continue to **argue** about the issue.", "answer": "debate" },
+{ "sentence": "The city invested in modern **infrastructure**.", "answer": "municipal services" },
+{ "sentence": "The fabric has a red **tint**.", "answer": "dye" },
+{ "sentence": "The ground is extremely **wet**.", "answer": "waterlogged" },
+{ "sentence": "The findings are of great **significance**.", "answer": "importance" },
+{ "sentence": "He was **unwilling** to cooperate.", "answer": "drag his feet" },
+{ "sentence": "Poor infrastructure is a significant **obstacle**.", "answer": "stumbling block" },
+{ "sentence": "Researchers were able to **determine** the source of the error.", "answer": "pinpoint" },
+{ "sentence": "The company plans to **engage** more staff.", "answer": "recruit" },
+{ "sentence": "The method **draws on** multiple data sources.", "answer": "is based on" },
+{ "sentence": "The plant is **used as a drink**.", "answer": "produce a beverage" },
+{ "sentence": "This was the **fastest ship** of its time.", "answer": "faster than any other ship" },
+{ "sentence": "The judge was expected to be **impartial**.", "answer": "neutral" },
+{ "sentence": "The table was set with silver **cutlery**.", "answer": "knives and forks" },
+{ "sentence": "The work requires **careful** planning.", "answer": "meticulous" },
+{ "sentence": "The results were **unexpected**.", "answer": "surprising" },
+{ "sentence": "Income is calculated **per head**.", "answer": "per person" },
+{ "sentence": "The team attempted to **devise** a new solution.", "answer": "formulate" },
+{ "sentence": "Researchers aim to **investigate** the underlying causes of climate change.", "answer": "probe" },
+{ "sentence": "The material became **molten**.", "answer": "boiling" },
+{ "sentence": "The system was inefficient; **consequently**, improvements were made.", "answer": "thus" },
+{ "sentence": "Events are presented in **chronological** order.", "answer": "time order" },
+{ "sentence": "The theory aims to **transcend** traditional categories.", "answer": "go beyond" },
+{ "sentence": "The total **cost** of the project was significant.", "answer": "financial outlay" },
+{ "sentence": "The report examined a recent **aviation disaster**.", "answer": "air crash" },
+{ "sentence": "The crops depend on **synthetic fertilizer**.", "answer": "chemical fertilizer" },
+{ "sentence": "She decided to **start doing** research independently.", "answer": "have a go at" },
+{ "sentence": "There is a strong **likelihood** of success.", "answer": "probability" },
+{ "sentence": "The government attempted to **suppress** protests.", "answer": "stifle" },
+{ "sentence": "The research must remain **objective**.", "answer": "unbiased" },
+{ "sentence": "The initial **hypothesis** was merely a guess.", "answer": "speculation" },
+{ "sentence": "Participants were asked to **resist distraction**.", "answer": "ignore distraction" },
+{ "sentence": "The response was given **promptly**.", "answer": "immediately" },
+{ "sentence": "The term has a specific **meaning**.", "answer": "connotation" },
+{ "sentence": "Each **specimen** was carefully examined in the laboratory.", "answer": "individual" },
+{ "sentence": "Scientists continue to discover **new types** of bacteria.", "answer": "new sources" },
+{ "sentence": "The island’s **population** depends on fishing.", "answer": "community" },
+{ "sentence": "Travel **costs** include fares and tolls.", "answer": "charges" },
+{ "sentence": "The project required an **immense** amount of funding.", "answer": "tremendous" },
+{ "sentence": "New laws aim to **restrain** illegal activities.", "answer": "curb" },
+{ "sentence": "The issue remains a **long-term** concern.", "answer": "enduring" },
+{ "sentence": "The text **refers to** ancient traditions.", "answer": "mentions" },
+{ "sentence": "Facial expressions form part of **physiognomy**.", "answer": "gesture" },
+{ "sentence": "The data provides a useful **measure** of performance.", "answer": "indication" },
+{ "sentence": "It suddenly **occurred to** him what had happened.", "answer": "realize" },
+{ "sentence": "The author **refers to** several key theories.", "answer": "alludes to" },
+{ "sentence": "Poor policy decisions can **undermine** trust.", "answer": "weaken" },
+{ "sentence": "Pollution continues to **blight** the region.", "answer": "ruin" },
+{ "sentence": "The fetus develops **before birth**.", "answer": "in the womb" },
+{ "sentence": "The **hypothesis** was later tested.", "answer": "theory" },
+{ "sentence": "The region benefited from the **cinnamon trade**.", "answer": "commodity business" },
+{ "sentence": "The new system replaced its **predecessor**.", "answer": "former holder" },
+{ "sentence": "Valuables were **smuggled** out of the country.", "answer": "hidden" },
+{ "sentence": "The plan was approved at the **metropolitan** level.", "answer": "city-level" },
+{ "sentence": "He began to **realize** the truth.", "answer": "become aware" },
+{ "sentence": "Many elderly people suffer from chronic **ailments**.", "answer": "medical conditions" },
+{ "sentence": "Disease can **plague** entire populations.", "answer": "infect" },
+{ "sentence": "The structure remains **intact**.", "answer": "undamaged" },
+{ "sentence": "The study focuses on **demographic** changes.", "answer": "population trends" },
+{ "sentence": "Farmers rely heavily on **irrigation**.", "answer": "artificial watering" },
+{ "sentence": "The systems are **compatible**.", "answer": "well-matched" },
+{ "sentence": "The policy caused an **imbalance**.", "answer": "disproportion" },
+{ "sentence": "Teachers must **supervise** young children.", "answer": "monitor" },
+{ "sentence": "Researchers attempted to **follow** the animals.", "answer": "track" },
+{ "sentence": "Measures were taken to **allay** public fears.", "answer": "ease" },
+{ "sentence": "These species are **delicate** and easily harmed.", "answer": "at risk" },
+{ "sentence": "Participants were **reluctant** to respond.", "answer": "be loath to" },
+{ "sentence": "Predators often **track** their prey silently.", "answer": "stalk" },
+{ "sentence": "The medicine helps to **lessen** pain.", "answer": "relieve" }
 ];
 
 const PAGE_SIZE = 6; // 固定一页 6 题
-const STORAGE_KEY = "IELTS_WRONG_001";
 const FAV_KEY = "IELTS_FAV_001";
 
 let questions = [...ALL_QUESTIONS];
@@ -724,15 +800,6 @@ function removeFav(q){
   localStorage.setItem(FAV_KEY, JSON.stringify(favs));
 }
 function isFav(q){ return loadFavs().some(f=>f.sentence===q.sentence); }
-
-function loadWrongs() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
-function saveWrong(q) {
-  const wrongs = loadWrongs();
-  if(!wrongs.some(w=>w.sentence===q.sentence)) {
-    wrongs.push(q);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(wrongs));
-  }
-}
 
 /* ==================== 主渲染逻辑 ==================== */
 function renderPage() {
@@ -839,15 +906,13 @@ document.getElementById("submitBtn").onclick = () => {
   let hasCorrect = false;
   let hasError = false;
 
-  const pageQs = questions.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
-
   document.querySelectorAll(".question-card").forEach((card, idx) => {
     const target = card.querySelector(".target-word");
     const correct = target.dataset.answer;
     const user = target.dataset.filled;
 
     target.classList.remove("correct", "error");
-    card.querySelectorAll(".answer-row, .wrong-badge").forEach(e => e.remove());
+    card.querySelectorAll(".answer-row").forEach(e => e.remove());
 
     const row = document.createElement("div");
     row.className = "answer-row";
@@ -859,8 +924,6 @@ document.getElementById("submitBtn").onclick = () => {
       hasCorrect = true;
     } else {
       target.classList.add("error");
-      card.insertAdjacentHTML("beforeend", `<div class="wrong-badge">MISS</div>`);
-      saveWrong(pageQs[idx]);
       hasError = true;
     }
 
@@ -918,15 +981,6 @@ function handleJump() {
 }
 
 /* ==================== 模式切换 ==================== */
-document.getElementById("redoBtn").onclick = () => {
-  const wrongs = loadWrongs();
-  if(!wrongs.length){ alert("🎉 当前无错题记录！"); return; }
-  questions = wrongs;
-  currentPage = 0;
-  document.getElementById("modeTip").textContent = "💀 错题重练";
-  renderPage();
-};
-
 document.getElementById("favModeBtn").onclick = () => {
   const favs = loadFavs();
   if(!favs.length){ alert("⭐ 暂无收藏单词！"); return; }
