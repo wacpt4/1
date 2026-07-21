@@ -1,0 +1,951 @@
+<!DOCTYPE html> 
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🚀 IELTS Vocabulary Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ==================== 变量定义 & 全局样式 ==================== */
+:root {
+  /* 柔和淡紫色调 Light Purple Theme */
+  --bg-gradient-1: #f3f0ff;
+  --bg-gradient-2: #e8e0ff;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --card-border: rgba(186, 166, 255, 0.3);
+  --card-shadow: 0 10px 25px -5px rgba(138, 107, 255, 0.12), 0 8px 10px -6px rgba(138, 107, 255, 0.08);
+  
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-light: #f5f3ff;
+  --primary-glow: rgba(139, 92, 246, 0.35);
+  
+  --text-main: #2d264b;
+  --text-muted: #736b8e;
+  
+  --slot-bg: #ede9fe;
+  --slot-border: #c4b5fd;
+  --slot-text: #5b21b6;
+  
+  --correct-bg: #dcfce7;
+  --correct-border: #4ade80;
+  --correct-text: #15803d;
+  
+  --error-bg: #ffe4e6;
+  --error-border: #fb7185;
+  --error-text: #be123c;
+  
+  --panel-bg: rgba(255, 255, 255, 0.88);
+  --panel-border: rgba(221, 214, 254, 0.8);
+  --chip-bg: #f5f3ff;
+  --chip-border: #ddd6fe;
+  --chip-text: #4c1d95;
+  --chip-shadow: 0 4px 12px rgba(139, 92, 246, 0.08);
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+}
+
+[data-theme="dark"] {
+  /* 深色模式 Dark Purple Theme */
+  --bg-gradient-1: #0f0c1b;
+  --bg-gradient-2: #1a152e;
+  --card-bg: rgba(28, 23, 48, 0.82);
+  --card-border: rgba(139, 92, 246, 0.25);
+  --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  
+  --primary: #a78bfa;
+  --primary-hover: #c4b5fd;
+  --primary-light: #2e264f;
+  --primary-glow: rgba(167, 139, 250, 0.4);
+  
+  --text-main: #f1f0f7;
+  --text-muted: #a39bbd;
+  
+  --slot-bg: #292042;
+  --slot-border: #6d28d9;
+  --slot-text: #ddd6fe;
+  
+  --correct-bg: #064e3b;
+  --correct-border: #10b981;
+  --correct-text: #a7f3d0;
+  
+  --error-bg: #4c0519;
+  --error-border: #f43f5e;
+  --error-text: #fecdd3;
+  
+  --panel-bg: rgba(21, 17, 36, 0.92);
+  --panel-border: rgba(139, 92, 246, 0.3);
+  --chip-bg: #271f3f;
+  --chip-border: #4c1d95;
+  --chip-text: #e9d5ff;
+  --chip-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+  background-attachment: fixed;
+  color: var(--text-main);
+  margin: 0;
+  padding: 16px 12px 240px 12px;
+  min-height: 100vh;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ==================== 顶栏 Header ==================== */
+.header {
+  max-width: 680px;
+  margin: 0 auto 16px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.mode-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 30px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.theme-toggle-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.85) rotate(15deg);
+}
+
+/* ==================== 答题卡片 Containers & Cards ==================== */
+#quiz-container {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.question-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  position: relative;
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  animation: cardEntrance 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-card:nth-child(1) { animation-delay: 0.05s; }
+.question-card:nth-child(2) { animation-delay: 0.10s; }
+.question-card:nth-child(3) { animation-delay: 0.15s; }
+.question-card:nth-child(4) { animation-delay: 0.20s; }
+.question-card:nth-child(5) { animation-delay: 0.25s; }
+.question-card:nth-child(6) { animation-delay: 0.30s; }
+
+@keyframes cardEntrance {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.question-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sentence {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-main);
+  font-weight: 500;
+  flex: 1;
+}
+
+/* 填空槽 Slot Styling */
+.target-word {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 90px;
+  padding: 3px 10px;
+  margin: 0 4px;
+  border-radius: var(--radius-sm);
+  background: var(--slot-bg);
+  border: 2px dashed var(--slot-border);
+  color: var(--slot-text);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
+}
+
+.target-word:active {
+  transform: scale(0.94);
+}
+
+.target-word[data-filled] {
+  background: var(--primary-light);
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  box-shadow: 0 4px 12px var(--primary-glow);
+  animation: slotFill 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slotFill {
+  0% { transform: scale(0.85); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* 验证反馈状态 */
+.target-word.correct {
+  background: var(--correct-bg) !important;
+  border-color: var(--correct-border) !important;
+  color: var(--correct-text) !important;
+  animation: correctBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes correctBounce {
+  0%, 100% { transform: scale(1); }
+  40% { transform: scale(1.12) translateY(-4px); }
+  70% { transform: scale(0.98); }
+}
+
+.target-word.error {
+  background: var(--error-bg) !important;
+  border-color: var(--error-border) !important;
+  color: var(--error-text) !important;
+  animation: errorShake 0.4s ease-in-out;
+}
+
+@keyframes errorShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* 收藏星号 Star Button */
+.star-btn {
+  flex-shrink: 0;
+  cursor: pointer;
+  font-size: 20px;
+  opacity: 0.3;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+  padding: 2px;
+}
+
+.star-btn:active {
+  transform: scale(0.7);
+}
+
+.star-btn.active {
+  opacity: 1;
+  transform: scale(1.15) rotate(10deg);
+  filter: drop-shadow(0 2px 8px rgba(255, 215, 0, 0.5));
+}
+
+/* 答案详情行 Answer Details Row */
+.answer-row {
+  font-size: 13px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--card-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.correct-answer { color: var(--correct-border); font-weight: 700; }
+.user-answer { color: var(--error-border); font-weight: 700; text-decoration: line-through; }
+
+.wrong-badge {
+  position: absolute;
+  top: 14px;
+  right: 48px;
+  font-size: 11px;
+  background: var(--error-bg);
+  color: var(--error-border);
+  border: 1px solid var(--error-border);
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ==================== 底部固定控制面板 Bottom Shelf ==================== */
+.bottom-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  border-top: 1px solid var(--panel-border);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+  padding: 12px 14px calc(12px + env(safe-area-inset-bottom)) 14px;
+  z-index: 100;
+  max-width: 680px;
+  margin: 0 auto;
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.word-bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.word-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-height: 105px;
+  overflow-y: auto;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+
+.word {
+  padding: 8px 14px;
+  background: var(--chip-bg);
+  border: 1px solid var(--chip-border);
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--chip-text);
+  cursor: pointer;
+  box-shadow: var(--chip-shadow);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.word:active {
+  transform: scale(0.92);
+}
+
+.word.selected {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 4px 14px var(--primary-glow);
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* 控制按钮与跳页 Action Bar */
+.action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--card-border);
+}
+
+.btn-group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+button.btn {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--chip-bg);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid var(--card-border);
+}
+
+button.btn:active {
+  transform: scale(0.92);
+  opacity: 0.9;
+}
+
+button.btn-primary {
+  background: linear-gradient(135deg, #a78bfa, #7c3aed);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px var(--primary-glow);
+  flex: 1;
+}
+
+button.btn-warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #d97706;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* ⚡ 跳页专区 Jump Input Group */
+.jump-box {
+  display: flex;
+  align-items: center;
+  background: var(--chip-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+}
+
+.jump-input {
+  width: 38px;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+}
+
+.jump-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#result-toast {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--primary);
+  min-height: 18px;
+  margin-bottom: 4px;
+}
+
+/* ==================== 动效 & 粒子 Particles ==================== */
+.confetti-particle {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  animation: popAndFall 0.8s ease-out forwards;
+}
+
+@keyframes popAndFall {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 顶栏与主题切换 -->
+<div class="header">
+  <div class="brand">
+    <h1>🚀 IELTS Master</h1>
+    <div class="mode-badge" id="modeTip">⚔️ 练习模式</div>
+  </div>
+  <button class="theme-toggle-btn" id="themeToggleBtn" title="切换深色/浅色模式">🌙</button>
+</div>
+
+<!-- 答题容器（一页6题） -->
+<div id="quiz-container"></div>
+
+<!-- 📱 底部吸底控制区 -->
+<div class="bottom-panel">
+  <div class="word-bank-header">
+    <span>💡 点击选词填空（点击已填框可撤销）</span>
+    <span id="pageInfo">Page 1 / 1</span>
+  </div>
+
+  <div class="word-bank" id="wordBank"></div>
+  <div id="result-toast"></div>
+
+  <div class="action-bar">
+    <!-- 上下页 -->
+    <div class="btn-group">
+      <button id="prevBtn" class="btn" title="上一页">⏮️</button>
+      <button id="nextBtn" class="btn" title="下一页">⏭️</button>
+    </div>
+
+    <!-- 跳页功能 -->
+    <div class="jump-box">
+      <input id="jumpInput" class="jump-input" type="number" min="1" placeholder="页">
+      <button id="jumpBtn" class="jump-btn">Go</button>
+    </div>
+
+    <!-- 提交主按钮 -->
+    <button id="submitBtn" class="btn btn-primary">🔥 检查答案</button>
+
+    <!-- 功能切换 -->
+    <div class="btn-group">
+      <button id="redoBtn" class="btn btn-warn" title="重做错题">💥</button>
+      <button id="favModeBtn" class="btn" title="收藏夹">⭐</button>
+      <button id="allModeBtn" class="btn" title="返回全部">🏠</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================== 音效引擎 Audio Engine (Web Audio API) ==================== */
+class SoundFx {
+  constructor() {
+    this.ctx = null;
+  }
+  
+  init() {
+    if (!this.ctx) {
+      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  playCorrect() {
+    this.init();
+    if (!this.ctx) return;
+    
+    // 悦耳的高音双音阶 (C6 -> G6)
+    const now = this.ctx.currentTime;
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc1.type = 'sine';
+    osc2.type = 'sine';
+
+    osc1.frequency.setValueAtTime(1046.50, now);
+    osc2.frequency.setValueAtTime(1567.98, now + 0.08);
+
+    gain.gain.setValueAtTime(0.15, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc1.start(now);
+    osc1.stop(now + 0.1);
+    osc2.start(now + 0.08);
+    osc2.stop(now + 0.35);
+  }
+
+  playError() {
+    this.init();
+    if (!this.ctx) return;
+
+    // 低沉错音
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.25);
+  }
+}
+
+const sfx = new SoundFx();
+
+/* 🔊 语音朗读 */
+function speak(text){
+  if(!text) return;
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";
+  utter.rate = 0.95;
+  speechSynthesis.speak(utter);
+}
+
+/* ==================== 粒子烟花特效 Confetti ==================== */
+function triggerConfetti(targetElem) {
+  const rect = targetElem.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const colors = ['#a78bfa', '#7c3aed', '#34d399', '#f472b6', '#fbbf24'];
+
+  for (let i = 0; i < 16; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-particle';
+    p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    p.style.left = `${centerX}px`;
+    p.style.top = `${centerY}px`;
+
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 35 + Math.random() * 45;
+    const dx = Math.cos(angle) * speed;
+    const dy = Math.sin(angle) * speed;
+
+    p.style.setProperty('--dx', `${dx}px`);
+    p.style.setProperty('--dy', `${dy}px`);
+
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+  }
+}
+
+/* ==================== 题库数据 ==================== */
+const ALL_QUESTIONS = [
+  { "sentence": "The ground is extremely **wet**.", "answer": "waterlogged" },
+  { "sentence": "The company plans to **engage** more staff.", "answer": "recruit" },
+  { "sentence": "The method **draws on** multiple data sources.", "answer": "is based on" },
+  { "sentence": "Researchers were able to **determine** the source of the error.", "answer": "pinpoint" },
+  { "sentence": "He was **unwilling** to cooperate.", "answer": "drag his feet" },
+  { "sentence": "The team attempted to **devise** a new solution.", "answer": "formulate" },
+  { "sentence": "Events are presented in **chronological** order.", "answer": "time order" },
+  { "sentence": "The theory aims to **transcend** traditional categories.", "answer": "go beyond" },
+  { "sentence": "The report examined a recent **aviation disaster**.", "answer": "air crash" },
+  { "sentence": "The total **cost** of the project was significant.", "answer": "financial outlay" },
+  { "sentence": "The crops depend on **synthetic fertilizer**.", "answer": "chemical fertilizer" },
+  { "sentence": "She decided to **start doing** research independently.", "answer": "have a go at" },
+  { "sentence": "The term has a specific **meaning**.", "answer": "connotation" },
+  { "sentence": "The response was given **promptly**.", "answer": "immediately" }
+];
+
+const PAGE_SIZE = 6; // 固定一页 6 题
+const STORAGE_KEY = "IELTS_WRONG_001";
+const FAV_KEY = "IELTS_FAV_001";
+
+let questions = [...ALL_QUESTIONS];
+let currentPage = 0;
+let selectedWord = null;
+
+/* ==================== 深色/浅色模式切换 ==================== */
+const themeBtn = document.getElementById("themeToggleBtn");
+function initTheme() {
+  const savedTheme = localStorage.getItem("IELTS_THEME") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  themeBtn.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+}
+
+themeBtn.onclick = () => {
+  const current = document.documentElement.getAttribute("data-theme");
+  const next = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("IELTS_THEME", next);
+  themeBtn.textContent = next === "dark" ? "☀️" : "🌙";
+};
+
+/* ==================== LocalStorage 交互 ==================== */
+function loadFavs(){ return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); }
+function saveFav(q){
+  const favs = loadFavs();
+  if(!favs.some(f=>f.sentence===q.sentence)){
+    favs.push(q);
+    localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+  }
+}
+function removeFav(q){
+  let favs = loadFavs().filter(f=>f.sentence!==q.sentence);
+  localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+}
+function isFav(q){ return loadFavs().some(f=>f.sentence===q.sentence); }
+
+function loadWrongs() { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
+function saveWrong(q) {
+  const wrongs = loadWrongs();
+  if(!wrongs.some(w=>w.sentence===q.sentence)) {
+    wrongs.push(q);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(wrongs));
+  }
+}
+
+/* ==================== 主渲染逻辑 ==================== */
+function renderPage() {
+  selectedWord = null;
+  const container = document.getElementById("quiz-container");
+  const bank = document.getElementById("wordBank");
+  container.innerHTML = "";
+  bank.innerHTML = "";
+  document.getElementById("result-toast").textContent = "";
+
+  const totalPages = Math.ceil(questions.length / PAGE_SIZE) || 1;
+  if(currentPage >= totalPages) currentPage = totalPages - 1;
+
+  const pageQs = questions.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+
+  // 1. 渲染卡片 (一页6题)
+  pageQs.forEach((q, idx)=>{
+    const card = document.createElement("div");
+    card.className = "question-card";
+
+    const favClass = isFav(q) ? "star-btn active" : "star-btn";
+    const html = q.sentence.replace(/\*\*(.+?)\*\*/g,
+      `<span class="target-word" data-answer="${q.answer}" data-orig="$1">$1</span>`);
+
+    card.innerHTML = `
+      <div class="question-row">
+        <div class="sentence">${html}</div>
+        <div class="${favClass}" title="收藏本题">⭐</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // 2. 渲染词库
+  const currentAnswers = pageQs.map(q => q.answer).sort(() => Math.random() - 0.5);
+  currentAnswers.forEach(ans => createWordElement(ans));
+
+  // 3. 槽位点击逻辑
+  document.querySelectorAll(".target-word").forEach(t => {
+    t.addEventListener("click", () => {
+      // 撤销退回词库
+      if(t.dataset.filled){
+        createWordElement(t.dataset.filled);
+        delete t.dataset.filled;
+        t.textContent = t.dataset.orig;
+        return;
+      }
+      // 填入选中词
+      if(selectedWord){
+        const wordText = selectedWord.textContent;
+        t.dataset.filled = wordText;
+        t.textContent = wordText;
+        speak(wordText);
+        selectedWord.remove();
+        selectedWord = null;
+      } else {
+        speak(t.textContent);
+      }
+    });
+  });
+
+  // 4. 收藏图标逻辑
+  document.querySelectorAll(".star-btn").forEach((star, idx) => {
+    const q = pageQs[idx];
+    star.onclick = () => {
+      if(isFav(q)){
+        removeFav(q);
+        star.classList.remove("active");
+      } else {
+        saveFav(q);
+        star.classList.add("active");
+      }
+    };
+  });
+
+  document.getElementById("pageInfo").textContent = `${currentPage + 1} / ${totalPages} 页`;
+  document.getElementById("jumpInput").value = currentPage + 1;
+}
+
+function createWordElement(text) {
+  const bank = document.getElementById("wordBank");
+  const w = document.createElement("div");
+  w.className = "word";
+  w.textContent = text;
+
+  w.addEventListener("click", () => {
+    speak(text);
+    if(selectedWord === w){
+      w.classList.remove("selected");
+      selectedWord = null;
+    } else {
+      if(selectedWord) selectedWord.classList.remove("selected");
+      w.classList.add("selected");
+      selectedWord = w;
+    }
+  });
+
+  bank.appendChild(w);
+}
+
+/* ==================== 提交验证与反馈 ==================== */
+document.getElementById("submitBtn").onclick = () => {
+  let score = 0;
+  let hasCorrect = false;
+  let hasError = false;
+
+  const pageQs = questions.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
+
+  document.querySelectorAll(".question-card").forEach((card, idx) => {
+    const target = card.querySelector(".target-word");
+    const correct = target.dataset.answer;
+    const user = target.dataset.filled;
+
+    target.classList.remove("correct", "error");
+    card.querySelectorAll(".answer-row, .wrong-badge").forEach(e => e.remove());
+
+    const row = document.createElement("div");
+    row.className = "answer-row";
+
+    if(user === correct) {
+      target.classList.add("correct");
+      triggerConfetti(target); // 粒子烟花动画
+      score++;
+      hasCorrect = true;
+    } else {
+      target.classList.add("error");
+      card.insertAdjacentHTML("beforeend", `<div class="wrong-badge">MISS</div>`);
+      saveWrong(pageQs[idx]);
+      hasError = true;
+    }
+
+    row.innerHTML = `<span class="correct-answer">✓ ${correct}</span>` +
+                    (user !== correct && user ? `<span class="user-answer">✕ ${user}</span>` : "");
+    card.appendChild(row);
+  });
+
+  // 音效触发
+  if(hasCorrect && !hasError) {
+    sfx.playCorrect();
+  } else if(hasError) {
+    sfx.playError();
+  } else if(hasCorrect) {
+    sfx.playCorrect();
+  }
+
+  document.getElementById("result-toast").textContent =
+    `🎉 本页得分：${score} / ${document.querySelectorAll(".target-word").length}`;
+};
+
+/* ==================== 翻页与跳页逻辑 ==================== */
+document.getElementById("nextBtn").onclick = () => {
+  const totalPages = Math.ceil(questions.length / PAGE_SIZE);
+  if(currentPage + 1 < totalPages){
+    currentPage++;
+    renderPage();
+  }
+};
+
+document.getElementById("prevBtn").onclick = () => {
+  if(currentPage > 0){
+    currentPage--;
+    renderPage();
+  }
+};
+
+/* ⚡ 跳页按键 */
+document.getElementById("jumpBtn").onclick = handleJump;
+document.getElementById("jumpInput").onkeyup = (e) => {
+  if (e.key === "Enter") handleJump();
+};
+
+function handleJump() {
+  const input = document.getElementById("jumpInput");
+  let targetPage = parseInt(input.value) - 1;
+  const maxPage = Math.ceil(questions.length / PAGE_SIZE) - 1;
+
+  if (isNaN(targetPage) || targetPage < 0 || targetPage > maxPage) {
+    alert(`页码超出范围！请输入 1 到 ${maxPage + 1} 之间的数字。`);
+    return;
+  }
+  currentPage = targetPage;
+  renderPage();
+}
+
+/* ==================== 模式切换 ==================== */
+document.getElementById("redoBtn").onclick = () => {
+  const wrongs = loadWrongs();
+  if(!wrongs.length){ alert("🎉 当前无错题记录！"); return; }
+  questions = wrongs;
+  currentPage = 0;
+  document.getElementById("modeTip").textContent = "💀 错题重练";
+  renderPage();
+};
+
+document.getElementById("favModeBtn").onclick = () => {
+  const favs = loadFavs();
+  if(!favs.length){ alert("⭐ 暂无收藏单词！"); return; }
+  questions = favs;
+  currentPage = 0;
+  document.getElementById("modeTip").textContent = "💎 收藏夹";
+  renderPage();
+};
+
+document.getElementById("allModeBtn").onclick = () => {
+  questions = [...ALL_QUESTIONS];
+  currentPage = 0;
+  document.getElementById("modeTip").textContent = "⚔️ 练习模式";
+  renderPage();
+};
+
+// 初始化
+initTheme();
+renderPage();
+</script>
+</body>
+</html>
