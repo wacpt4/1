@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>德语学习助手</title>
+<title>DW德语学习助手</title>
 <style>
 /* ==========================================
    🎨 CSS 变量：定义浅色和深色主题
@@ -84,7 +84,7 @@
     --match-error-border: #f87171;
     --match-error-text: #fca5a5;
 
-    /* 🧩 拼词/提示框深色模式优化（解决“吃字”与颜色对冲） */
+    /* 🧩 拼词/提示框深色模式优化 */
     --builder-prompt-bg: rgba(255, 255, 255, 0.08);
     --builder-zone-bg: rgba(0, 0, 0, 0.25);
     --hint-bg: rgba(34, 197, 94, 0.2);
@@ -99,6 +99,7 @@ body {
     color: var(--text-main);
     min-height: 100vh;
     transition: background 0.3s, color 0.3s;
+    overflow-x: hidden;
 }
 .header { text-align: center; padding: 25px; position: relative; }
 .header p { color: var(--text-sub); margin-top: 5px; }
@@ -120,24 +121,14 @@ button:hover { background: var(--card-hover-bg); }
 .page { display: none; max-width: 1200px; margin: auto; padding: 20px; box-sizing: border-box; }
 .page.show { display: block !important; }
 
-/* ==========================================
-   🖼️ 自适应卡片图片样式（限制尺寸）
-   ========================================== */
+/* 🖼️ 卡片图片样式 */
 .card-img {
-    max-width: 100%;
-    max-height: 130px;
-    object-fit: contain;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    pointer-events: none;
+    max-width: 100%; max-height: 130px; object-fit: contain;
+    border-radius: 10px; margin-bottom: 10px; display: block;
+    margin-left: auto; margin-right: auto; pointer-events: none;
 }
 
-/* ==========================================
-   🧱 基础网格布局样式 
-   ========================================== */
+/* 🧱 基础网格布局 */
 .grid-word { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
 .grid-word .big { font-size: 1.4rem; font-weight: bold; color: var(--text-card-big); }
 .grid-word .small { font-size: 1rem; margin-top: 8px; color: var(--text-card-small); }
@@ -158,453 +149,572 @@ button:hover { background: var(--card-hover-bg); }
 .grid-long-sentence .small { font-size: 1.05rem; line-height: 1.6; color: var(--text-card-small); margin: 0; }
 .grid-long-sentence .card-img { max-height: 180px; align-self: center; }
 
-/* ==========================================
-   🚨 对话布局 (Dialogue) 
-   ========================================== */
-.grid-dialogue {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;             
-    padding: 10px;
-    box-sizing: border-box;
-}
-.dialogue-row {
-    display: flex;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 5px;
-}
+/* 🚨 对话布局 */
+.grid-dialogue { display: flex; flex-direction: column; gap: 20px; width: 100%; padding: 10px; box-sizing: border-box; }
+.dialogue-row { display: flex; width: 100%; box-sizing: border-box; margin-bottom: 5px; }
 .dialogue-row.left { justify-content: flex-start; }
 .dialogue-row.right { justify-content: flex-end; }
-
-.dialogue-content {
-    display: flex;
-    gap: 14px;
-    max-width: 75%; 
-    align-items: flex-start;
-}
+.dialogue-content { display: flex; gap: 14px; max-width: 75%; align-items: flex-start; }
 .dialogue-row.left .dialogue-content { flex-direction: row; }
 .dialogue-row.right .dialogue-content { flex-direction: row-reverse; }
-
 .chat-avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: var(--chat-avatar-bg); color: white;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 1.1rem; box-shadow: var(--card-shadow);
-    flex-shrink: 0;          
+    width: 44px; height: 44px; border-radius: 50%; background: var(--chat-avatar-bg); color: white;
+    display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; box-shadow: var(--card-shadow); flex-shrink: 0;          
 }
-
-.dialogue-content .card {
-    display: block;
-    width: auto;                  
-    text-align: left;
-    padding: 16px 22px;
-    border-radius: 20px;
-    box-sizing: border-box;
-}
+.dialogue-content .card { display: block; width: auto; text-align: left; padding: 16px 22px; border-radius: 20px; box-sizing: border-box; }
 .dialogue-row.left .card { background: var(--chat-left-bg); border-top-left-radius: 4px; }
 .dialogue-row.right .card { background: var(--chat-right-bg); border-top-right-radius: 4px; }
-
 .dialogue-content .card .big { font-size: 1.15rem; font-weight: bold; color: var(--text-main); line-height: 1.5; padding-right: 25px; text-align: left; }
 .dialogue-content .card .small { font-size: 1rem; margin-top: 6px; color: var(--text-card-small); line-height: 1.45; text-align: left; }
 
-/* ==========================================
-   公共卡片与辅助样式
-   ========================================== */
+/* 公共卡片样式 */
 .card {
-    position: relative;
-    background: var(--card-bg);
-    backdrop-filter: blur(10px);
-    padding: 24px 18px 18px 18px;
-    border-radius: 18px;
-    text-align: center;
-    cursor: pointer;
+    position: relative; background: var(--card-bg); backdrop-filter: blur(10px);
+    padding: 24px 18px 18px 18px; border-radius: 18px; text-align: center; cursor: pointer;
     transition: transform 0.2s, background 0.2s, box-shadow 0.2s, border-color 0.2s;
-    box-shadow: var(--card-shadow);
-    border: 1px solid var(--card-border);
-    user-select: none;
+    box-shadow: var(--card-shadow); border: 1px solid var(--card-border); user-select: none;
     -webkit-tap-highlight-color: transparent;
 }
-.card:hover {
-    transform: translateY(-3px);
-    background: var(--card-hover-bg);
-    box-shadow: var(--card-hover-shadow);
-}
-
+.card:hover { transform: translateY(-3px); background: var(--card-hover-bg); box-shadow: var(--card-hover-shadow); }
 .star-icon {
-    position: absolute; top: 14px; right: 16px; font-size: 1.1rem;
-    color: var(--star-color); cursor: pointer; transition: transform 0.1s, color 0.2s;
-    user-select: none; z-index: 10;
+    position: absolute; top: 14px; right: 16px; font-size: 1.1rem; color: var(--star-color);
+    cursor: pointer; transition: transform 0.1s, color 0.2s; user-select: none; z-index: 10;
 }
 .star-icon:hover { transform: scale(1.2); }
 .star-icon.active { color: var(--star-active-color); filter: drop-shadow(0 0 2px rgba(251, 191, 36, 0.4)); }
+.card.playing { background: var(--card-playing-bg) !important; border-color: var(--card-playing-border) !important; transform: scale(1.02) translateY(-1px); }
 
-.card.playing {
-    background: var(--card-playing-bg) !important;
-    border-color: var(--card-playing-border) !important;
-    transform: scale(1.02) translateY(-1px);
-    box-shadow: var(--hover-shadow);
-}
-
-/* ==========================================
-   🚀 左上角悬浮播放面板
-   ========================================== */
-.play-panel { 
-    position: fixed; 
-    left: 20px; 
-    top: 20px; 
-    z-index: 9999; 
-    display: flex;
-    gap: 8px;
-}
+/* 🚀 左上角悬浮播放面板 */
+.play-panel { position: fixed; left: 20px; top: 20px; z-index: 9999; display: flex; gap: 8px; flex-wrap: wrap; }
 .autoplay-btn, .practice-mode-btn, .builder-mode-btn, .image-mode-btn { 
-    font-size: 14px; 
-    padding: 10px 18px; 
-    border-radius: 20px; 
-    background: #6366f1; 
-    color: white; 
-    font-weight: bold; 
-    letter-spacing: 0.5px; 
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-    transition: opacity 0.2s, transform 0.2s, background 0.2s;
+    font-size: 14px; padding: 10px 16px; border-radius: 20px; background: #6366f1; color: white;
+    font-weight: bold; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2); transition: 0.2s;
 }
-.autoplay-btn:hover, .practice-mode-btn:hover, .builder-mode-btn:hover, .image-mode-btn:hover { 
-    background: #4f46e5;
-    transform: scale(1.05);
-}
-.autoplay-btn.playing, .practice-mode-btn.active, .builder-mode-btn.active, .image-mode-btn.active { 
-    background: #ef4444; 
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); 
-}
+.autoplay-btn:hover, .practice-mode-btn:hover, .builder-mode-btn:hover, .image-mode-btn:hover { background: #4f46e5; transform: scale(1.05); }
+.autoplay-btn.playing, .practice-mode-btn.active, .builder-mode-btn.active, .image-mode-btn.active { background: #ef4444; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
 .empty-tip { text-align: center; padding: 40px; color: var(--text-sub); font-style: italic; font-size: 1.1rem; }
 
-/* ==========================================
-   🎮 练习模式 UI 布局 (连连看 & 拼词 & 听音选图)
-   ========================================== */
+/* 🎮 练习模式与互动系统 UI */
 .practice-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 24px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 24px;
-    box-shadow: var(--card-shadow);
-    backdrop-filter: blur(10px);
+    max-width: 800px; margin: 20px auto; padding: 24px; background: var(--card-bg);
+    border: 1px solid var(--card-border); border-radius: 24px; box-shadow: var(--card-shadow); backdrop-filter: blur(10px);
 }
-.practice-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 0 5px;
-}
+.practice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; flex-wrap: wrap; gap: 10px;}
 .practice-header h3 { margin: 0; color: var(--text-main); font-size: 1.2rem; }
 
-/* 🏹 翻页控制控件 */
-.page-controls {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* 模块左上角子模式控制栏 */
+.sub-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.sub-btn {
+    font-size: 12px; padding: 6px 12px; border-radius: 12px; background: var(--btn-bg);
+    color: var(--btn-color); border: 1px solid var(--card-border); cursor: pointer; transition: 0.2s; font-weight: bold;
 }
+.sub-btn.active { background: #6366f1; color: white; border-color: #6366f1; }
+
+.page-controls { display: flex; align-items: center; gap: 8px; }
 .nav-arrow {
-    padding: 5px 12px;
-    font-size: 14px;
-    border-radius: 8px;
-    background: var(--btn-bg);
-    color: var(--btn-color);
-    border: 1px solid var(--card-border);
-    cursor: pointer;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.15s, background 0.2s;
+    padding: 5px 12px; font-size: 14px; border-radius: 8px; background: var(--btn-bg);
+    color: var(--btn-color); border: 1px solid var(--card-border); cursor: pointer; transition: 0.15s;
 }
-.nav-arrow:hover:not(:disabled) {
-    transform: scale(1.1);
-    background: var(--card-hover-bg);
-}
-.nav-arrow:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-    transform: none;
-}
+.nav-arrow:hover:not(:disabled) { transform: scale(1.1); background: var(--card-hover-bg); }
+.nav-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
 
-.practice-board {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-.practice-column {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
+.practice-board { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.practice-column { display: flex; flex-direction: column; gap: 14px; }
 .practice-card {
-    padding: 18px 14px;
-    font-size: 1.05rem;
-    font-weight: 500;
-    border-radius: 16px;
-    text-align: center;
-    background: var(--card-bg);
-    border: 2px solid var(--card-border);
-    color: var(--text-main);
-    box-shadow: var(--card-shadow);
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s, color 0.2s, opacity 0.3s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-    min-height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    padding: 18px 14px; font-size: 1.05rem; font-weight: 500; border-radius: 16px;
+    text-align: center; background: var(--card-bg); border: 2px solid var(--card-border);
+    color: var(--text-main); box-shadow: var(--card-shadow); cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
+    min-height: 36px; display: flex; align-items: center; justify-content: center; user-select: none;
 }
-.practice-card:hover {
-    transform: translateY(-2px);
-    background: var(--card-hover-bg);
-    box-shadow: var(--card-hover-shadow);
-}
-
-/* 选中状态 */
-.practice-card.selected {
-    background: var(--match-selected) !important;
-    border-color: var(--btn-active-bg) !important;
-    transform: scale(0.97) translateY(0);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
-}
-/* 🎉 配对成功状态 */
+.practice-card:hover { transform: translateY(-2px); background: var(--card-hover-bg); }
+.practice-card.selected { background: var(--match-selected) !important; border-color: var(--btn-active-bg) !important; transform: scale(0.97); }
 .practice-card.success {
     animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    background: var(--match-success-bg) !important;
-    border-color: var(--match-success-border) !important;
-    color: var(--match-success-text) !important;
-    cursor: default;
-    pointer-events: none;
+    background: var(--match-success-bg) !important; border-color: var(--match-success-border) !important;
+    color: var(--match-success-text) !important; cursor: default; pointer-events: none;
 }
-/* ❌ 配对失败状态 */
-.practice-card.error {
-    animation: errorShake 0.4s ease-in-out;
-    background: var(--match-error-bg) !important;
-    border-color: var(--match-error-border) !important;
-    color: var(--match-error-text) !important;
+.practice-card.error { animation: errorShake 0.4s ease-in-out; background: var(--match-error-bg) !important; border-color: var(--match-error-border) !important; color: var(--match-error-text) !important; }
+
+/* 🔊 连连看静态/动态波形图案 */
+.wave-container { display: flex; align-items: center; justify-content: center; gap: 5px; height: 26px; }
+.wave-icon { font-size: 1.2rem; margin-right: 4px; }
+.wave-bar { width: 4px; background-color: var(--btn-color); border-radius: 3px; height: 6px; transition: height 0.2s; }
+.wave-bar.static:nth-child(1) { height: 8px; }
+.wave-bar.static:nth-child(2) { height: 16px; }
+.wave-bar.static:nth-child(3) { height: 22px; }
+.wave-bar.static:nth-child(4) { height: 14px; }
+.wave-bar.static:nth-child(5) { height: 20px; }
+.wave-bar.static:nth-child(6) { height: 10px; }
+
+.wave-container.playing .wave-bar { animation: audioDance 0.6s ease-in-out infinite alternate; }
+.wave-container.playing .wave-bar:nth-child(1) { animation-delay: 0.1s; }
+.wave-container.playing .wave-bar:nth-child(2) { animation-delay: 0.3s; }
+.wave-container.playing .wave-bar:nth-child(3) { animation-delay: 0.15s; }
+.wave-container.playing .wave-bar:nth-child(4) { animation-delay: 0.4s; }
+.wave-container.playing .wave-bar:nth-child(5) { animation-delay: 0.25s; }
+.wave-container.playing .wave-bar:nth-child(6) { animation-delay: 0.35s; }
+
+@keyframes audioDance {
+    0% { height: 4px; }
+    100% { height: 24px; background-color: #6366f1; }
 }
 
-/* ==========================================
-   🧩 多邻国风格：拼词/拼单词 UI 样式（适配主题）
-   ========================================== */
+/* 🧩 拼词/拼单词 UI 样式 */
 .builder-target-prompt {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: var(--text-card-big);
-    margin-bottom: 20px;
-    text-align: center;
-    line-height: 1.4;
-    padding: 14px;
-    background: var(--builder-prompt-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    font-size: 1.25rem; font-weight: bold; color: var(--text-card-big); margin-bottom: 20px;
+    text-align: center; line-height: 1.4; padding: 14px; background: var(--builder-prompt-bg);
+    border: 1px solid var(--card-border); border-radius: 16px; display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-
 .speaker-btn {
-    background: var(--btn-bg);
-    color: var(--btn-color);
-    border: 1px solid var(--card-border);
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 0;
-    box-shadow: var(--card-shadow);
-    transition: transform 0.15s;
+    background: var(--btn-bg); color: var(--btn-color); border: 1px solid var(--card-border);
+    border-radius: 50%; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1.1rem; padding: 0; box-shadow: var(--card-shadow); transition: 0.15s;
 }
-.speaker-btn:hover {
-    transform: scale(1.1);
-    background: var(--card-hover-bg);
-}
+.speaker-btn:hover { transform: scale(1.1); background: var(--card-hover-bg); }
 
 .builder-answer-zone {
-    min-height: 65px;
-    background: var(--builder-zone-bg);
-    border: 2px solid var(--card-border);
-    border-radius: 16px;
-    margin-bottom: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    transition: border-color 0.3s, background 0.3s;
+    min-height: 65px; background: var(--builder-zone-bg); border: 2px solid var(--card-border);
+    border-radius: 16px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: center; justify-content: center; padding: 12px; transition: border-color 0.3s, background 0.3s;
 }
-
-.builder-answer-zone.error {
-    border-color: var(--match-error-border) !important;
-    background: var(--match-error-bg) !important;
-    animation: errorShake 0.4s ease-in-out;
-}
-
-.builder-answer-zone.success {
-    border-color: var(--match-success-border) !important;
-    background: var(--match-success-bg) !important;
-}
+.builder-answer-zone.error { border-color: var(--match-error-border) !important; background: var(--match-error-bg) !important; animation: errorShake 0.4s ease-in-out; }
+.builder-answer-zone.success { border-color: var(--match-success-border) !important; background: var(--match-success-bg) !important; }
 
 .correct-answer-hint {
-    margin-bottom: 15px;
-    padding: 12px 18px;
-    background: var(--hint-bg);
-    border: 1px solid var(--hint-border);
-    border-radius: 12px;
-    color: var(--hint-text);
-    font-weight: bold;
-    font-size: 1.05rem;
-    text-align: center;
-    display: none;
-    box-shadow: var(--card-shadow);
+    margin-bottom: 15px; padding: 12px 18px; background: var(--hint-bg); border: 1px solid var(--hint-border);
+    border-radius: 12px; color: var(--hint-text); font-weight: bold; font-size: 1.05rem; text-align: center; display: none; box-shadow: var(--card-shadow);
 }
-.correct-answer-hint.show {
-    display: block;
-    animation: fadeIn 0.3s ease-in-out;
-}
+.correct-answer-hint.show { display: block; animation: fadeIn 0.3s ease-in-out; }
 
-.builder-pool-zone {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    min-height: 80px;
-    margin-bottom: 20px;
-}
-
+.builder-pool-zone { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; min-height: 80px; margin-bottom: 20px; }
 .tile-btn {
-    padding: 10px 18px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border-radius: 14px;
-    background: var(--card-bg);
-    border: 2px solid var(--card-border);
-    box-shadow: var(--card-shadow);
-    color: var(--text-main);
-    cursor: pointer;
-    transition: transform 0.15s, background 0.2s, border-color 0.2s;
-    user-select: none;
+    padding: 10px 18px; font-size: 1.1rem; font-weight: bold; border-radius: 14px;
+    background: var(--card-bg); border: 2px solid var(--card-border); box-shadow: var(--card-shadow);
+    color: var(--text-main); cursor: pointer; transition: transform 0.15s, background 0.2s; user-select: none;
 }
-
-.tile-btn:hover {
-    transform: translateY(-2px);
-    background: var(--card-hover-bg);
-}
-
-.tile-btn.disabled {
-    opacity: 0.2;
-    pointer-events: none;
-    transform: none;
-    box-shadow: none;
-}
-
-.builder-actions {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.btn-check {
-    background: #22c55e;
-    color: white;
-    font-weight: bold;
-    padding: 12px 30px;
-    border-radius: 16px;
-    font-size: 1.05rem;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-}
+.tile-btn:hover { transform: translateY(-2px); background: var(--card-hover-bg); }
+.tile-btn.disabled { opacity: 0.2; pointer-events: none; transform: none; box-shadow: none; }
+.builder-actions { display: flex; justify-content: center; gap: 15px; }
+.btn-check { background: #22c55e; color: white; font-weight: bold; padding: 12px 30px; border-radius: 16px; font-size: 1.05rem; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3); }
 .btn-check:hover { background: #16a34a; }
+.btn-clear { background: var(--btn-bg); color: var(--text-main); padding: 12px 20px; border-radius: 16px; border: 1px solid var(--card-border); }
 
-.btn-clear {
-    background: var(--btn-bg);
-    color: var(--text-main);
-    padding: 12px 20px;
-    border-radius: 16px;
-    border: 1px solid var(--card-border);
+/* ⌨️ 德语软键盘样式 */
+.virtual-keyboard {
+    display: flex; flex-direction: column; gap: 8px; align-items: center; margin-bottom: 20px; margin-top: 10px;
 }
+.keyboard-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; width: 100%; }
+.key-btn {
+    min-width: 36px; height: 42px; padding: 0 8px; font-size: 1rem; font-weight: bold; border-radius: 8px;
+    background: var(--btn-bg); border: 1px solid var(--card-border); color: var(--text-main);
+    box-shadow: var(--card-shadow); cursor: pointer; transition: 0.15s; display: flex; align-items: center; justify-content: center;
+}
+.key-btn:hover { background: var(--card-hover-bg); transform: translateY(-2px); }
+.key-btn:active { transform: translateY(0); }
+.key-btn.wide { min-width: 65px; }
+.key-btn.space { min-width: 140px; }
+
+/* 🖼️ 听音选图模式样式 */
+.image-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+.image-choice-card {
+    background: var(--card-bg); border: 3px solid var(--card-border); border-radius: 18px;
+    padding: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    box-shadow: var(--card-shadow); transition: transform 0.2s, border-color 0.2s; min-height: 140px;
+}
+.image-choice-card:hover { transform: translateY(-3px); background: var(--card-hover-bg); }
+.image-choice-card img { max-width: 100%; max-height: 120px; object-fit: contain; pointer-events: none; }
+.image-choice-card.success { animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; background: var(--match-success-bg) !important; border-color: var(--match-success-border) !important; }
+.image-choice-card.error { animation: errorShake 0.4s ease-in-out; background: var(--match-error-bg) !important; border-color: var(--match-error-border) !important; }
+
+/* 🌟 多邻国风格反馈与奖励动画 */
+.score-board {
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(99, 102, 241, 0.1); padding: 10px 18px; border-radius: 16px; margin-bottom: 15px; font-weight: bold; color: var(--text-main);
+}
+.streak-badge { color: #f59e0b; font-size: 1.1rem; }
+
+/* 🎆 通关全屏视觉反馈 Overlay */
+.celebration-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px);
+    z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.celebration-overlay.show { opacity: 1; pointer-events: auto; }
+.celebration-card {
+    background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 28px; padding: 40px 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    transform: scale(0.7); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    max-width: 90%; width: 400px;
+}
+.celebration-overlay.show .celebration-card { transform: scale(1); }
+.celebration-title { font-size: 2.2rem; font-weight: 900; color: #fbbf24; text-shadow: 0 4px 12px rgba(251, 191, 36, 0.4); margin-bottom: 10px; }
+.celebration-subtitle { font-size: 1.2rem; color: #e2e8f0; margin-bottom: 25px; }
+.celebration-badge { font-size: 4rem; margin-bottom: 15px; animation: bounceIcon 1s infinite alternate; }
+.celebration-btn {
+    background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: bold;
+    font-size: 1.1rem; padding: 14px 36px; border-radius: 18px; border: none; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4); transition: transform 0.2s;
+}
+.celebration-btn:hover { transform: scale(1.05); }
 
 /* ==========================================
-   🖼️ 听音选图模式专属样式
+   🐾 陪伴宠物系统专属 CSS 样式 (升级版)
    ========================================== */
-.image-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    margin-top: 20px;
+.pet-container {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+    transition: left 0.8s ease-in-out, top 0.8s ease-in-out, transform 0.3s;
+}
+.pet-container * {
+    pointer-events: auto;
+}
+.pet-dialog {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #f59e0b;
+    color: #3b286d;
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    margin-bottom: 12px;
+    max-width: 220px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+.pet-dialog.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.pet-dialog::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 35px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #f59e0b;
 }
 
-.image-choice-card {
-    background: var(--card-bg);
-    border: 3px solid var(--card-border);
-    border-radius: 18px;
-    padding: 16px;
+.pet-avatar-wrap {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pet-avatar-wrap:hover {
+    transform: scale(1.08);
+}
+.pet-avatar-wrap:active {
+    transform: scale(0.95);
+}
+
+/* 🐶 金毛犬 SVG/动画宠物主体 (不同阶段尺寸/外观变动) */
+.pet-body {
+    width: 95px;
+    height: 90px;
+    background: linear-gradient(135deg, #fde047, #f59e0b);
+    border-radius: 48% 48% 42% 42%;
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.35), inset 0 -6px 12px rgba(0,0,0,0.12);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    animation: petIdle 3.5s ease-in-out infinite;
+    transition: all 0.5s ease;
+}
+
+/* 阶段 1: 幼犬 (小巧) */
+.pet-stage-1 .pet-body { width: 75px; height: 70px; }
+/* 阶段 2: 成长期 (加戴蝴蝶结领结) */
+.pet-stage-2 .pet-body::before {
+    content: '🎀'; position: absolute; bottom: 8px; z-index: 10; font-size: 1.2rem;
+}
+/* 阶段 3: 成年期/大威天龙 (加戴皇冠与金光) */
+.pet-stage-3 .pet-body { width: 110px; height: 105px; box-shadow: 0 0 25px rgba(251, 191, 36, 0.8); }
+.pet-stage-3 .pet-body::after {
+    content: '👑'; position: absolute; top: -22px; z-index: 10; font-size: 1.8rem;
+}
+
+/* 金毛耳朵 */
+.pet-ears {
+    position: absolute;
+    top: -2px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    box-sizing: border-box;
+}
+.pet-ear {
+    width: 28px;
+    height: 42px;
+    background: linear-gradient(180deg, #d97706, #b45309);
+    border-radius: 40% 40% 60% 60%;
+    transform-origin: top center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.pet-ear.left { transform: rotate(15deg); animation: earWiggleDog 4s ease-in-out infinite; }
+.pet-ear.right { transform: rotate(-15deg); animation: earWiggleDog 4s ease-in-out 0.5s infinite; }
+
+/* 金毛脸部与嘴鼻区 */
+.pet-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 10px;
+}
+.pet-eyes {
+    display: flex;
+    gap: 22px;
+}
+.pet-eye {
+    width: 11px;
+    height: 13px;
+    background: #1e1b4b;
+    border-radius: 50%;
+    position: relative;
+    animation: petBlink 4s infinite;
+}
+.pet-eye::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* 😴 睡觉姿态：眼睛变成闭眼 💤 */
+.pet-sleeping .pet-eye {
+    height: 3px !important;
+    border-radius: 2px !important;
+    background: #4b5563 !important;
+    animation: none !important;
+}
+.pet-sleeping .pet-eye::after { display: none; }
+.pet-sleeping .pet-body {
+    animation: petSleep 2.5s ease-in-out infinite !important;
+}
+@keyframes petSleep {
+    0%, 100% { transform: translateY(0) scale(1, 0.95); }
+    50% { transform: translateY(4px) scale(1.02, 0.9); }
+}
+
+/* 金毛吻部 */
+.pet-snout {
+    width: 38px;
+    height: 26px;
+    background: #fffbeeb3;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+.pet-nose {
+    width: 13px;
+    height: 9px;
+    background: #1f2937;
+    border-radius: 40% 40% 60% 60%;
+    margin-top: -2px;
+}
+.pet-mouth {
+    width: 14px;
+    height: 6px;
+    border-bottom: 2.5px solid #374151;
+    border-radius: 0 0 10px 10px;
+    position: relative;
+}
+.pet-tongue {
+    width: 8px;
+    height: 8px;
+    background: #fb7185;
+    border-radius: 0 0 50% 50%;
+    position: absolute;
+    bottom: -6px;
+    left: 3px;
+    animation: tongueWiggle 2s ease-in-out infinite;
+}
+
+.pet-tail {
+    position: absolute;
+    bottom: 8px;
+    right: -16px;
+    width: 22px;
+    height: 14px;
+    background: #f59e0b;
+    border-radius: 0 20px 20px 0;
+    transform-origin: left center;
+    animation: tailWag 0.6s ease-in-out infinite alternate;
+}
+
+.pet-cheeks {
+    position: absolute;
+    top: 48px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+.pet-cheek {
+    width: 12px;
+    height: 7px;
+    background: rgba(244, 63, 94, 0.35);
+    border-radius: 50%;
+}
+
+/* 📌 状态面板 (修饰悬浮变白问题) */
+.pet-status-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
     box-shadow: var(--card-shadow);
-    transition: transform 0.2s, border-color 0.2s, background 0.2s;
-    min-height: 140px;
+    border-radius: 18px;
+    padding: 12px;
+    margin-top: 8px;
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+.pet-status-card.collapsed .pet-status-body { display: none; }
+.pet-status-card.collapsed { padding: 8px 12px; width: auto; }
+
+.pet-status-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; gap: 10px; }
+.collapse-btn {
+    background: rgba(0, 0, 0, 0.06); border: none; padding: 2px 6px;
+    border-radius: 8px; font-size: 0.75rem; cursor: pointer; box-shadow: none; color: var(--text-main);
+}
+.collapse-btn:hover { background: rgba(0, 0, 0, 0.12); color: var(--text-main); }
+
+.pet-status-body { display: flex; flex-direction: column; gap: 8px; }
+
+.status-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; margin-top: 3px; }
+.status-bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s ease; }
+.fill-exp { background: linear-gradient(90deg, #6366f1, #a855f7); }
+.fill-hunger { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+
+.pet-btn-group { display: flex; gap: 6px; margin-top: 4px; }
+
+/* 🔧 修复按钮 Hover 悬浮全白字看不见的问题 */
+.feed-btn, .interact-btn, .wander-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff !important;
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+}
+.feed-btn:hover { background: linear-gradient(135deg, #d97706, #b45309) !important; color: #ffffff !important; }
+
+.interact-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+}
+.interact-btn:hover { background: linear-gradient(135deg, #059669, #047857) !important; color: #ffffff !important; }
+
+.wander-btn {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+}
+.wander-btn:hover { background: linear-gradient(135deg, #4f46e5, #4338ca) !important; color: #ffffff !important; }
+
+.wander-btn.active { background: linear-gradient(135deg, #ec4899, #db2777); }
+.feed-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+/* 🐾 跑动动画 (全屏慢跑/加经验) */
+.pet-running .pet-body {
+    animation: dogRunning 0.6s ease-in-out infinite alternate !important;
+}
+@keyframes dogRunning {
+    0% { transform: translateY(0) rotate(-3deg); }
+    100% { transform: translateY(-8px) rotate(3deg); }
 }
 
-.image-choice-card:hover {
-    transform: translateY(-3px);
-    background: var(--card-hover-bg);
+@keyframes petIdle {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.02, 0.98); }
 }
-
-.image-choice-card img {
-    max-width: 100%;
-    max-height: 120px;
-    object-fit: contain;
-    pointer-events: none;
+@keyframes earWiggleDog {
+    0%, 90%, 100% { transform: rotate(15deg); }
+    95% { transform: rotate(28deg); }
 }
+@keyframes tailWag { 0% { transform: rotate(0deg); } 100% { transform: rotate(28deg); } }
+@keyframes tongueWiggle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.3); } }
+@keyframes petBlink { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
 
-.image-choice-card.success {
-    animation: successPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    background: var(--match-success-bg) !important;
-    border-color: var(--match-success-border) !important;
-}
+.pet-happy-jump { animation: happyJump 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+@keyframes happyJump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-32px) scale(1.15); } }
 
-.image-choice-card.error {
-    animation: errorShake 0.4s ease-in-out;
-    background: var(--match-error-bg) !important;
-    border-color: var(--match-error-border) !important;
-}
-
-@keyframes successPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06); }
-    100% { transform: scale(1); opacity: 0.5; }
-}
-
-@keyframes errorShake {
+.pet-shake-head { animation: shakeHead 0.5s ease-in-out !important; }
+@keyframes shakeHead {
     0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
+    25% { transform: translateX(-10px) rotate(-10deg); }
+    75% { transform: translateX(10px) rotate(10deg); }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes bounceIcon { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-10px) scale(1.1); } }
+
+.confetti {
+    position: fixed; width: 10px; height: 10px; background-color: #fbbf24;
+    border-radius: 50%; pointer-events: none; z-index: 999999;
+    animation: particleFly 0.8s ease-out forwards;
 }
+@keyframes particleFly {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+
+@keyframes successPop { 0% { transform: scale(1); } 50% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 0.5; } }
+@keyframes errorShake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 600px) {
     .play-panel { left: 10px; top: 15px; }
-    .header { padding-top: 65px; }
+    .header { padding-top: 85px; }
     .practice-board { gap: 12px; }
     .practice-card { padding: 14px 8px; font-size: 0.95rem; min-height: 32px; }
     .tile-btn { padding: 8px 12px; font-size: 0.95rem; }
     .image-choice-card { min-height: 110px; padding: 10px; }
     .image-choice-card img { max-height: 90px; }
+    .key-btn { min-width: 26px; height: 38px; font-size: 0.85rem; padding: 0 4px; }
+    .key-btn.wide { min-width: 45px; }
+    .key-btn.space { min-width: 90px; }
+    .pet-container { right: 15px; bottom: 15px; }
+    .pet-body { width: 80px; height: 75px; }
+    .pet-status-card { width: 160px; padding: 8px; }
 }
 </style>
 </head>
@@ -626,9 +736,80 @@ button:hover { background: var(--card-hover-bg); }
 <div class="tabs" id="tabsContainer"></div>
 <div id="pagesContainer"></div>
 
+<!-- 🎆 全屏通关大反馈 Overlay -->
+<div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-card">
+        <div class="celebration-badge">🏆</div>
+        <div class="celebration-title">SEHR GUT!</div>
+        <div class="celebration-subtitle" id="celebrationMsg">你已成功完成本组全部练习！</div>
+        <button class="celebration-btn" onclick="closeCelebration()">继续学习</button>
+    </div>
+</div>
+
+<!-- 🐾 悬浮陪伴宠物系统 UI -->
+<div class="pet-container" id="petContainer">
+    <div class="pet-dialog" id="petDialog">Wuff! Ich bin Lucky! 🐶</div>
+    
+    <div class="pet-avatar-wrap" onclick="interactWithPet()">
+        <div class="pet-body" id="petBody">
+            <div class="pet-tail"></div>
+            <div class="pet-ears">
+                <div class="pet-ear left"></div>
+                <div class="pet-ear right"></div>
+            </div>
+            <div class="pet-face">
+                <div class="pet-eyes">
+                    <div class="pet-eye"></div>
+                    <div class="pet-eye"></div>
+                </div>
+                <div class="pet-snout">
+                    <div class="pet-nose"></div>
+                    <div class="pet-mouth">
+                        <div class="pet-tongue"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="pet-cheeks">
+                <div class="pet-cheek"></div>
+                <div class="pet-cheek"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 可收起/展开的状态面板 -->
+    <div class="pet-status-card" id="petStatusCard">
+        <div class="pet-status-header">
+            <span id="petNameTitle">🦮 旺财 (Lv.1)</span>
+            <button class="collapse-btn" onclick="togglePetStatusCollapse()" id="collapseToggleBtn" title="折叠/展开面板">➖</button>
+        </div>
+        <div class="pet-status-body" id="petStatusBody">
+            <div>
+                <span>经验 EXP (<span id="petExpText">0/100</span>)</span>
+                <div class="status-bar-bg"><div class="status-bar-fill fill-exp" id="petExpBar" style="width: 0%;"></div></div>
+            </div>
+            <div>
+                <span>饱食度 (<span id="petHungerText">80/100</span>)</span>
+                <div class="status-bar-bg"><div class="status-bar-fill fill-hunger" id="petHungerBar" style="width: 80%;"></div></div>
+            </div>
+            <div class="pet-btn-group">
+                <button class="feed-btn" id="feedPetBtn" onclick="feedPet()">
+                    <span>🍖 喂食 (<span id="foodCountText">0</span>)</span>
+                </button>
+                <button class="interact-btn" onclick="playWithBall()">
+                    <span>🥏 互动</span>
+                </button>
+            </div>
+            <button class="wander-btn" id="wanderBtn" onclick="toggleWanderMode()">
+                <span>🏃 全屏跑</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 // ==========================================
 // 💡 数据源
+// ==========================================
 const appData = {
 
     alphabet: {
@@ -670,8 +851,8 @@ const appData = {
     },
 
     numbers_base: {
-        title: "🔢 0-12",
-        layout: "word",
+        title: "🔢",
+        layout: "phrase",
         speakType: "key",
         items: [
             ["null","0 (Zero)"],
@@ -686,7 +867,31 @@ const appData = {
             ["neun","9 (Nine)"],
             ["zehn","10 (Ten)"],
             ["elf","11 (Eleven)"],
-            ["zwölf","12 (Twelve)"]
+            ["zwölf","12 (Twelve)"],
+			["dreizehn","13 (Thirteen)"],
+            ["vierzehn","14 (Fourteen)"],
+            ["fünfzehn","15 (Fifteen)"],
+            ["sechzehn","16 (Sixteen)"],
+            ["siebzehn","17 (Seventeen)"],
+            ["achtzehn","18 (Eighteen)"],
+            ["neunzehn","19 (Nineteen)"],
+			["zwanzig","20 (Twenty)"],
+            ["dreißig","30 (Thirty)"],
+            ["vierzig","40 (Forty)"],
+            ["fünfzig","50 (Fifty)"],
+            ["sechzig","60 (Sixty)"],
+            ["siebzig","70 (Seventy)"],
+            ["achtzig","80 (Eighty)"],
+            ["neunzig","90 (Ninety)"],
+            ["einunddreißig","31 (Thirty-one)"],
+            ["zweiunddreißig","32 (Thirty-two)"],
+            ["dreiunddreißig","33 (Thirty-three)"],
+            ["vierunddreißig","34 (Thirty-four)"],
+            ["fünfunddreißig","35 (Thirty-five)"],
+            ["sechsunddreißig","36 (Thirty-six)"],
+            ["siebenunddreißig","37 (Thirty-seven)"],
+            ["achtunddreißig","38 (Thirty-eight)"],
+            ["neununddreißig","39 (Thirty-nine)"],
         ]
     },
 
@@ -704,30 +909,8 @@ const appData = {
             ["Ich habe acht Euro.","I have eight euros."],
             ["Das Kind ist neun Jahre alt.","The child is nine years old."],
             ["Wir brauchen zehn Brötchen.","We need ten bread rolls."],
-            ["Ich schlafe elf Stunden.","I sleep eleven hours."]
-        ]
-    },
+            ["Ich schlafe elf Stunden.","I sleep eleven hours."],
 
-    numbers_teens: {
-        title: "🔢 Teens",
-        layout: "word",
-        speakType: "key",
-        items: [
-            ["dreizehn","13 (Thirteen)"],
-            ["vierzehn","14 (Fourteen)"],
-            ["fünfzehn","15 (Fifteen)"],
-            ["sechzehn","16 (Sixteen)"],
-            ["siebzehn","17 (Seventeen)"],
-            ["achtzehn","18 (Eighteen)"],
-            ["neunzehn","19 (Nineteen)"]
-        ]
-    },
-
-    numbers_teens_sen: {
-        title: "🔢",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Mein Bruder ist dreizehn Jahre alt.","My brother is thirteen years old."],
             ["Die Klasse hat vierzehn Schüler.","The class has fourteen students."],
             ["Ich bleibe fünfzehn Minuten.","I stay for fifteen minutes."],
@@ -735,49 +918,8 @@ const appData = {
             ["Der Bus kommt in siebzehn Minuten.","The bus arrives in seventeen minutes."],
             ["Er ist jetzt achtzehn Jahre alt.","He is now eighteen years old."],
             ["Das Buch kostet neunzehn Euro.","The book costs nineteen euros."],
-            ["Wir haben noch viele Minuten Zeit.","We still have many minutes of time."]
-        ]
-    },
+            ["Wir haben noch viele Minuten Zeit.","We still have many minutes of time."],
 
-    numbers_tens: {
-        title: "🔢 Tens",
-        layout: "word",
-        speakType: "key",
-        items: [
-            ["zwanzig","20 (Twenty)"],
-            ["dreißig","30 (Thirty)"],
-            ["vierzig","40 (Forty)"],
-            ["fünfzig","50 (Fifty)"],
-            ["sechzig","60 (Sixty)"],
-            ["siebzig","70 (Seventy)"],
-            ["achtzig","80 (Eighty)"],
-            ["neunzig","90 (Ninety)"]
-        ]
-    },
-
-    numbers_30s: {
-        title: "🔢 30-39",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["dreißig","30 (Thirty)"],
-            ["einunddreißig","31 (Thirty-one)"],
-            ["zweiunddreißig","32 (Thirty-two)"],
-            ["dreiunddreißig","33 (Thirty-three)"],
-            ["vierunddreißig","34 (Thirty-four)"],
-            ["fünfunddreißig","35 (Thirty-five)"],
-            ["sechsunddreißig","36 (Thirty-six)"],
-            ["siebenunddreißig","37 (Thirty-seven)"],
-            ["achtunddreißig","38 (Thirty-eight)"],
-            ["neununddreißig","39 (Thirty-nine)"]
-        ]
-    },
-
-    numbers_tens_sen: {
-        title: "🔢",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Das Hemd kostet zwanzig Euro.","The shirt costs twenty euros."],
             ["Er ist dreißig Jahre alt.","He is thirty years old."],
             ["Der Zug hat einunddreißig Minuten Verspätung.","The train is thirty-one minutes late."],
@@ -804,15 +946,8 @@ const appData = {
             ["erste","1st (First)"],
             ["zweite","2nd (Second)"],
             ["dritte","3rd (Third)"],
-            ["vierte","4th (Fourth)"]
-        ]
-    },
+            ["vierte","4th (Fourth)"],
 
-    numbers_advanced_sen: {
-        title: "🔢",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Das Ticket kostet hundert Euro.","The ticket costs one hundred euros."],
             ["Hier wohnen tausend Menschen.","One thousand people live here."],
             ["Heute ist der erste Mai.","Today is the first of May."],
@@ -832,15 +967,8 @@ const appData = {
             ["neunzehnhundertneunundneunzig","The year 1999"],
             ["zweitausendvierzehn","The year 2014"],
             ["heute ist der erste März","Today is March 1st"],
-            ["Berlin, zwölfter Vierter zweitausendzwei","Berlin, April 12th 2002"]
-        ]
-    },
+            ["Berlin, zwölfter Vierter zweitausendzwei","Berlin, April 12th 2002"],
 
-    date_expressions_sen: {
-        title: "📅",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Ich trinke ein halbes Glas Wasser.","I drink half a glass of water."],
             ["In ein Viertel Stunde gehen wir.","In a quarter of an hour we leave."],
             ["Ich bin neunzehnhundertneunundneunzig geboren.","I was born in 1999."],
@@ -864,15 +992,8 @@ const appData = {
             ["fünf Minuten nach eins","Five minutes past one"],
             ["Viertel vor zwei","Quarter to two"],
             ["Viertel nach zwei","Quarter past two"],
-            ["halb drei","Half past two (literally: half three)"]
-        ]
-    },
+            ["halb drei","Half past two (literally: half three)"],
 
-    uhrzeit_sen: {
-        title: "🕒",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Wie spät ist es?","What time is it?"],
             ["Es ist ein Uhr.","It is one o'clock."],
             ["Der Bus kommt um halb drei.","The bus arrives at half past two."],
@@ -900,15 +1021,8 @@ const appData = {
             ["die Stunde","The hour","https://plus.unsplash.com/premium_photo-1663126649902-da96ec858a02?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
             ["der Tag","The day","https://i.imgur.com/x4mY62t.jpeg"],
             ["die Woche","The week","https://i.imgur.com/qbBKjK3.jpeg"],
-            ["das Jahr","The year","https://i.imgur.com/yBfYvJC.jpeg"]
-        ]
-    },
+            ["das Jahr","The year","https://i.imgur.com/yBfYvJC.jpeg"],
 
-    zeitangaben_sen: {
-        title: "⏳",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Guten Morgen! Wie geht es dir?","Good morning! How are you?"],
             ["Am Vormittag arbeite ich viel.","In the morning I work a lot."],
             ["Mittags esse ich einen Salat.","At noon I eat a salad."],
@@ -936,15 +1050,8 @@ const appData = {
             ["der Donnerstag","Thursday"],
             ["der Freitag","Friday"],
             ["der Samstag","Saturday"],
-            ["der Sonntag","Sunday"]
-        ]
-    },
+            ["der Sonntag","Sunday"],
 
-    zeitangaben2sen: {
-        title: "⏳ WeekSent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Heute ist ein Wochentag.","Today is a weekday."],
             ["Schönes Wochenende!","Have a nice weekend!"],
             ["Am Wochenende habe ich frei.","At the weekend I am free."],
@@ -966,15 +1073,8 @@ const appData = {
             ["der Frühling","Spring"],
             ["der Sommer","Summer"],
             ["der Herbst","Autumn / Fall"],
-            ["der Winter","Winter"]
-        ]
-    },
+            ["der Winter","Winter"],
 
-    seasons_sen: {
-        title: "❄️",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Im Frühling blühen die Blumen.","In spring the flowers bloom."],
             ["Der Sommer ist sehr warm.","Summer is very warm."],
             ["Im Sommer gehe ich schwimmen.","In summer I go swimming."],
@@ -1004,15 +1104,8 @@ const appData = {
             ["der September","September","https://images.unsplash.com/photo-1598770798870-cd6bf7cd6d02?q=80&w=1790&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
             ["der Oktober","October","https://plus.unsplash.com/premium_photo-1723874499455-8b4724876c88?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
             ["der November","November","https://images.unsplash.com/photo-1604440976409-d70080acb7d8?q=80&w=1853&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
-            ["der Dezember","December","https://images.unsplash.com/photo-1669748642613-e2aef915983c?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"]
-        ]
-    },
+            ["der Dezember","December","https://images.unsplash.com/photo-1669748642613-e2aef915983c?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
 
-    months_sen: {
-        title: "🗓️",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Im Januar ist es sehr kalt.","In January it is very cold."],
             ["Mein Geburtstag ist im Februar.","My birthday is in February."],
             ["Im März kommt der Frühling.","Spring comes in March."],
@@ -1045,15 +1138,8 @@ const appData = {
             ["ein Grad unter Null","One degree below zero (-1°)"],
             ["minus ein Grad","Minus one degree (-1°)"],
             ["vier Grad über Null","Four degrees above zero (+4°)"],
-            ["plus vier Grad","Plus four degrees (+4°)"]
-        ]
-    },
+            ["plus vier Grad","Plus four degrees (+4°)"],
 
-    jahreszeiten_masse_sen: {
-        title: "📏",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Ein Euro hat hundert Cent.","One euro has one hundred cents."],
             ["Der Tisch ist einen Meter lang.","The table is one meter long."],
             ["Ich wohne zweihundert Kilometer von hier.","I live two hundred kilometers from here."],
@@ -1082,15 +1168,8 @@ const appData = {
             ["das Schaf","The Sheep","https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
             ["die Ziege","The Goat","https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
             ["das Huhn","The Chicken","https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
-            ["die Ente","The Duck","https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
-        ]
-    },
+            ["die Ente","The Duck","https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"],
 
-    animals1s: {
-        title: "🐾 PetsSent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Der Hund bellt laut.","The dog barks loudly.","https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
             ["Die Katze schläft hier.","The cat sleeps here.","https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
             ["Der Vogel singt schön.","The bird sings beautifully.","https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
@@ -1127,15 +1206,8 @@ const appData = {
             ["der Delfin","The Dolphin","https://em-content.zobj.net/source/microsoft-teams/363/dolphin_1f42c.png"],
             ["der Wal","The Whale","https://em-content.zobj.net/source/microsoft-teams/363/whale_1f40b.png"],
             ["der Hai","The Shark","https://em-content.zobj.net/source/microsoft-teams/363/shark_1f988.png"],
-            ["die Schildkröte","The Turtle","https://em-content.zobj.net/source/microsoft-teams/363/turtle_1f422.png"]
-        ]
-    },
+            ["die Schildkröte","The Turtle","https://em-content.zobj.net/source/microsoft-teams/363/turtle_1f422.png"],
 
-    animals2_sen: {
-        title: "🦁",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Wir gehen heute in den Zoo.","We are going to the zoo today."],
             ["Der Löwe schläft unter dem Baum.","The lion is sleeping under the tree."],
             ["Der Elefant ist sehr groß.","The elephant is very big."],
@@ -1167,15 +1239,8 @@ const appData = {
             ["die Eule","The Owl","https://em-content.zobj.net/source/microsoft-teams/363/owl_1f989.png"],
             ["der Schwan","The Swan","https://em-content.zobj.net/source/microsoft-teams/363/swan_1f9a2.png"],
             ["der Frosch","The Frog","https://em-content.zobj.net/source/microsoft-teams/363/frog_1f438.png"],
-            ["der Marienkäfer","The Ladybug","https://em-content.zobj.net/source/microsoft-teams/363/lady-beetle_1f41e.png"]
-        ]
-    },
+            ["der Marienkäfer","The Ladybug","https://em-content.zobj.net/source/microsoft-teams/363/lady-beetle_1f41e.png"],
 
-    german_animals_sen: {
-        title: "🌲",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Im Wald lebt ein Hirsch.","A stag lives in the forest."],
             ["Das Reh steht auf der Wiese.","The roe deer is standing on the meadow."],
             ["Der Fuchs ist sehr schlau.","The fox is very clever."],
@@ -1191,7 +1256,7 @@ const appData = {
 
     colors: {
         title: "🎨 Colors",
-        layout: "word",
+        layout: "phrase",
         speakType: "key",
         items: [
             ["schwarz","Black","https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"],
@@ -1201,15 +1266,8 @@ const appData = {
             ["blau","Blue","https://em-content.zobj.net/source/microsoft-teams/363/blue-book_1f4d8.png"],
             ["gelb","Yellow","https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
             ["grün","Green","https://em-content.zobj.net/source/microsoft-teams/363/green-apple_1f34f.png"],
-            ["braun","Brown","https://em-content.zobj.net/source/microsoft-teams/363/wood_1fab5.png"]
-        ]
-    },
+            ["braun","Brown","https://em-content.zobj.net/source/microsoft-teams/363/wood_1fab5.png"],
 
-    colors_sen: {
-        title: "🎨",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Das Auto ist schwarz.","The car is black."],
             ["Der Schnee ist weiß.","The snow is white."],
             ["Der Elefant ist grau.","The elephant is grey."],
@@ -1225,7 +1283,7 @@ const appData = {
 
     directions: {
         title: "➡️ Maps",
-        layout: "word",
+        layout: "phrase",
         speakType: "key",
         items: [
             ["der Norden","The North","https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"],
@@ -1233,15 +1291,8 @@ const appData = {
             ["der Westen","The West","https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"],
             ["der Osten","The East","https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"],
             ["links","On the left","https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-left_1f448.png"],
-            ["rechts","On the right","https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-right_1f449.png"]
-        ]
-    },
+            ["rechts","On the right","https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-right_1f449.png"],
 
-    directions_sen: {
-        title: "➡️",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Hamburg liegt im Norden.","Hamburg is located in the north."],
             ["München liegt im Süden.","Munich is located in the south."],
             ["Die Sonne geht im Osten auf.","The sun rises in the east."],
@@ -1278,15 +1329,8 @@ const appData = {
             ["Mexiko","Mexico"],
             ["der Mexikaner","Mexican man"],
             ["die Mexikanerin","Mexican woman"],
-            ["mexikanisch","Mexican (adjective)"]
-        ]
-    },
+            ["mexikanisch","Mexican (adjective)"],
 
-    countries_sen: {
-        title: "🌍",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Ich wohne in Deutschland.","I live in Germany."],
             ["Sprechen Sie Deutsch?","Do you speak German?"],
             ["Er ist ein Deutscher.","He is a German."],
@@ -1319,15 +1363,8 @@ const appData = {
             ["der Onkel","the uncle"],
             ["die Tante","the aunt"],
             ["der Cousin","the cousin (male)"],
-            ["die Cousine","the cousin (female)"]
-        ]
-    },
+            ["die Cousine","the cousin (female)"],
 
-    family_sen: {
-        title: "🌳 FamilySent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
             ["Meine Familie ist groß.","My family is big."],
             ["Das sind meine Eltern.","These are my parents."],
             ["Mein Vater heißt Thomas.","My father's name is Thomas."],
@@ -1339,660 +1376,128 @@ const appData = {
         ]
     },
 
-    food_produce: {
-        title: "🍎 FreshFood",
+
+    Food_vocabulary: {
+        title: "🍎 Food & Drinks",
         layout: "phrase",
         speakType: "key",
         items: [
-            ["der Apfel","apple","https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
-            ["die Äpfel","apples (plural)","https://i.imgur.com/3tofE5P.jpeg"],
-            ["die Birne","pear","https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"],
-            ["die Birnen","pears (plural)","https://i.imgur.com/6dWrXF1.jpeg"],
-            ["die Tomate","tomato","https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"],
-            ["die Tomaten","tomatoes (plural)","https://i.imgur.com/hkMzzP4.jpeg"],
-            ["der Salat","salad / lettuce","https://i.imgur.com/ZgRLQCV.jpeg"],
-            ["das Obst","fruit","https://i.imgur.com/XNhuXf6.jpeg"],
-            ["das Fleisch","meat","https://em-content.zobj.net/source/microsoft-teams/363/cut-of-meat_1f969.png"],
-            ["der Schinken","ham","https://cdn-icons-png.flaticon.com/512/706/706880.png"],
-            ["die Schinken","hams (plural)","https://i.imgur.com/JRCe0RB.jpeg"],
-            ["der Fisch","fish","https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
-            ["die Fische","fishes (plural)","https://i.imgur.com/6PvZuOr_d.webp?maxwidth=1520&fidelity=grand"],
-            ["das Hähnchen","chicken","https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
-            ["die Hähnchen","chickens (plural)","https://i.imgur.com/STFdfsg.jpeg"]
-        ]
-    },
-
-    food_produce_sen: {
-        title: "🍎",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Ich esse jeden Tag einen Apfel.","I eat an apple every day."],
-            ["Die Äpfel sind rot und süß.","The apples are red and sweet."],
-            ["Möchtest du eine Birne?","Would you like a pear?"],
-            ["Ich brauche zwei Tomaten für den Salat.","I need two tomatoes for the salad."],
-            ["Der Salat schmeckt sehr frisch.","The salad tastes very fresh."],
-            ["Wir kaufen frisches Obst auf dem Markt.","We buy fresh fruit at the market."],
-            ["Isst du gerne Fleisch?","Do you like eating meat?"],
-            ["Ich nehme ein Brot mit Schinken.","I'll take a bread roll with ham."],
-            ["Heute Abend essen wir Fisch.","Tonight we are eating fish."],
-            ["Das Hähnchen schmeckt lecker.","The chicken tastes delicious."]
-        ]
-    },
-
-    food_pantry: {
-        title: "🍞 Pantry",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["das Brot","bread","https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
-            ["die Brote","breads (plural)","https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
-            ["das Brötchen","bread roll","https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
-            ["die Brötchen","bread rolls (plural)","https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
-            ["die Butter","butter","https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"],
-            ["das Öl","oil","https://em-content.zobj.net/source/microsoft-teams/363/amphora_1f3fa.png"],
-            ["der Kuchen","cake","https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
-            ["die Kuchen","cakes (plural)","https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
+            ["das Obst","fruit (general)","https://i.imgur.com/XNhuXf6.jpeg"],
+            ["der Apfel, die Äpfel","apple, apples","https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
+            ["die Birne, die Birnen","pear, pears","https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"],
+            ["die Banane, die Bananen","banana, bananas","https://em-content.zobj.net/source/microsoft-teams/363/banana_1f34c.png"],
+            ["die Orange, die Orangen","orange, oranges","https://em-content.zobj.net/source/microsoft-teams/363/tangerine_1f34a.png"],
+            ["die Zitrone, die Zitronen","lemon, lemons","https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
+            ["das Gemüse","vegetables (general)","https://cdn-icons-png.flaticon.com/512/2153/2153788.png"],
+            ["die Tomate, die Tomaten","tomato, tomatoes","https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"],
+            ["die Kartoffel, die Kartoffeln","potato, potatoes","https://em-content.zobj.net/source/microsoft-teams/363/potato_1f954.png"],
+            ["der Salat, die Salate","salad / lettuce","https://i.imgur.com/ZgRLQCV.jpeg"],
+            ["die Zwiebel, die Zwiebeln","onion, onions","https://em-content.zobj.net/source/microsoft-teams/363/onion_1f9c5.png"],
+            ["das Fleisch","meat (general)","https://em-content.zobj.net/source/microsoft-teams/363/cut-of-meat_1f969.png"],
+            ["das Hähnchen, die Hähnchen","chicken, chickens","https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
+            ["der Schinken, die Schinken","ham, hams","https://cdn-icons-png.flaticon.com/512/706/706880.png"],
+            ["die Wurst, die Würste","sausage, sausages","https://em-content.zobj.net/source/microsoft-teams/363/hot-dog_1f32d.png"],
+            ["der Fisch, die Fische","fish, fishes","https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
+            ["das Brot, die Brote","bread, breads","https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
+            ["das Brötchen, die Brötchen","bread roll, bread rolls","https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
+            ["der Kuchen, die Kuchen","cake, cakes","https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
+            ["die Reis","rice","https://em-content.zobj.net/source/microsoft-teams/363/cooked-rice_1f35a.png"],
+            ["die Nudeln","pasta / noodles (plural)","https://em-content.zobj.net/source/microsoft-teams/363/spaghetti_1f35d.png"],
             ["die Pommes frites","french fries (plural)","https://em-content.zobj.net/source/microsoft-teams/363/french-fries_1f35f.png"],
-            ["das Salz","salt","https://em-content.zobj.net/source/microsoft-teams/363/salt_1f9c2.png"],
-            ["die Lebensmittel","groceries / food (plural)","https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"]
+            ["die Milch","milk","https://em-content.zobj.net/source/microsoft-teams/363/glass-of-milk_1f95b.png"],
+            ["die Butter","butter","https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"],
+            ["der Käse","cheese","https://em-content.zobj.net/source/microsoft-teams/363/cheese-wedge_1f9c0.png"],
+            ["das Ei, die Eier","egg, eggs","https://em-content.zobj.net/source/microsoft-teams/363/egg_1f95a.png"],
+            ["das Öl, die Öle","oil, oils","https://i.imgur.com/HeYV02C.jpeg"],
+            ["das Salz, die Salze","salt, salts","https://em-content.zobj.net/source/microsoft-teams/363/salt_1f9c2.png"],
+            ["der Zucker","sugar","https://i.imgur.com/b6Jmfbg.png"],
+            ["das Getränk, die Getränke","drink / beverage","https://cdn-icons-png.flaticon.com/512/3050/3050130.png"],
+            ["das Wasser","water","https://i.imgur.com/kT6ndSN.jpeg"],
+            ["der Kaffee, die Kaffees","coffee, coffees","https://cdn-icons-png.flaticon.com/512/924/924514.png"],
+            ["der Tee, die Tees","tea, teas","https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"],
+            ["der Saft, die Säfte","juice, juices","https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"],
+            ["das Bier, die Biere","beer, beers","https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"],
+            ["der Wein, die Weine","wine, wines","https://em-content.zobj.net/source/microsoft-teams/363/wine-glass_1f377.png"],
+            ["die Flasche, die Flaschen","bottle, bottles","https://i.imgur.com/xo5xbwU.jpeg"],
+            ["die Lebensmittel","groceries (plural)","https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"],
+            ["der Hunger","hunger","https://i.imgur.com/jGhqDlg.gif"],
+            ["der Durst","thirst","https://i.imgur.com/onocppi.jpeg"],
+            ["das Café, die Cafés","café, cafés","https://i.imgur.com/Zrjx6Jp.jpeg"],
+            ["das Restaurant, die Restaurants","restaurant","https://images.pexels.com/photos/34252330/pexels-photo-34252330.jpeg"],
+            ["das Essen","food / meal","https://i.imgur.com/OTFbqSm.gif"],
+            ["die Speisekarte, die Speisekarten","menu, menus","https://i.imgur.com/HFZd6ti.jpeg"],
+            ["der Kühlschrank, die Kühlschränke","fridge, fridges","https://images.pexels.com/photos/27301775/pexels-photo-27301775.jpeg"],
+            ["essen","to eat","https://i.imgur.com/oUkmh6s.gif"],
+            ["trinken","to drink","https://i.imgur.com/1ty3uwx.jpeg"],
+            ["kochen","to cook","https://i.imgur.com/AnPpWSF.gif"],
+            ["grillen","to grill","https://i.imgur.com/FF6RDNm.jpeg"],
+            ["schmecken","to taste","https://i.imgur.com/rmi2VFB.gif"],
+            ["kaufen","to buy","https://cdn-icons-png.flaticon.com/512/1170/1170678.png"],
+            ["bestellen","to order","https://i.imgur.com/l5r970P.jpeg"],
+            ["lecker","delicious / tasty","https://i.imgur.com/sFbB9tL.gif"],
+            ["frisch","fresh","https://i.imgur.com/CGwwJWT.jpeg"],
+            ["süß","sweet","https://i.imgur.com/GWn5hC7.jpeg"],
+            ["bitter","bitter","https://images.unsplash.com/photo-1739903760973-4731a8e79a03?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["kalt","cold","https://i.imgur.com/O0belfd.gif"],
+            ["heiß","hot","https://i.imgur.com/zLNyIAh.gif"],
+            ["gut","good","https://i.imgur.com/Gr4od64.gif"]
         ]
     },
 
-    food_pantry_sen: {
-        title: "🍞",
+    Food_vocabulary_story: {
+        title: "🍎 Short Conversations",
         layout: "sentence",
         speakType: "key",
         items: [
-            ["Ich kaufe frisches Brot.","I buy fresh bread."],
-            ["Zum Frühstück esse ich zwei Brötchen.","For breakfast I eat two bread rolls."],
-            ["Hast du noch Butter?","Do you still have butter?"],
-            ["Ich koche mit Olivenöl.","I cook with olive oil."],
-            ["Der Kuchen schmeckt fantastisch.","The cake tastes fantastic."],
-            ["Die Kinder essen gerne Pommes frites.","The children like to eat french fries."],
-            ["Das Essen braucht etwas Salz.","The food needs a bit of salt."],
-            ["Wir müssen Lebensmittel einkaufen.","We need to buy groceries."],
-            ["Wo sind die Brötchen?","Where are the bread rolls?"],
-            ["Sie stehen auf dem Tisch.","They are on the table."]
-        ]
-    },
+            // 场景 1：饿了 / 看冰箱
+            ["Ich habe Hunger!", "I am hungry!"],
+            ["Ich habe Durst!", "I am thirsty!"],
+            ["Was ist im Kühlschrank?", "What's in the fridge?"],
+            ["Nur Wasser, Milch und Käse.", "Only water, milk and cheese."],
 
-    drinks: {
-        title: "☕ Drinks",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["das Bier","beer","https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"],
-            ["der Kaffee","coffee","https://cdn-icons-png.flaticon.com/512/924/924514.png"],
-            ["der Tee","tea","https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"],
-            ["der Saft","juice","https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"],
-            ["die Flasche","bottle","https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
-            ["die Flaschen","bottles (plural)","https://em-content.zobj.net/source/microsoft-teams/363/baby-bottle_1f37c.png"],
-            ["trinken","to drink","https://em-content.zobj.net/source/microsoft-teams/363/cup-with-straw_1f964.png"],
-            ["der Durst","thirst","https://cdn-icons-png.flaticon.com/512/1864/1864846.png"]
-        ]
-    },
+            // 场景 2：去超市采购
+            ["Wir kaufen Lebensmittel!", "Let's buy groceries!"],
+            ["Ich kaufe Obst und Gemüse.", "I buy fruit and vegetables."],
+            ["Brauchst du Kartoffeln?", "Do you need potatoes?"],
+            ["Ja, und zwei Äpfel.", "Yes, and two apples."],
 
-    drinks_sen: {
-        title: "☕",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Möchtest du ein Bier?","Would you like a beer?"],
-            ["Ich trinke morgens immer Kaffee.","I always drink coffee in the morning."],
-            ["Ein Heißen Tee bitte!","A hot tea please!"],
-            ["Trinkst du gerne Orangensaft?","Do you like drinking orange juice?"],
-            ["Eine Flasche Wasser bitte.","A bottle of water please."],
-            ["Ich habe großen Durst.","I am very thirsty."],
-            ["Was möchtest du trinken?","What would you like to drink?"],
-            ["Ich trinke ein Glas Saft.","I am drinking a glass of juice."],
-            ["Hier stehen zwei Flaschen.","Here are two bottles."],
-            ["Danke, das reicht mir.","Thanks, that is enough for me."]
-        ]
-    },
+            // 场景 3：做饭与准备
+            ["Was kochen wir?", "What are we cooking?"],
+            ["Wir kochen Nudeln mit Tomaten.", "We cook pasta with tomatoes."],
+            ["Isst du Fleisch?", "Do you eat meat?"],
+            ["Nein, lieber Fisch.", "No, I prefer fish."],
 
-    dining_terms: {
-        title: "🍽️ Dining",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["bitter","bitter","https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
-            ["der Appetit","appetite","https://em-content.zobj.net/source/microsoft-teams/363/drooling-face_1f924.png"],
-            ["der Hunger","hunger","https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife-with-plate_1f37d-fe0f.png"],
-            ["das Café","café","https://em-content.zobj.net/source/microsoft-teams/363/house-with-garden_1f3e1.png"],
-            ["das Essen","food / meal","https://em-content.zobj.net/source/microsoft-teams/363/bento-box_1f371.png"],
-            ["essen","to eat","https://em-content.zobj.net/source/microsoft-teams/363/fork-and-knife_1f374.png"],
-            ["schmecken","to taste","https://www.iconarchive.com/download/i139323/microsoft/fluentui-emoji-flat/Face-Savoring-Food-Flat.1024.png"],
-            ["grillen","to grill / barbecue","https://em-content.zobj.net/source/microsoft-teams/363/meat-on-bone_1f356.png"],
-            ["die Speisekarte","menu","https://em-content.zobj.net/source/microsoft-teams/363/page-facing-up_1f4c4.png"],
-            ["der Kühlschrank","refrigerator","https://em-content.zobj.net/source/microsoft-teams/363/ice_1f9ca.png"]
-        ]
-    },
-
-    dining_terms_sen: {
-        title: "🍽️",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Der Kaffee schmeckt etwas bitter.","The coffee tastes a bit bitter."],
-            ["Guten Appetit!","Enjoy your meal!"],
-            ["Ich habe riesigen Hunger.","I am extremely hungry."],
-            ["Treffen wir uns im Café?","Shall we meet in the café?"],
-            ["Das Essen ist sehr lecker.","The food is very delicious."],
-            ["Was möchtest du heute essen?","What would you like to eat today?"],
-            ["Das schmeckt wirklich gut!","This tastes really good!"],
-            ["Im Sommer grillen wir oft im Garten.","In summer we often barbecue in the garden."],
-            ["Bringen Sie mir bitte die Speisekarte.","Please bring me the menu."],
-            ["Die Milch steht im Kühlschrank.","The milk is in the refrigerator."]
-        ]
-    },
-
-    supermarket: {
-        title: "🛒 Supermarket",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["der Supermarkt","the supermarket"],
-            ["der Einkaufswagen","the shopping cart"],
-            ["die Kasse","the checkout counter"],
-            ["der Preis","the price"],
-            ["das Angebot","the special offer"],
-            ["die Plastiktüte","the plastic bag"],
-            ["einkaufen","to shop / buy"],
-            ["bezahlen","to pay"],
-            ["kaufen","to buy"],
-            ["verkäuflich","for sale"]
-        ]
-    },
-
-    supermarket_sen: {
-        title: "🛒 SuperSent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Ich gehe in den Supermarkt.","I am going to the supermarket."],
-            ["Wo ist die Kasse?","Where is the checkout counter?"],
-            ["Das Brot kostet zwei Euro.","The bread costs two euros."],
-            ["Kann ich mit Karte bezahlen?","Can I pay with card?"],
-            ["Ich nehme einen Einkaufswagen.","I'll take a shopping cart."],
-            ["Der Preis ist sehr gut.","The price is very good."],
-            ["Das ist ein tolles Angebot!","That is a great special offer!"],
-            ["Brauchen Sie eine Plastiktüte?","Do you need a plastic bag?"],
-            ["Nein danke, ich habe eine Tasche.","No thanks, I have a bag."],
-            ["Ich möchte Käse kaufen.","I would like to buy cheese."]
-        ]
-    },
-
-    school: {
-        title: "🏫 School",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["die Schule","the school"],
-            ["der Lehrer","the teacher (male)"],
-            ["die Lehrerin","the teacher (female)"],
-            ["der Schüler","the student"],
-            ["das Klassenzimmer","the classroom"],
-            ["das Buch","the book"],
-            ["der Stift","the pen"],
-            ["die Hausaufgabe","the homework"],
-            ["lernen","to learn"],
-            ["verstehen","to understand"]
-        ]
-    },
-
-    school_sen: {
-        title: "🏫 SchoolSent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Die Kinder gehen zur Schule.","The children go to school."],
-            ["Der Lehrer ist sehr nett.","The teacher is very nice."],
-            ["Ich lerne Deutsch.","I am learning German."],
-            ["Ich verstehe die Aufgabe.","I understand the task."],
-            ["Das Klassenzimmer ist groß.","The classroom is big."],
-            ["Hast du ein Buch dabei?","Do you have a book with you?"],
-            ["Ich brauche einen Stift.","I need a pen."],
-            ["Die Hausaufgabe ist leicht.","The homework is easy."],
-            ["Wir lernen jeden Tag neue Wörter.","We learn new words every day."],
-            ["Ich verstehe das Wort nicht.","I don't understand the word."]
-        ]
-    },
-
-    museum: {
-        title: "🏛️ Museum",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["das Museum","the museum"],
-            ["die Ausstellung","the exhibition"],
-            ["das Kunstwerk","the artwork"],
-            ["das Bild","the painting / picture"],
-            ["die Eintrittskarte","the entrance ticket"],
-            ["der Führer","the guide"],
-            ["die Geschichte","the history"],
-            ["fotografieren","to photograph"],
-            ["besuchen","to visit"]
-        ]
-    },
-
-    museum_sen: {
-        title: "🏛️ MuseumSent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Das Museum ist geöffnet.","The museum is open."],
-            ["Eine Eintrittskarte bitte.","One entrance ticket please."],
-            ["Hier darf man nicht fotografieren.","Photos are not allowed here."],
-            ["Das Bild ist sehr schön.","The painting is very beautiful."],
-            ["Die Ausstellung ist interessant.","The exhibition is interesting."],
-            ["Wir besuchen morgen das Museum.","We are visiting the museum tomorrow."],
-            ["Der Führer erklärt das Kunstwerk.","The guide explains the artwork."],
-            ["Ich interessiere mich für Geschichte.","I am interested in history."],
-            ["Wie viel kostet eine Eintrittskarte?","How much does an entrance ticket cost?"],
-            ["Das Bild ist alt und teuer.","The painting is old and expensive."]
-        ]
-    },
-
-    theater: {
-        title: "🎭 Theater",
-        layout: "phrase",
-        speakType: "key",
-        items: [
-            ["das Theater","the theater"],
-            ["die Bühne","the stage"],
-            ["der Schauspieler","the actor"],
-            ["die Vorstellung","the show / performance"],
-            ["der Platz","the seat / place"],
-            ["die Pause","the intermission"],
-            ["klatschen","to applaud"],
-            ["reservieren","to reserve"]
-        ]
-    },
-
-    theater_sen: {
-        title: "🎭 TheaterSent",
-        layout: "sentence",
-        speakType: "key",
-        items: [
-            ["Wir gehen heute ins Theater.","We are going to the theater today."],
-            ["Wo ist mein Platz?","Where is my seat?"],
-            ["Die Vorstellung beginnt um acht.","The show begins at eight."],
-            ["Das Publikum klatscht.","The audience applauds."],
-            ["Der Schauspieler steht auf der Bühne.","The actor stands on the stage."],
-            ["Jetzt machen wir eine Pause.","Now we take an intermission."],
-            ["Ich möchte zwei Plätze reservieren.","I would like to reserve two seats."],
-            ["Die Vorstellung war toll!","The performance was great!"],
-            ["Wo ist die Bühne?","Where is the stage?"],
-            ["Gleich da vorne.","Right over there."]
-        ]
-    },
-
-    scene_01: {
-        title: "💬 Greetings",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Guten Morgen, Herr Müller.","Woman: Good morning, Mr. Müller.","left"],
-            ["Wie geht es Ihnen?","Woman: How are you?","left"],
-            ["Guten Morgen, Frau Schneider.","Man: Good morning, Ms. Schneider.","right"],
-            ["Danke, gut!","Man: Fine, thanks!","right"],
-            ["Und Ihnen?","Man: And you?","right"],
-            ["Guten Morgen, Herr Müller,","Woman: Good morning, Mr. Müller,","left"],
-            ["wie geht es Ihnen?","Woman: how are you?","left"],
-            ["Guten Morgen, Frau Schneider.","Man: Good morning, Ms. Schneider.","right"],
-            ["Danke, gut!","Man: Fine, thanks!","right"],
-            ["Und Ihnen?","Man: And you?","right"],
-            ["Guten Tag, Frau Kamp.","Man: Good day, Ms. Kamp.","right"],
-            ["Guten Tag!","Woman: Good day!","left"],
-            ["Wie geht es Ihnen?","Woman: How are you?","left"],
-            ["Sehr gut, danke.","Man: Very well, thanks.","right"],
-            ["Und Ihnen?","Man: And you?","right"]
-        ]
-    },
-
-    scene_02: {
-        title: "💬 HowAreYou",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Hey, Lena!","Man: Hey, Lena!","right"],
-            ["Na, wie geht’s?","Man: So, how's it going?","right"],
-            ["Hallo, Opa!","Woman: Hello, Grandpa!","left"],
-            ["Hallo, Sarah.","Man: Hello, Sarah.","right"],
-            ["Wie geht’s dir?","Man: How are you?","right"],
-            ["Hi, Tom!","Woman: Hi, Tom!","left"],
-            ["Super, danke.","Woman: Great, thanks.","left"],
-            ["Und dir?","Woman: And you?","left"]
-        ]
-    },
-
-    scene_03: {
-        title: "💬 Bag",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Oh, schön!","Emma: Oh, beautiful!","left"],
-            ["Hm?","Nico: Hm?","right"],
-            ["Die Tasche ist schön!","Emma: The bag is beautiful!","left"],
-            ["Entschuldigung?","Nico: Excuse me?","right"],
-            ["Schön?","Nico: Beautiful?","right"],
-            ["Ja, die Tasche!","Emma: Yes, the bag!","left"],
-            ["Emma, komm jetzt!","Lisa: Emma, come now!","left"],
-            ["Entschuldigung!","Lisa: Excuse me!","left"],
-            ["Adalbert-Stifter-Straße – Hallo!","Nico: Adalbert-Stifter Street – Hello!","right"]
-        ]
-    },
-
-    scene_04: {
-        title: "💬 Taxi",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Mist!","Emma: Shoot!","left"],
-            ["Ja, ich bin gut angekommen.","Man: Yes, I arrived safely.","right"],
-            ["Du kannst mir die Unterlagen für das Meeting im Hotel hinterlegen.","Man: You can leave the documents for the meeting at the hotel.","right"],
-            ["Cool!","Emma: Cool!","left"],
-            ["Noch mal!","Emma: One more time!","left"],
-            ["Ins Zentrum bitte.","Man: To the city center, please.","right"],
-            ["Zum Königshof.","Man: To the Königshof.","right"],
-            ["Ins Zentrum, zum Königshof.","Taxi Driver: To the city center, to the Königshof.","left"],
-            ["Ins Restaurant Königshof...","Taxi Driver: To the Königshof restaurant...","left"],
-            ["...oder zum Hotel Königshof?","Taxi Driver: ...or to the Königshof hotel?","left"],
-            ["Hotel Königshof.","Man: Hotel Königshof.","right"],
-            ["Okay, kein Problem.","Taxi Driver: Okay, no problem.","left"],
-            ["Hey, stopp!","Nico: Hey, stop!","right"]
-        ]
-    },
-
-    scene_05: {
-        title: "💬 Goodbye",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Tschüss, Martina.","Man: Goodbye, Martina.","left"],
-            ["Gute Reise!","Man: Have a good trip!","left"],
-            ["Mach’s gut, Herbert.","Woman: Take care, Herbert.","right"],
-            ["Bis bald!","Woman: See you soon!","right"],
-            ["Tschüss!","Man: Bye!","left"],
-            ["Auf Wiedersehen, Herr Tillmanns.","Woman: Goodbye, Mr. Tillmanns.","left"],
-            ["Gute Reise!","Woman: Have a good trip!","left"],
-            ["Danke schön!","Man: Thank you very much!","right"],
-            ["Auf Wiedersehen, Frau Scholl.","Man: Goodbye, Ms. Scholl.","right"]
-        ]
-    },
-
-    scene_06: {
-        title: "💬 Help",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Alles okay?","Lisa: Everything okay?","left"],
-            ["Brauchst du Hilfe?","Lisa: Do you need help?","left"],
-            ["Hilfe, help?","Lisa: Help, help?","left"],
-            ["Do you need help?","Lisa: Do you need help?","left"],
-            ["Ja! Hilfe!","Nico: Yes! Help!","right"],
-            ["Wo ist die Tasche?","Lisa: Where is the bag?","left"],
-            ["Die Tasche ist … gone …","Nico: The bag is... gone...","right"],
-            ["... in the ... Taxi!","Nico: ... in the... taxi!","right"],
-            ["Die Tasche ist weg in dem Taxi?","Lisa: The bag is gone in the taxi?","left"],
-            ["Wohin willst du?","Lisa: Where do you want to go?","left"],
-            ["Wohin?","Lisa: Where?","left"],
-            ["Willst du ins Zentrum?","Lisa: Do you want to go to the city center?","left"],
-            ["Zentrum, ja!","Nico: Center, yes!","right"],
-            ["Yara.","Nico: Yara.","right"],
-            ["Wer ist Yara?","Lisa: Who is Yara?","left"],
-            ["Meine ... aunt?","Nico: My... aunt?","right"],
-            ["Deine Tante?","Lisa: Your aunt?","left"],
-            ["Nicht schlecht!","Lisa: Not bad!","left"],
-            ["Du willst zu deiner Tante?","Lisa: You want to go to your aunt?","left"],
-            ["Zu Yara?","Lisa: To Yara?","left"],
-            ["Hast du die Adresse?","Lisa: Do you have the address?","left"],
-            ["Adresse: Straße, Hausnummer?","Lisa: Address: street, house number?","left"],
-            ["Andel … Adelschiffstraße?","Nico: Andel... Adelschiff Street?","right"],
-            ["Die kenn ich nicht …","Lisa: I don't know that one...","left"],
-            ["Komm, wir helfen dir!","Lisa: Come on, we'll help you!","left"],
-            ["Yippie!","Emma: Yippee!","left"]
-        ]
-    },
-
-    scene_07: {
-        title: "💬 Kinship",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Emma!","Emma: Emma!","left"],
-            ["Mein Name ist Emma!","Emma: My name is Emma!","left"],
-            ["Und das ist meine Tante.","Emma: And this is my aunt.","left"],
-            ["Deine Mama?","Nico: Your mom?","right"],
-            ["Nein, Lisa ist nicht meine Mama.","Emma: No, Lisa is not my mom.","left"],
-            ["Sie ist meine Tante.","Emma: She is my aunt.","left"],
-            ["Meine Mama ... fliegt nach Amerika.","Emma: My mom... is flying to America.","left"],
-            ["Sie arbeitet da.","Emma: She works there.","left"],
-            ["Bitte!","Emma: Here you go!","left"],
-            ["Danke.","Nico: Thank you.","right"],
-            ["Nico.","Nico: Nico.","right"],
-            ["Mein Name ist Nico.","Nico: My name is Nico.","right"],
-            ["Hallo, Nico.","Emma: Hello, Nico.","left"],
-            ["Hallo, Emma.","Nico: Hello, Emma.","right"]
-        ]
-    },
-
-    scene_08: {
-        title: "💬 GasStation",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Ich heiße Nico.","Lisa: My name is Nico.","left"],
-            ["Hallo, Nico.","Emma: Hello, Nico.","left"],
-            ["Hallo.","Lisa: Hello.","left"],
-            ["Also: Hallo, wie heißt du?","Lisa: So: Hello, what's your name?","left"],
-            ["Hallo, ich heiße Nico.","Nico: Hello, my name is Nico.","right"],
-            ["Und wie heißt du?","Nico: And what's your name?","right"],
-            ["Ich heiße Lisa.","Lisa: My name is Lisa.","left"],
-            ["Nein, du heißt Nico.","Emma: No, your name is Nico.","left"],
-            ["Das ist Emma.","Lisa: This is Emma.","left"],
-            ["Emma spinnt gerade.","Lisa: Emma is being silly right now.","left"],
-            ["Ich … heiße …","Emma: My... name... is...","left"],
-            ["Ey!","Emma: Hey!","left"],
-            ["Emma!","Lisa: Emma!","left"],
-            ["Aber jetzt ist das „N“ weg!","Emma: But now the 'N' is gone!","left"],
-            ["Das war Nico!","Emma: That was Nico!","left"],
-            ["Ich?","Nico: Me?","right"],
-            ["Moment bitte.","Lisa: Just a moment, please.","left"],
-            ["Ich muss noch kurz tanken.","Lisa: I need to fill up the tank real quick.","left"]
-        ]
-    },
-
-    scene_09: {
-        title: "💬 Chase",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Taxi! Stopp!","Nico: Taxi! Stop!","right"],
-            ["Nico! Stopp!","Lisa & Nico: Nico! Stop!","left"],
-            ["Sag mal, spinnst du?","Taxi Driver: Hey, are you crazy?","left"],
-            ["Was ist denn?","Taxi Driver: What's going on?","left"],
-            ["Die Tasche!","Nico: The bag!","right"],
-            ["Oh, oh …","Emma: Oh, oh...","left"],
-            ["Die Tasche?","Taxi Driver: The bag?","left"],
-            ["Welche Tasche?","Taxi Driver: Which bag?","left"],
-            ["Warte, Emma!","Lisa: Wait, Emma!","left"],
-            ["Die … die Tasche in there!","Nico: The... the bag in there!","right"],
-            ["Da ist keine Tasche.","Taxi Driver: There is no bag there.","left"],
-            ["Hallo, ich bin Lisa Brunner.","Lisa: Hello, I am Lisa Brunner.","left"],
-            ["Das ist Nico.","Lisa: This is Nico.","left"],
-            ["Nico sucht seine Tasche.","Lisa: Nico is looking for his bag.","left"],
-            ["Und?","Taxi Driver: And?","left"],
-            ["Ist Nicos Tasche in Ihrem Taxi?","Lisa: Is Nico's bag in your taxi?","left"],
-            ["Nicos Tasche? Nein.","Taxi Driver: Nico's bag? No.","left"],
-            ["Die Tasche ist nicht im Taxi.","Taxi Driver: The bag is not in the taxi.","left"],
-            ["Nein. Wo?","Nico: No. Where?","right"],
-            ["Keine Ahnung, wo deine Tasche is.","Taxi Driver: No idea where your bag is.","left"],
-            ["Hier ist die Tasche nicht.","Taxi Driver: The bag is not here.","left"],
-            ["Komm, wir suchen die Tasche!","Lisa: Come on, let's look for the bag!","left"],
-            ["Suchen. Komm, Nico!","Lisa: Search. Come on, Nico!","left"]
-        ]
-    },
-
-    scene_10: {
-        title: "💬 Origin",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Hallo, Lisa!","Max: Hello, Lisa!","left"],
-            ["Hallo, Max, wie geht es dir?","Lisa: Hello, Max, how are you?","left"],
-            ["Super. Und dir?","Max: Great. And you?","left"],
-            ["Auch gut, danke.","Lisa: Also good, thanks.","left"],
-            ["Hi, Emma.","Max: Hi, Emma.","left"],
-            ["Hallo, Max.","Emma: Hello, Max.","left"],
-            ["Und du?","Max: And you?","left"],
-            ["Wer bist du?","Max: Who are you?","left"],
-            ["Ich bin Nico.","Nico: I am Nico.","right"],
-            ["Hallo, Nico.","Max: Hello, Nico.","left"],
-            ["Du kommst nicht aus Deutschland, oder?","Max: You are not from Germany, right?","left"],
-            ["Entschuldigung?","Nico: Excuse me?","right"],
-            ["Woher kommst du?","Max: Where are you from?","left"],
-            ["Ich bin Max...","Max: I am Max...","left"],
-            ["...und ich komme aus Deutschland.","Max: ...and I come from Germany.","left"],
-            ["Und ich bin Emma...","Emma: And I am Emma...","left"],
-            ["...und ich komme auch aus Deutschland.","Emma: ...and I also come from Germany.","left"],
-            ["Ich bin Nico.","Nico: I am Nico.","right"],
-            ["Ich komme aus ... Spain?","Nico: I come from... Spain?","right"],
-            ["Spanien?","Max: Spain?","left"],
-            ["Spanien, ja!","Nico: Spain, yes!","right"],
-            ["Ich komme aus Spanien.","Nico: I come from Spain.","right"],
-            ["Und woher kommst du genau?","Max: And where exactly are you from?","left"],
-            ["Woher?","Nico: Where?","right"],
-            ["Wo wohnst du in Spanien?","Max: Where do you live in Spain?","left"],
-            ["Wohnst du in Barcelona...","Max: Do you live in Barcelona...","left"],
-            ["...oder in Madrid?","Max: ...or in Madrid?","left"],
-            ["Sevilla!","Nico: Seville!","right"],
-            ["Du wohnst in Sevilla?","Max: You live in Seville?","left"],
-            ["Ich wohne in Sevilla.","Nico: I live in Seville.","right"]
-        ]
-    },
-
-    scene_11: {
-        title: "💬 Explain",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Nico war auch am Flughafen.","Lisa: Nico was also at the airport.","left"],
-            ["Er hat ein Problem:","Lisa: He has a problem:","left"],
-            ["Seine Tasche ist weg.","Lisa: His bag is gone.","left"],
-            ["Oh. Und was machst du jetzt?","Max: Oh. And what are you doing now?","left"],
-            ["Ich suche meine Tante.","Nico: I am looking for my aunt.","right"],
-            ["Nicos Tante wohnt hier in Deutschland.","Lisa: Nico's aunt lives here in Germany.","left"],
-            ["Aber er hat die Adresse nicht.","Lisa: But he doesn't have the address.","left"],
-            ["Kannst du deine Tante anrufen?","Max: Can you call your aunt?","left"],
-            ["Meine Tasche ist weg.","Nico: My bag is gone.","right"],
-            ["Mein Telefon ist weg.","Nico: My phone is gone.","right"],
-            ["Und die Nummer ist weg.","Nico: And the number is gone.","right"],
-            ["Und deine Familie?","Max: And your family?","left"],
-            ["Kannst du deine Familie anrufen?","Max: Can you call your family?","left"],
-            ["Nein.","Nico: No.","right"],
-            ["Kann dein Vater nicht helfen?","Emma: Can't your father help?","left"],
-            ["Er ist doch bei der Polizei.","Emma: He's with the police, after all.","left"],
-            ["Gute Idee!","Lisa: Good idea!","left"],
-            ["Vater?","Nico: Father?","right"],
-            ["Mein Vater ist Polizist.","Lisa: My father is a police officer.","left"],
-            ["Police.","Lisa: Police.","left"],
-            ["Vielleicht hilft er uns.","Lisa: Maybe he can help us.","left"],
-            ["Moment!","Lisa: Just a moment!","left"]
-        ]
-    },
-
-    scene_12: {
-        title: "💬 Police",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Polizeirevier Ost, Brunner hier.","Father: Police Station East, Brunner here.","left"],
-            ["Ah, hallo, Lisa. Wie geht’s dir?","Father: Ah, hello, Lisa. How are you?","left"],
-            ["Was ist los?","Father: What's wrong?","left"],
-            ["Geht es Emma nicht gut?","Father: Is Emma not doing well?","left"],
-            ["Doch, keine Sorge!","Lisa: Yes, don't worry!","left"],
-            ["Emma geht es gut.","Lisa: Emma is doing well.","left"],
-            ["Aber Nico hat ein Problem.","Lisa: But Nico has a problem.","left"],
-            ["Er war auch am Flughafen.","Lisa: He was also at the airport.","left"],
-            ["Er kommt aus Spanien.","Lisa: He comes from Spain.","left"],
-            ["Ja, genau.","Lisa: Yes, exactly.","left"],
-            ["Er kommt aus Spanien...","Lisa: He comes from Spain...","left"],
-            ["...und er hat ein Problem.","Lisa: ...and he has a problem.","left"],
-            ["Seine Tasche ist weg...","Lisa: His bag is gone...","left"],
-            ["...und er spricht nicht gut Deutsch.","Lisa: ...and he doesn't speak German well.","left"],
-            ["Hat er Papiere?","Father: Does he have documents?","left"],
-            ["Einen Ausweis oder einen Pass?","Father: An ID or a passport?","left"],
-            ["Hast du einen Pass? Passport?","Lisa: Do you have a passport? Passport?","left"],
-            ["Nein.","Nico: No.","right"],
-            ["Nicos Pass ist in seiner Tasche.","Lisa: Nico's passport is in his bag.","left"],
-            ["Aber er hat ein Foto von seiner Tante.","Lisa: But he has a photo of his aunt.","left"],
-            ["Sie wohnt auch hier in Deutschland...","Lisa: She also lives here in Germany...","left"],
-            ["...aber Nico hat die Adresse nicht.","Lisa: ...but Nico doesn't have the address.","left"],
-            ["Meine Tante …","Nico: My aunt...","right"],
-            ["She has a bicycle shop.","Nico: She has a bicycle shop.","right"],
-            ["Seine Tante hat ein Geschäft...","Lisa: His aunt has a shop...","left"],
-            ["...ein Fahrradgeschäft.","Lisa: ...a bicycle shop.","left"],
-            ["Wir suchen also eine Adresse.","Father: So we are looking for an address.","left"],
-            ["Die Frau hat ein Fahrradgeschäft. Richtig?","Father: The woman has a bicycle shop. Right?","left"],
-            ["Okay. Dann komm doch mit Nico zur Polizei.","Father: Okay. Then why don't you come to the police station with Nico.","left"],
-            ["Danke, Papa! Bis später!","Lisa: Thanks, Dad! See you later!","left"],
-            ["Und?","Max: And?","left"],
-            ["Vielleicht kann mein Vater uns helfen.","Lisa: Maybe my father can help us.","left"],
-            ["Er hilft. He helps.","Lisa: He helps. He helps.","left"],
-            ["Super!","Max: Super!","left"],
-            ["Danke!","Nico: Thank you!","right"],
-            ["Mach’s gut, Lisa.","Max: Take care, Lisa.","left"],
-            ["Ciao, Emma.","Max: Bye, Emma.","left"],
-            ["Tschüss, Max!","Lisa & Emma: Goodbye, Max!","left"],
-            ["Ciao, Nico. Viel Erfolg!","Max: Bye, Nico. Good luck!","left"]
-        ]
-    },
-
-    scene_13: {
-        title: "💬 Counting",
-        layout: "dialogue",
-        speakType: "key",
-        items: [
-            ["Wie ist die Hausnummer, Emma?","Lisa: What's the house number, Emma?","left"],
-            ["38 oder 83?","Lisa: 38 or 83?","left"],
-            ["Moment… 11.","Emma: Wait... 11.","left"],
-            ["Ah, ja.","Lisa: Ah, yes.","left"],
-            ["Dann sind wir richtig hier.","Lisa: Then we are in the right place here.","left"],
-            ["Da.","Nico: There.","right"],
-            ["Wie viele Zahlen sind das?","Emma: How many numbers are there?","left"],
-            ["Wie viele?","Nico: How many?","right"],
-            ["Das sind 31 Zahlen.","Emma: That makes 31 numbers.","left"],
-            ["31 …","Nico: 31...","right"],
-            ["Eins, zwei, drei, vier, fünf …","Emma: One, two, three, four, five...","left"],
-            ["Eins, zwei, drei, vier, fünf.","Nico: One, two, three, four, five.","right"],
-            ["... sechs, sieben, acht, neun, zehn, elf, zwölf.","Emma: ... six, seven, eight, nine, ten, eleven, twelve.","left"],
-            ["Sechs, sieben, acht, neun, zehn, elf, zwölf.","Nico: Six, seven, eight, neun, ten, eleven, twelve.","right"],
-            ["Was ist das?","Nico: What is this?","right"],
-            ["Eine Einladung zum Geburtstag von Charlotte.","Emma: An invitation to Charlotte's birthday party.","left"],
-            ["Geburtstag?","Nico: Birthday?","right"],
-            ["Happy birthday to you …","Emma: Happy birthday to you...","left"],
-            ["Ah, Geburtstag!","Nico: Ah, birthday!","right"],
-            ["Ja, und das hier ist ein Geschenk.","Lisa: Yes, and this here is a gift.","left"],
-            ["Tschüss, Nico! Bis morgen!","Emma: Bye, Nico! See you tomorrow!","left"],
-            ["Tschüss, Emma!","Nico: Bye, Emma!","right"]
+            // 场景 4：餐厅/咖啡馆就餐与评价
+            ["Die Speisekarte, bitte!", "The menu, please!"],
+            ["Ich bestelle einen Kaffee.", "I'll order a coffee."],
+            ["Möchtest du auch Kuchen?", "Would you like cake too?"],
+            ["Nein, ein Bier bitte.", "No, a beer please."],
+            ["Guten Appetit!", "Enjoy your meal!"],
+            ["Das Essen ist sehr lecker!", "The food is very delicious!"]
         ]
     }
+
 };
 // ==========================================
+// 全局状态变量
 let currentActivePageId = 'review'; 
 let isAutoplayRunning = false;
 let currentPlayIndex = 0;
 
+// 互动得分与连胜系统
+let userScore = 0;
+let currentStreak = 0;
+
+// 连连看/拼词/选图状态
 let isPracticeModeActive = false;
+let isAudioMatchMode = false;
 let practiceItemsAll = []; 
 let practiceGroupIndex = 0;
 let selectedGermanCard = null;
 let selectedTranslationCard = null;
 
-// 🧩 拼词/拼单词模式状态
 let isBuilderModeActive = false;
+let builderDifficulty = 1; 
 let builderItemsAll = [];
 let builderIndex = 0;
 let builderTokensPool = [];
@@ -2000,14 +1505,395 @@ let builderSelectedTokens = [];
 let builderExpectedTokens = [];
 let builderErrorCount = 0;
 
-// 🖼️ 听音选图练习模式状态
 let isImageModeActive = false;
 let imageModeItemsAll = [];
 let imageModeIndex = 0;
 
 let isAnimating = false;
-
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
+
+// ==========================================
+// 🐾 陪伴宠物系统：数值平衡优化 + 互动 + 睡眠系统
+// ==========================================
+let petData = JSON.parse(localStorage.getItem('german_pet_data')) || {
+    level: 1,
+    exp: 0,
+    hunger: 100,
+    food: 5,
+    isCollapsed: false
+};
+
+let isWandering = false;
+let wanderTimer = null;
+let idleTimer = null;
+let hungerTimer = null;
+let isSleeping = false;
+
+// 丰富的互动对白表
+const petDialogueList = {
+    idle: [
+        "Wuff! Wie geht's?",
+        "Lernen wir Deutsch! 📖",
+        "Wuff wuff! 🎾",
+        "Guten Tag, mein Freund!",
+        "Das macht Spaß! 🐶"
+    ],
+    correct: [
+        "Wuff! Sehr gut! (跳跃) ✨",
+        "Toll gemacht! 汪汪！🎉",
+        "Ausgezeichnet! 答对啦！🌟",
+        "Wuff wuff! 你太棒了！💪"
+    ],
+    incorrect: [
+        "Kein Problem! 没关系再试一次！💪",
+        "Wuff... 别灰心，继续加油！",
+        "Fast richtig! 差一点点！"
+    ],
+    sleeping: [
+        "Zzz... (小狗做梦中) 😴",
+        "Zzz... Guten Nacht... 🌙",
+        "Zzz... 汪... 肉骨头..."
+    ]
+};
+
+// 1. 自然饱食度消耗定时器 (每 20 秒自然掉 1 点饱食度)
+function startHungerTick() {
+    if (hungerTimer) clearInterval(hungerTimer);
+    hungerTimer = setInterval(() => {
+        if (!isSleeping) {
+            petData.hunger = Math.max(0, petData.hunger - 1);
+            savePetData();
+        }
+    }, 20000);
+}
+
+// 2. 长时间待机睡眠检测 (45 秒无互动自动入睡)
+function resetIdleTimer() {
+    if (isSleeping) wakeUpPet();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+        enterSleepMode();
+    }, 45000);
+}
+
+function enterSleepMode() {
+    isSleeping = true;
+    const container = document.getElementById('petContainer');
+    if (container) container.classList.add('pet-sleeping');
+    showPetDialog(petDialogueList.sleeping[Math.floor(Math.random() * petDialogueList.sleeping.length)], false);
+}
+
+function wakeUpPet() {
+    isSleeping = false;
+    const container = document.getElementById('petContainer');
+    if (container) container.classList.remove('pet-sleeping');
+    showPetDialog("Wuff! 我醒啦，继续学习吧！✨", false);
+}
+
+// 监听用户全局交互，重置待机计时器
+['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
+    window.addEventListener(evt, () => resetIdleTimer(), { passive: true });
+});
+
+function savePetData() {
+    localStorage.setItem('german_pet_data', JSON.stringify(petData));
+    updatePetUI();
+}
+
+function updatePetUI() {
+    const levelText = document.getElementById('petNameTitle');
+    const expText = document.getElementById('petExpText');
+    const expBar = document.getElementById('petExpBar');
+    const hungerText = document.getElementById('petHungerText');
+    const hungerBar = document.getElementById('petHungerBar');
+    const foodCount = document.getElementById('foodCountText');
+    const feedBtn = document.getElementById('feedPetBtn');
+    const container = document.getElementById('petContainer');
+
+    if (!levelText) return;
+
+    levelText.innerText = `🦮 旺财 (Lv.${petData.level})`;
+
+    // 数值平衡调整：升级所需经验递增
+    const maxExp = petData.level * 60 + 40;
+    expText.innerText = `${petData.exp}/${maxExp}`;
+    expBar.style.width = `${Math.min(100, (petData.exp / maxExp) * 100)}%`;
+
+    hungerText.innerText = `${petData.hunger}/100`;
+    hungerBar.style.width = `${petData.hunger}%`;
+
+    foodCount.innerText = petData.food;
+    feedBtn.disabled = petData.food <= 0;
+
+    // 不同成长阶段形态展示
+    if (container) {
+        container.classList.remove('pet-stage-1', 'pet-stage-2', 'pet-stage-3');
+        if (petData.level < 3) {
+            container.classList.add('pet-stage-1'); // 幼犬
+        } else if (petData.level < 6) {
+            container.classList.add('pet-stage-2'); // 蝴蝶结领结
+        } else {
+            container.classList.add('pet-stage-3'); // 戴皇冠金光闪闪
+        }
+    }
+
+    // 折叠状态同步
+    const statusCard = document.getElementById('petStatusCard');
+    const collapseBtn = document.getElementById('collapseToggleBtn');
+    if (statusCard && collapseBtn) {
+        if (petData.isCollapsed) {
+            statusCard.classList.add('collapsed');
+            collapseBtn.innerText = "➕";
+        } else {
+            statusCard.classList.remove('collapsed');
+            collapseBtn.innerText = "➖";
+        }
+    }
+}
+
+function togglePetStatusCollapse() {
+    petData.isCollapsed = !petData.isCollapsed;
+    savePetData();
+}
+
+function showPetDialog(text, playVoice = true) {
+    const dialog = document.getElementById('petDialog');
+    if (!dialog) return;
+    dialog.innerText = text;
+    dialog.classList.add('show');
+
+    if (playVoice) {
+        const cleanMsg = text.replace(/[\u4e00-\u9fa5]/g, '').replace(/[^\w\s,'!?]/gi, '');
+        if (cleanMsg.trim().length > 0) speak(cleanMsg);
+    }
+
+    setTimeout(() => { dialog.classList.remove('show'); }, 3200);
+}
+
+function interactWithPet() {
+    resetIdleTimer();
+    const petBody = document.getElementById('petBody');
+    if (petBody) {
+        petBody.classList.remove('pet-happy-jump');
+        void petBody.offsetWidth;
+        petBody.classList.add('pet-happy-jump');
+    }
+    const randomMsg = petDialogueList.idle[Math.floor(Math.random() * petDialogueList.idle.length)];
+    showPetDialog(randomMsg);
+}
+
+function addPetExp(amount) {
+    petData.exp += amount;
+    const maxExp = petData.level * 60 + 40;
+    if (petData.exp >= maxExp) {
+        petData.exp -= maxExp;
+        petData.level++;
+        showPetDialog(`🎉 Level Up! 旺财升级到 Lv.${petData.level} 啦！`, false);
+        playSoundEffect('victory');
+    }
+    savePetData();
+}
+
+function feedPet() {
+    if (petData.food <= 0) return;
+    petData.food--;
+    petData.hunger = Math.min(100, petData.hunger + 30);
+    addPetExp(15);
+    interactWithPet();
+    showPetDialog("Lecker! 🍖 旺财最喜欢吃肉骨头啦！", true);
+}
+
+function playWithBall() {
+    interactWithPet();
+    petData.hunger = Math.max(0, petData.hunger - 5);
+    addPetExp(10);
+    showPetDialog("Wuff! 🎾 扔网球游戏太好玩啦！", false);
+}
+
+// 全屏慢跑 (慢速动画 + 慢速耗消耗饱食度 + 动态累加经验值)
+function toggleWanderMode() {
+    isWandering = !isWandering;
+    const btn = document.getElementById('wanderBtn');
+    const container = document.getElementById('petContainer');
+
+    if (isWandering) {
+        btn.classList.add('active');
+        btn.querySelector('span').innerText = '📌 停下';
+        showPetDialog("Wuff! 慢慢跑，顺便赚经验！🏃‍♂️", false);
+        container.classList.add('pet-running');
+        startWandering();
+    } else {
+        btn.classList.remove('active');
+        btn.querySelector('span').innerText = '🏃 全屏跑';
+        clearInterval(wanderTimer);
+        container.classList.remove('pet-running');
+        container.style.left = '';
+        container.style.top = '';
+        container.style.right = '25px';
+        container.style.bottom = '25px';
+        showPetDialog("呼~ 散步结束，乖乖坐好！🐶", false);
+    }
+}
+
+function startWandering() {
+    const container = document.getElementById('petContainer');
+    const movePet = () => {
+        if (!isWandering) return;
+        const screenW = window.innerWidth - 120;
+        const screenH = window.innerHeight - 180;
+        const targetX = Math.max(20, Math.floor(Math.random() * screenW));
+        const targetY = Math.max(20, Math.floor(Math.random() * screenH));
+
+        container.style.right = 'auto';
+        container.style.bottom = 'auto';
+        container.style.left = `${targetX}px`;
+        container.style.top = `${targetY}px`;
+
+        // 慢跑消耗饱食度 +1，增加经验 +2
+        petData.hunger = Math.max(0, petData.hunger - 1);
+        addPetExp(2);
+    };
+
+    movePet();
+    wanderTimer = setInterval(movePet, 4500); // 调整为慢速位移
+}
+
+function rewardPetFood(amount = 1) {
+    petData.food += amount;
+    savePetData();
+}
+
+// 答题反馈 (答对高激励 + 跳跃 + 丰富对白 + 饱食度扣减更快)
+function petReactToAnswer(isCorrect) {
+    resetIdleTimer();
+    const petBody = document.getElementById('petBody');
+    if (!petBody) return;
+
+    if (isCorrect) {
+        petBody.classList.remove('pet-happy-jump');
+        void petBody.offsetWidth;
+        petBody.classList.add('pet-happy-jump');
+        
+        // 数值平衡：做题饱食度消耗加快 (-3)，但经验奖励大幅提升 (+25)
+        petData.hunger = Math.max(0, petData.hunger - 3);
+        addPetExp(25);
+
+        const msg = petDialogueList.correct[Math.floor(Math.random() * petDialogueList.correct.length)];
+        showPetDialog(msg, false);
+    } else {
+        petBody.classList.remove('pet-shake-head');
+        void petBody.offsetWidth;
+        petBody.classList.add('pet-shake-head');
+
+        const msg = petDialogueList.incorrect[Math.floor(Math.random() * petDialogueList.incorrect.length)];
+        showPetDialog(msg, false);
+    }
+}
+
+// ==========================================
+// 🔊 音效与全局逻辑
+// ==========================================
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSoundEffect(type) {
+    if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+    const now = audioCtx.currentTime;
+
+    if (type === 'success') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now); 
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); 
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+    } else if (type === 'error') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.linearRampToValueAtTime(110, now + 0.2);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+    } else if (type === 'victory') {
+        const notes = [523.25, 659.25, 783.99, 1046.50]; 
+        notes.forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = 'triangle';
+            const startTime = now + idx * 0.08;
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0.3, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+            osc.start(startTime);
+            osc.stop(startTime + 0.4);
+        });
+    }
+}
+
+function triggerConfetti(x, y) {
+    const cx = x || window.innerWidth / 2;
+    const cy = y || window.innerHeight / 2;
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti';
+        document.body.appendChild(particle);
+        const dx = (Math.random() - 0.5) * 260;
+        const dy = (Math.random() - 0.5) * 260;
+        particle.style.left = `${cx}px`;
+        particle.style.top = `${cy}px`;
+        particle.style.setProperty('--dx', `${dx}px`);
+        particle.style.setProperty('--dy', `${dy}px`);
+        const colors = ['#fbbf24', '#22c55e', '#6366f1', '#ec4899', '#3b82f6'];
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        setTimeout(() => particle.remove(), 800);
+    }
+}
+
+function showCelebrationModal(msg) {
+    playSoundEffect('victory');
+    triggerConfetti(window.innerWidth / 2, window.innerHeight / 2);
+    rewardPetFood(2);
+    showPetDialog("Ausgezeichnet! 旺财获得 2 个肉骨头！🍖", false);
+    
+    const overlay = document.getElementById('celebrationOverlay');
+    const msgEl = document.getElementById('celebrationMsg');
+    if (msgEl && msg) msgEl.innerText = msg;
+    if (overlay) overlay.classList.add('show');
+}
+
+function closeCelebration() {
+    const overlay = document.getElementById('celebrationOverlay');
+    if (overlay) overlay.classList.remove('show');
+}
+
+function updateScore(points) {
+    if (points > 0) {
+        userScore += points;
+        currentStreak++;
+        playSoundEffect('success');
+        petReactToAnswer(true);
+        if (currentStreak % 3 === 0) rewardPetFood(1);
+    } else {
+        currentStreak = 0;
+        playSoundEffect('error');
+        petReactToAnswer(false);
+    }
+    const scoreText = document.getElementById('score-display');
+    const streakText = document.getElementById('streak-display');
+    if (scoreText) scoreText.innerText = userScore;
+    if (streakText) streakText.innerText = currentStreak > 1 ? `🔥 ${currentStreak} 连胜!` : '';
+}
 
 function toggleTheme() {
     const currentTheme = document.body.getAttribute('data-theme');
@@ -2015,16 +1901,13 @@ function toggleTheme() {
     else document.body.setAttribute('data-theme', 'dark');
 }
 
-function speak(text, callback) {
+function speak(text, callback, onStart) {
     let cleanedText = text;
     if (text.length === 1 && text === text.toUpperCase()) { cleanedText = text.toLowerCase(); }
-    if (cleanedText === 'ä' || cleanedText === 'Ä') cleanedText = 'eh';
-    if (cleanedText === 'ö' || cleanedText === 'Ö') cleanedText = 'öh';
-    if (cleanedText === 'ü' || cleanedText === 'Ü') cleanedText = 'üh';
-    if (cleanedText === 'ß' || cleanedText === 'ẞ') cleanedText = 'esszett';
     
     const u = new SpeechSynthesisUtterance(cleanedText);
     u.lang = "de-DE";
+    if (onStart) u.onstart = () => onStart();
     if (callback) {
         u.onend = () => callback();
         u.onerror = () => callback();
@@ -2033,7 +1916,7 @@ function speak(text, callback) {
     speechSynthesis.speak(u);
 }
 
-function toggleStar(e, pageKey, itemIndex, starEl) {
+function toggleStar(e, pageKey, itemIndex) {
     e.stopPropagation(); 
     const item = appData[pageKey].items[itemIndex];
     const uniqueId = `${pageKey}-${itemIndex}`;
@@ -2044,15 +1927,12 @@ function toggleStar(e, pageKey, itemIndex, starEl) {
         document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.remove('active'));
     } else {
         starredItems.push({
-            id: uniqueId,
-            pageKey: pageKey,
-            layout: appData[pageKey].layout,
-            speakType: appData[pageKey].speakType,
+            id: uniqueId, pageKey: pageKey,
+            layout: appData[pageKey].layout, speakType: appData[pageKey].speakType,
             data: item
         });
         document.querySelectorAll(`.star-${uniqueId}`).forEach(el => el.classList.add('active'));
     }
-    
     localStorage.setItem('german_helper_stars', JSON.stringify(starredItems));
     renderReviewPage();
 }
@@ -2064,7 +1944,7 @@ function renderReviewPage() {
     reviewGrid.innerHTML = '';
     
     if (starredItems.length === 0) {
-        reviewGrid.innerHTML = `<div class="empty-tip">⭐ 还没有标记重点。点击其他页面卡片上的星星，不熟的内容会同步到这里，刷新也不会丢失哦！</div>`;
+        reviewGrid.innerHTML = `<div class="empty-tip">⭐ 还没有标记重点。点击其他页面卡片上的星星，不熟的内容会同步到这里哦！</div>`;
         return;
     }
     
@@ -2080,62 +1960,15 @@ function renderReviewPage() {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]}, this)">★</span>
+            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]})">★</span>
             ${imgHtml}
             <div class='big'>${fav.data[0]}</div>
             <div class='small'>${fav.data[1]}</div>
         `;
-        
         const textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
-        card.onclick = () => {
-            stopAutoplay();
-            speak(textToSpeak);
-        };
+        card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
         wrapper.appendChild(card);
         reviewGrid.appendChild(wrapper);
-    });
-}
-
-function syncStarUIFromStorage() {
-    starredItems.forEach(fav => {
-        document.querySelectorAll(`.star-${fav.id}`).forEach(el => el.classList.add('active'));
-    });
-}
-
-function startAutoplay() {
-    const activePage = document.getElementById(`page-${currentActivePageId}`);
-    const cards = activePage.querySelectorAll('.card');
-    
-    if (currentPlayIndex >= cards.length || cards.length === 0) {
-        stopAutoplay();
-        return;
-    }
-
-    cards.forEach(c => c.classList.remove('playing'));
-    const currentCard = cards[currentPlayIndex];
-    
-    if (currentCard.parentElement.classList.contains('empty-tip') || currentCard.classList.contains('empty-tip')) {
-        stopAutoplay();
-        return;
-    }
-    
-    currentCard.classList.add('playing');
-    currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    let textToSpeak = "";
-    if (currentActivePageId === 'review') {
-        const fav = starredItems[currentPlayIndex];
-        textToSpeak = fav.speakType === 'key' ? fav.data[0] : fav.data[1];
-    } else {
-        const pageConfig = appData[currentActivePageId];
-        const itemData = pageConfig.items[currentPlayIndex];
-        textToSpeak = pageConfig.speakType === 'key' ? itemData[0] : itemData[1];
-    }
-
-    speak(textToSpeak, () => {
-        if (!isAutoplayRunning) return;
-        currentPlayIndex++;
-        setTimeout(() => { if (isAutoplayRunning) startAutoplay(); }, 1400); 
     });
 }
 
@@ -2144,8 +1977,7 @@ function stopAutoplay() {
     speechSynthesis.cancel();
     document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
     const btn = document.getElementById('autoPlayBtn');
-    btn.innerHTML = "▶";
-    btn.classList.remove('playing');
+    if(btn) { btn.innerHTML = "▶"; btn.classList.remove('playing'); }
 }
 
 function toggleAutoPlay() {
@@ -2165,9 +1997,41 @@ function toggleAutoPlay() {
     }
 }
 
-// ==========================================
-// 🎮 连连看练习模式
-// ==========================================
+function startAutoplay() {
+    const activePage = document.getElementById(`page-${currentActivePageId}`);
+    if (!activePage) return;
+    const cards = activePage.querySelectorAll('.card');
+    
+    if (currentPlayIndex >= cards.length || cards.length === 0) {
+        stopAutoplay();
+        return;
+    }
+
+    cards.forEach(c => c.classList.remove('playing'));
+    const currentCard = cards[currentPlayIndex];
+    if (!currentCard) { stopAutoplay(); return; }
+    
+    currentCard.classList.add('playing');
+    currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    let textToSpeak = "";
+    if (currentActivePageId === 'review') {
+        const fav = starredItems[currentPlayIndex];
+        textToSpeak = fav ? (fav.speakType === 'key' ? fav.data[0] : fav.data[1]) : "";
+    } else {
+        const pageConfig = appData[currentActivePageId];
+        const itemData = pageConfig.items[currentPlayIndex];
+        textToSpeak = pageConfig.speakType === 'key' ? itemData[0] : itemData[1];
+    }
+
+    speak(textToSpeak, () => {
+        if (!isAutoplayRunning) return;
+        currentPlayIndex++;
+        setTimeout(() => { if (isAutoplayRunning) startAutoplay(); }, 1400); 
+    });
+}
+
+// 连连看 / 拼词 / 选图退出与切换
 function togglePracticeMode() {
     if (isAutoplayRunning) stopAutoplay(); 
     if (isBuilderModeActive) quitBuilderMode();
@@ -2190,7 +2054,6 @@ function quitPracticeMode() {
     const btn = document.getElementById('practiceBtn');
     btn.innerHTML = "🎮 连连看";
     btn.classList.remove('active');
-    
     clearPracticeView();
     switchPage(currentActivePageId);
 }
@@ -2200,15 +2063,14 @@ function clearPracticeView() {
     if (existBox) existBox.remove();
 }
 
+function setAudioMatchMode(enabled) {
+    isAudioMatchMode = enabled;
+    renderPracticeGroup();
+}
+
 function initPracticeGame() {
     clearPracticeView();
-
-    let sourceItems = [];
-    if (currentActivePageId === 'review') {
-        sourceItems = starredItems.map(x => x.data);
-    } else {
-        sourceItems = appData[currentActivePageId].items;
-    }
+    let sourceItems = (currentActivePageId === 'review') ? starredItems.map(x => x.data) : appData[currentActivePageId].items;
 
     if (sourceItems.length === 0) {
         alert("当前页面没有可以练习的词汇哦！");
@@ -2216,17 +2078,10 @@ function initPracticeGame() {
         return;
     }
 
-    practiceItemsAll = sourceItems.map((item, idx) => {
-        return { id: idx, german: item[0], translation: item[1] };
-    });
-
+    practiceItemsAll = sourceItems.map((item, idx) => ({ id: idx, german: item[0], translation: item[1] }));
     practiceGroupIndex = 0;
     
-    document.querySelectorAll('.page').forEach(p => {
-        p.style.setProperty('display', 'none', 'important');
-        p.classList.remove('show');
-    });
-
+    document.querySelectorAll('.page').forEach(p => { p.style.setProperty('display', 'none', 'important'); p.classList.remove('show'); });
     renderPracticeGroup();
 }
 
@@ -2246,7 +2101,7 @@ function renderPracticeGroup() {
     const totalGroups = Math.ceil(practiceItemsAll.length / 8);
 
     if (currentGroup.length === 0) {
-        alert("🎉 太棒了！本页的所有内容全部练习完毕！");
+        showCelebrationModal("太棒了！本页连连看项目全部完成！");
         quitPracticeMode();
         return;
     }
@@ -2258,8 +2113,16 @@ function renderPracticeGroup() {
     practiceBox.className = 'practice-container';
 
     practiceBox.innerHTML = `
+        <div class="score-board">
+            <span>得分: <span id="score-display">${userScore}</span></span>
+            <span class="streak-badge" id="streak-display">${currentStreak > 1 ? `🔥 ${currentStreak} 连胜!` : ''}</span>
+        </div>
         <div class="practice-header">
-            <h3>🎮 连连看模式 (${practiceGroupIndex + 1}/${totalGroups} 组)</h3>
+            <div class="sub-controls">
+                <button class="sub-btn ${!isAudioMatchMode ? 'active' : ''}" onclick="setAudioMatchMode(false)">标准</button>
+                <button class="sub-btn ${isAudioMatchMode ? 'active' : ''}" onclick="setAudioMatchMode(true)">🔊 听音</button>
+            </div>
+            <h3>🎮 连连看 (${practiceGroupIndex + 1}/${totalGroups})</h3>
             <div class="page-controls">
                 <button class="nav-arrow" ${practiceGroupIndex === 0 ? 'disabled' : ''} onclick="navigatePracticeGroup(-1)">◀</button>
                 <button class="nav-arrow" ${practiceGroupIndex >= totalGroups - 1 ? 'disabled' : ''} onclick="navigatePracticeGroup(1)">▶</button>
@@ -2271,12 +2134,10 @@ function renderPracticeGroup() {
         </div>
     `;
 
-    const pagesContainer = document.getElementById('pagesContainer');
-    pagesContainer.appendChild(practiceBox);
+    document.getElementById('pagesContainer').appendChild(practiceBox);
 
     const germanCol = document.getElementById('german-col');
     const translationCol = document.getElementById('translation-col');
-
     const shuffledGerman = [...currentGroup].sort(() => Math.random() - 0.5);
     const shuffledTranslation = [...currentGroup].sort(() => Math.random() - 0.5);
 
@@ -2287,9 +2148,26 @@ function renderPracticeGroup() {
     shuffledGerman.forEach(item => {
         const card = document.createElement('div');
         card.className = 'practice-card';
-        card.innerText = item.german;
         card.dataset.id = item.id;
-        card.onclick = () => { if(!isAnimating) selectGermanCard(card, item.german); };
+        card.dataset.german = item.german;
+        
+        if (isAudioMatchMode) {
+            card.innerHTML = `
+                <div class="wave-container" id="wave-${item.id}">
+                    <span class="wave-icon">🔊</span>
+                    <div class="wave-bar static"></div>
+                    <div class="wave-bar static"></div>
+                    <div class="wave-bar static"></div>
+                    <div class="wave-bar static"></div>
+                    <div class="wave-bar static"></div>
+                    <div class="wave-bar static"></div>
+                </div>
+            `;
+        } else {
+            card.innerText = item.german;
+        }
+
+        card.onclick = (e) => { if(!isAnimating) selectGermanCard(card, item.german, item.id, e); };
         germanCol.appendChild(card);
     });
 
@@ -2298,31 +2176,37 @@ function renderPracticeGroup() {
         card.className = 'practice-card';
         card.innerText = item.translation;
         card.dataset.id = item.id;
-        card.onclick = () => { if(!isAnimating) selectTranslationCard(card); };
+        card.onclick = (e) => { if(!isAnimating) selectTranslationCard(card, e); };
         translationCol.appendChild(card);
     });
 }
 
-function selectGermanCard(cardElement, text) {
+function selectGermanCard(cardElement, text, id, event) {
     if (cardElement.classList.contains('success')) return;
-    speak(text);
+
+    const waveContainer = document.getElementById(`wave-${id}`);
+    speak(text, () => {
+        if (waveContainer) waveContainer.classList.remove('playing');
+    }, () => {
+        if (waveContainer) waveContainer.classList.add('playing');
+    });
 
     if (selectedGermanCard) { selectedGermanCard.classList.remove('selected'); }
     selectedGermanCard = cardElement;
     selectedGermanCard.classList.add('selected');
-    checkMatch();
+    checkMatch(event);
 }
 
-function selectTranslationCard(cardElement) {
+function selectTranslationCard(cardElement, event) {
     if (cardElement.classList.contains('success')) return;
 
     if (selectedTranslationCard) { selectedTranslationCard.classList.remove('selected'); }
     selectedTranslationCard = cardElement;
     selectedTranslationCard.classList.add('selected');
-    checkMatch();
+    checkMatch(event);
 }
 
-function checkMatch() {
+function checkMatch(event) {
     if (!selectedGermanCard || !selectedTranslationCard) return;
 
     const germanId = selectedGermanCard.dataset.id;
@@ -2337,6 +2221,11 @@ function checkMatch() {
         c1.classList.add('success');
         c2.classList.add('success');
 
+        if (isAudioMatchMode) { c1.innerText = c1.dataset.german; }
+
+        updateScore(10);
+        if (event) triggerConfetti(event.clientX, event.clientY);
+
         selectedGermanCard = null;
         selectedTranslationCard = null;
 
@@ -2344,8 +2233,14 @@ function checkMatch() {
         if (remaining.length === 0) {
             isAnimating = true;
             setTimeout(() => {
-                practiceGroupIndex++;
-                renderPracticeGroup();
+                const totalGroups = Math.ceil(practiceItemsAll.length / 8);
+                if (practiceGroupIndex + 1 >= totalGroups) {
+                    showCelebrationModal("🎉 太棒了！您已成功打通本页所有连连看！");
+                    quitPracticeMode();
+                } else {
+                    practiceGroupIndex++;
+                    renderPracticeGroup();
+                }
             }, 700);
         }
     } else {
@@ -2358,6 +2253,8 @@ function checkMatch() {
         c1.classList.add('error');
         c2.classList.add('error');
 
+        updateScore(0);
+
         selectedGermanCard = null;
         selectedTranslationCard = null;
 
@@ -2369,9 +2266,7 @@ function checkMatch() {
     }
 }
 
-// ==========================================
-// 🧩 多邻国风格：拼词/拼单词练习模式
-// ==========================================
+// 🧩 拼词逻辑
 function toggleBuilderMode() {
     if (isAutoplayRunning) stopAutoplay();
     if (isPracticeModeActive) quitPracticeMode();
@@ -2394,7 +2289,6 @@ function quitBuilderMode() {
     const btn = document.getElementById('builderBtn');
     btn.innerHTML = "🧩 拼词";
     btn.classList.remove('active');
-
     clearBuilderView();
     switchPage(currentActivePageId);
 }
@@ -2404,24 +2298,18 @@ function clearBuilderView() {
     if (existBox) existBox.remove();
 }
 
+function setBuilderDifficulty(diff) {
+    builderDifficulty = diff;
+    initBuilderGame();
+}
+
 function initBuilderGame() {
     clearBuilderView();
-
-    let sourceItems = [];
-    if (currentActivePageId === 'review') {
-        sourceItems = starredItems.map(x => ({
-            german: x.data[0],
-            translation: x.data[1],
-            layout: x.layout
-        }));
-    } else {
-        const layoutStyle = appData[currentActivePageId].layout || 'word';
-        sourceItems = appData[currentActivePageId].items.map(x => ({
-            german: x[0],
-            translation: x[1],
-            layout: layoutStyle
-        }));
-    }
+    let sourceItems = (currentActivePageId === 'review') ? starredItems.map(x => ({
+        german: x.data[0], translation: x.data[1]
+    })) : appData[currentActivePageId].items.map(x => ({
+        german: x[0], translation: x[1]
+    }));
 
     if (sourceItems.length === 0) {
         alert("当前页面没有可以练习的内容哦！");
@@ -2432,11 +2320,7 @@ function initBuilderGame() {
     builderItemsAll = sourceItems;
     builderIndex = 0;
 
-    document.querySelectorAll('.page').forEach(p => {
-        p.style.setProperty('display', 'none', 'important');
-        p.classList.remove('show');
-    });
-
+    document.querySelectorAll('.page').forEach(p => { p.style.setProperty('display', 'none', 'important'); p.classList.remove('show'); });
     renderBuilderQuestion();
 }
 
@@ -2454,22 +2338,18 @@ function renderBuilderQuestion() {
     builderErrorCount = 0;
 
     if (builderIndex >= builderItemsAll.length) {
-        alert("🎉 太棒了！您已完成本组所有拼词/拼单词练习！");
+        showCelebrationModal("🎉 恭喜！您已完美通关本页拼词任务！");
         quitBuilderMode();
         return;
     }
 
     const currentItem = builderItemsAll[builderIndex];
-    const germanText = currentItem.german;
-    const translationText = currentItem.translation;
-    const layout = currentItem.layout;
+    const germanText = currentItem.german.trim();
 
-    const isSentenceMode = (layout === 'sentence' || layout === 'long-sentence' || layout === 'dialogue');
-
-    if (isSentenceMode) {
-        builderExpectedTokens = germanText.trim().split(/\s+/);
+    if (builderDifficulty === 1) {
+        builderExpectedTokens = germanText.split(/\s+/);
     } else {
-        builderExpectedTokens = germanText.trim().split('');
+        builderExpectedTokens = germanText.split('');
     }
 
     builderTokensPool = builderExpectedTokens.map((token, idx) => ({ id: idx, token: token }));
@@ -2480,62 +2360,113 @@ function renderBuilderQuestion() {
     builderBox.id = 'builder-box';
     builderBox.className = 'practice-container';
 
-    const modeTitle = isSentenceMode ? "🧩 拼词成句" : "🧩 单词拼写";
-
     builderBox.innerHTML = `
+        <div class="score-board">
+            <span>得分: <span id="score-display">${userScore}</span></span>
+            <span class="streak-badge" id="streak-display">${currentStreak > 1 ? `🔥 ${currentStreak} 连胜!` : ''}</span>
+        </div>
         <div class="practice-header">
-            <h3>${modeTitle} (${builderIndex + 1}/${builderItemsAll.length})</h3>
+            <div class="sub-controls">
+                <button class="sub-btn ${builderDifficulty === 1 ? 'active' : ''}" onclick="setBuilderDifficulty(1)">1. 拼句</button>
+                <button class="sub-btn ${builderDifficulty === 2 ? 'active' : ''}" onclick="setBuilderDifficulty(2)">2. 拼词</button>
+                <button class="sub-btn ${builderDifficulty === 3 ? 'active' : ''}" onclick="setBuilderDifficulty(3)">3. 盲拼</button>
+            </div>
+            <h3>🧩 (${builderIndex + 1}/${builderItemsAll.length})</h3>
             <div class="page-controls">
                 <button class="nav-arrow" ${builderIndex === 0 ? 'disabled' : ''} onclick="navigateBuilderQuestion(-1)">◀</button>
                 <button class="nav-arrow" ${builderIndex >= builderItemsAll.length - 1 ? 'disabled' : ''} onclick="navigateBuilderQuestion(1)">▶</button>
             </div>
         </div>
         <div class="builder-target-prompt">
-            <span>${translationText}</span>
+            <span>${currentItem.translation}</span>
             <button class="speaker-btn" title="听读音" onclick="speakCurrentTarget()">🔊</button>
         </div>
         <div class="builder-answer-zone" id="builder-answer-zone"></div>
         <div class="correct-answer-hint" id="correct-hint">💡 正确答案：${germanText}</div>
-        <div class="builder-pool-zone" id="builder-pool-zone"></div>
+        
+        ${builderDifficulty === 3 ? renderGermanKeyboardHTML() : '<div class="builder-pool-zone" id="builder-pool-zone"></div>'}
+
         <div class="builder-actions">
             <button class="btn-clear" onclick="clearBuilderSelection()">🔄 重置</button>
-            <button class="btn-check" onclick="checkBuilderAnswer()">✅ 检查答案</button>
+            <button class="btn-check" onclick="checkBuilderAnswer(event)">✅ 检查答案</button>
         </div>
     `;
 
-    const pagesContainer = document.getElementById('pagesContainer');
-    pagesContainer.appendChild(builderBox);
+    document.getElementById('pagesContainer').appendChild(builderBox);
 
-    renderBuilderTiles();
-}
-
-function speakCurrentTarget() {
-    if (builderItemsAll[builderIndex]) {
-        speak(builderItemsAll[builderIndex].german);
+    if (builderDifficulty !== 3) {
+        renderBuilderTiles();
+    } else {
+        renderKeyboardAnswerZone();
     }
+
+    if (builderDifficulty === 3) { speakCurrentTarget(); }
 }
 
-function renderBuilderTiles() {
+function renderGermanKeyboardHTML() {
+    return `
+        <div class="virtual-keyboard">
+            <div class="keyboard-row">
+                ${['Q','W','E','R','T','Z','U','I','O','P','Ü'].map(k => `<button class="key-btn" onclick="pressVirtualKey('${k}')">${k}</button>`).join('')}
+            </div>
+            <div class="keyboard-row">
+                ${['A','S','D','F','G','H','J','K','L','Ö','Ä'].map(k => `<button class="key-btn" onclick="pressVirtualKey('${k}')">${k}</button>`).join('')}
+            </div>
+            <div class="keyboard-row">
+                ${['Y','X','C','V','B','N','M','ß',',','.'].map(k => `<button class="key-btn" onclick="pressVirtualKey('${k}')">${k}</button>`).join('')}
+                <button class="key-btn wide" onclick="pressVirtualKey('BACK')">⌫</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key-btn space" onclick="pressVirtualKey(' ')">Space</button>
+            </div>
+        </div>
+    `;
+}
+
+function pressVirtualKey(key) {
+    if (key === 'BACK') {
+        builderSelectedTokens.pop();
+    } else {
+        builderSelectedTokens.push({ id: Date.now() + Math.random(), token: key });
+    }
+    renderKeyboardAnswerZone();
+}
+
+function renderKeyboardAnswerZone() {
     const answerZone = document.getElementById('builder-answer-zone');
-    const poolZone = document.getElementById('builder-pool-zone');
-
-    if (!answerZone || !poolZone) return;
-
+    if (!answerZone) return;
     answerZone.innerHTML = '';
-    poolZone.innerHTML = '';
-
-    const currentItem = builderItemsAll[builderIndex];
-    const layout = currentItem ? currentItem.layout : 'word';
-    const isSingleCharToken = !(layout === 'sentence' || layout === 'long-sentence' || layout === 'dialogue');
 
     builderSelectedTokens.forEach((item, index) => {
         const btn = document.createElement('button');
         btn.className = 'tile-btn';
         btn.innerText = item.token === ' ' ? '␣' : item.token;
         btn.onclick = () => {
-            if (!isSingleCharToken) {
-                speak(item.token);
-            }
+            builderSelectedTokens.splice(index, 1);
+            renderKeyboardAnswerZone();
+        };
+        answerZone.appendChild(btn);
+    });
+}
+
+function speakCurrentTarget() {
+    if (builderItemsAll[builderIndex]) { speak(builderItemsAll[builderIndex].german); }
+}
+
+function renderBuilderTiles() {
+    const answerZone = document.getElementById('builder-answer-zone');
+    const poolZone = document.getElementById('builder-pool-zone');
+    if (!answerZone || !poolZone) return;
+
+    answerZone.innerHTML = '';
+    poolZone.innerHTML = '';
+
+    builderSelectedTokens.forEach((item, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'tile-btn';
+        btn.innerText = item.token === ' ' ? '␣' : item.token;
+        btn.onclick = () => {
+            if (builderDifficulty === 1) speak(item.token);
             builderSelectedTokens.splice(index, 1);
             renderBuilderTiles();
         };
@@ -2552,9 +2483,7 @@ function renderBuilderTiles() {
             btn.classList.add('disabled');
         } else {
             btn.onclick = () => {
-                if (!isSingleCharToken) {
-                    speak(item.token);
-                }
+                if (builderDifficulty === 1) speak(item.token);
                 builderSelectedTokens.push(item);
                 renderBuilderTiles();
             };
@@ -2565,40 +2494,59 @@ function renderBuilderTiles() {
 
 function clearBuilderSelection() {
     builderSelectedTokens = [];
-    renderBuilderTiles();
+    if (builderDifficulty === 3) {
+        renderKeyboardAnswerZone();
+    } else {
+        renderBuilderTiles();
+    }
 }
 
-function checkBuilderAnswer() {
+function normalizeString(str) {
+    return str
+        .toLowerCase()
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'“”—]/g, "") 
+        .replace(/\s+/g, " ")                             
+        .trim();
+}
+
+function checkBuilderAnswer(event) {
     if (isAnimating) return;
 
     const answerZone = document.getElementById('builder-answer-zone');
     const hint = document.getElementById('correct-hint');
     const currentItem = builderItemsAll[builderIndex];
-    const layout = currentItem.layout;
 
-    const isSentenceMode = (layout === 'sentence' || layout === 'long-sentence' || layout === 'dialogue');
+    const rawUserAnswer = builderSelectedTokens.map(t => t.token).join(builderDifficulty === 1 ? ' ' : '');
+    const cleanUserAnswer = normalizeString(rawUserAnswer);
+    const cleanCorrectAnswer = normalizeString(currentItem.german);
 
-    const userAnswer = builderSelectedTokens.map(t => t.token).join(isSentenceMode ? ' ' : '');
-    const correctAnswer = currentItem.german.trim();
-
-    if (userAnswer === correctAnswer) {
+    if (cleanUserAnswer === cleanCorrectAnswer) {
         isAnimating = true;
         if (hint) hint.classList.remove('show');
         answerZone.classList.add('success');
-        speak(correctAnswer, () => {
+        updateScore(15);
+        if (event) triggerConfetti(event.clientX, event.clientY);
+
+        speak(currentItem.german, () => {
             setTimeout(() => {
-                builderIndex++;
-                isAnimating = false;
-                renderBuilderQuestion();
-            }, 500);
+                if (builderIndex + 1 >= builderItemsAll.length) {
+                    showCelebrationModal("🎉 完美通关！拼词训练圆满完成！");
+                    quitBuilderMode();
+                } else {
+                    builderIndex++;
+                    isAnimating = false;
+                    renderBuilderQuestion();
+                }
+            }, 600);
         });
     } else {
         builderErrorCount++;
         isAnimating = true;
         answerZone.classList.add('error');
+        updateScore(0);
 
-        if (builderErrorCount >= 3 && hint) {
-            hint.classList.add('show');
+        if (builderErrorCount >= 3 && hint) { 
+            hint.classList.add('show'); 
         }
 
         setTimeout(() => {
@@ -2608,9 +2556,7 @@ function checkBuilderAnswer() {
     }
 }
 
-// ==========================================
-// 🖼️ 听音选图练习模式（只取当前分组图片）
-// ==========================================
+// 🖼️ 选图模式
 function toggleImageMode() {
     if (isAutoplayRunning) stopAutoplay();
     if (isPracticeModeActive) quitPracticeMode();
@@ -2633,7 +2579,6 @@ function quitImageMode() {
     const btn = document.getElementById('imageBtn');
     btn.innerHTML = "🖼️ 选图";
     btn.classList.remove('active');
-
     clearImageView();
     switchPage(currentActivePageId);
 }
@@ -2645,29 +2590,23 @@ function clearImageView() {
 
 function initImageGame() {
     clearImageView();
-
     let rawList = [];
+
     if (currentActivePageId === 'review') {
         starredItems.forEach(x => {
-            const isDialogue = x.layout === 'dialogue';
-            const img = isDialogue ? x.data[3] : x.data[2];
-            if (img) {
-                rawList.push({ german: x.data[0], translation: x.data[1], imgUrl: img });
-            }
+            const img = (x.layout === 'dialogue') ? x.data[3] : x.data[2];
+            if (img) rawList.push({ german: x.data[0], translation: x.data[1], imgUrl: img });
         });
     } else {
         const page = appData[currentActivePageId];
-        const isDialogue = page.layout === 'dialogue';
         page.items.forEach(item => {
-            const img = isDialogue ? item[3] : item[2];
-            if (img) {
-                rawList.push({ german: item[0], translation: item[1], imgUrl: img });
-            }
+            const img = (page.layout === 'dialogue') ? item[3] : item[2];
+            if (img) rawList.push({ german: item[0], translation: item[1], imgUrl: img });
         });
     }
 
     if (rawList.length < 2) {
-        alert("当前分组带有图片的卡片不足 2 张，无法生成选图测验哦！请切换到图片较多的分组。");
+        alert("当前分组带图片的卡片不足 2 张，无法生成选图测验！");
         quitImageMode();
         return;
     }
@@ -2675,11 +2614,7 @@ function initImageGame() {
     imageModeItemsAll = rawList.sort(() => Math.random() - 0.5);
     imageModeIndex = 0;
 
-    document.querySelectorAll('.page').forEach(p => {
-        p.style.setProperty('display', 'none', 'important');
-        p.classList.remove('show');
-    });
-
+    document.querySelectorAll('.page').forEach(p => { p.style.setProperty('display', 'none', 'important'); p.classList.remove('show'); });
     renderImageQuestion();
 }
 
@@ -2696,26 +2631,24 @@ function renderImageQuestion() {
     clearImageView();
 
     if (imageModeIndex >= imageModeItemsAll.length) {
-        alert("🎉 恭喜！你已完成本组听音选图测试！");
+        showCelebrationModal("🎉 恭喜！你已完成本组听音选图测试！");
         quitImageMode();
         return;
     }
 
     const currentCorrect = imageModeItemsAll[imageModeIndex];
-
-    // 🎯 仅从当前分组（imageModeItemsAll）中过滤出干扰选项，不再跨分组抽图
-    let localDistractorsPool = imageModeItemsAll.filter(item => item.german !== currentCorrect.german);
-    localDistractorsPool = localDistractorsPool.sort(() => Math.random() - 0.5);
-
-    // 最多取 3 个干扰项（如果当前分组图片较少，取实际可用的最大数量）
-    let distractors = localDistractorsPool.slice(0, 3);
-    let options = [currentCorrect, ...distractors].sort(() => Math.random() - 0.5);
+    let localDistractors = imageModeItemsAll.filter(item => item.german !== currentCorrect.german).sort(() => Math.random() - 0.5);
+    let options = [currentCorrect, ...localDistractors.slice(0, 3)].sort(() => Math.random() - 0.5);
 
     const imageBox = document.createElement('div');
     imageBox.id = 'image-box';
     imageBox.className = 'practice-container';
 
     imageBox.innerHTML = `
+        <div class="score-board">
+            <span>得分: <span id="score-display">${userScore}</span></span>
+            <span class="streak-badge" id="streak-display">${currentStreak > 1 ? `🔥 ${currentStreak} 连胜!` : ''}</span>
+        </div>
         <div class="practice-header">
             <h3>👂 听音选图 (${imageModeIndex + 1}/${imageModeItemsAll.length})</h3>
             <div class="page-controls">
@@ -2724,48 +2657,56 @@ function renderImageQuestion() {
             </div>
         </div>
         <div class="builder-target-prompt">
-            <span>请听发音并选择对应图片</span>
             <button class="speaker-btn" title="播放读音" onclick="speakImageTarget()">🔊</button>
+            <span id="image-german-reveal" style="margin-left:8px;">请听发音选图</span>
         </div>
         <div class="image-grid" id="image-grid"></div>
     `;
 
-    const pagesContainer = document.getElementById('pagesContainer');
-    pagesContainer.appendChild(imageBox);
+    document.getElementById('pagesContainer').appendChild(imageBox);
 
     const grid = document.getElementById('image-grid');
-
     options.forEach(opt => {
         const card = document.createElement('div');
         card.className = 'image-choice-card';
         card.innerHTML = `<img src="${opt.imgUrl}" alt="choice">`;
-        card.onclick = () => { if(!isAnimating) checkImageChoice(card, opt.german, currentCorrect.german); };
+        card.onclick = (e) => { if(!isAnimating) checkImageChoice(card, opt.german, currentCorrect.german, e); };
         grid.appendChild(card);
     });
 
-    setTimeout(() => {
-        speakImageTarget();
-    }, 300);
+    setTimeout(() => speakImageTarget(), 300);
 }
 
 function speakImageTarget() {
-    if (imageModeItemsAll[imageModeIndex]) {
-        speak(imageModeItemsAll[imageModeIndex].german);
-    }
+    if (imageModeItemsAll[imageModeIndex]) { speak(imageModeItemsAll[imageModeIndex].german); }
 }
 
-function checkImageChoice(cardElement, chosenGerman, correctGerman) {
+function checkImageChoice(cardElement, chosenGerman, correctGerman, event) {
+    const revealSpan = document.getElementById('image-german-reveal');
+
     if (chosenGerman === correctGerman) {
         isAnimating = true;
         cardElement.classList.add('success');
+        if (revealSpan) { revealSpan.innerHTML = `<b style="color:#22c55e;">${correctGerman}</b>`; }
+
+        updateScore(10);
+        if (event) triggerConfetti(event.clientX, event.clientY);
+
         setTimeout(() => {
-            imageModeIndex++;
-            isAnimating = false;
-            renderImageQuestion();
-        }, 600);
+            if (imageModeIndex + 1 >= imageModeItemsAll.length) {
+                showCelebrationModal("🎉 恭喜！听音选图全部通关！");
+                quitImageMode();
+            } else {
+                imageModeIndex++;
+                isAnimating = false;
+                renderImageQuestion();
+            }
+        }, 1500);
     } else {
         isAnimating = true;
         cardElement.classList.add('error');
+        updateScore(0);
+
         setTimeout(() => {
             cardElement.classList.remove('error');
             isAnimating = false;
@@ -2773,125 +2714,113 @@ function checkImageChoice(cardElement, chosenGerman, correctGerman) {
     }
 }
 
-// ==========================================
-// 初始化 DOM 渲染引擎与页面切换逻辑
-// ==========================================
-const tabsContainer = document.getElementById('tabsContainer');
-const pagesContainer = document.getElementById('pagesContainer');
+// 页面切换与初始化 DOM 渲染
+function switchPage(pageKey) {
+    if (isAutoplayRunning) stopAutoplay();
+    if (isPracticeModeActive) quitPracticeMode();
+    if (isBuilderModeActive) quitBuilderMode();
+    if (isImageModeActive) quitImageMode();
 
-const reviewBtn = document.createElement('button');
-reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
-reviewBtn.onclick = () => switchPage('review');
-tabsContainer.appendChild(reviewBtn);
-
-const reviewPageDiv = document.createElement('div');
-reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
-const reviewGridDiv = document.createElement('div');
-reviewGridDiv.id = 'review-grid';
-reviewPageDiv.appendChild(reviewGridDiv);
-pagesContainer.appendChild(reviewPageDiv);
-
-Object.keys(appData).forEach((key) => {
-    const pageConfig = appData[key];
-    const btn = document.createElement('button');
-    btn.id = `btn-${key}`; btn.innerHTML = pageConfig.title;
-    btn.onclick = () => switchPage(key);
-    tabsContainer.appendChild(btn);
-
-    const pageDiv = document.createElement('div');
-    pageDiv.id = `page-${key}`; pageDiv.className = 'page';
-    
-    const gridDiv = document.createElement('div');
-    const layoutStyle = pageConfig.layout || 'word';
-    gridDiv.className = `grid-${layoutStyle}`;
-
-    pageConfig.items.forEach((item, itemIndex) => {
-        if (layoutStyle === 'dialogue') {
-            const direction = item[2] || 'left'; 
-            const imgUrl = item[3] || '';
-            const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
-            const avatarTxt = direction === 'left' ? '😼' : '🐶';
-            
-            const row = document.createElement('div');
-            row.className = `dialogue-row ${direction}`;
-            row.innerHTML = `
-                <div class="dialogue-content">
-                    <div class="chat-avatar">${avatarTxt}</div>
-                    <div class="card">
-                        <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
-                        ${imgHtml}
-                        <div class='big'>${item[0]}</div>
-                        <div class='small'>${item[1]}</div>
-                    </div>
-                </div>
-            `;
-            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
-            row.querySelector('.card').onclick = () => {
-                stopAutoplay();
-                speak(textToSpeak);
-            };
-            gridDiv.appendChild(row);
-        } else {
-            const imgUrl = item[2] || '';
-            const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
-                ${imgHtml}
-                <div class='big'>${item[0]}</div>
-                <div class='small'>${item[1]}</div>
-            `;
-            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
-            card.onclick = () => {
-                stopAutoplay();
-                speak(textToSpeak);
-            };
-            gridDiv.appendChild(card);
-        }
-    });
-    pageDiv.appendChild(gridDiv);
-    pagesContainer.appendChild(pageDiv);
-});
-
-renderReviewPage();
-syncStarUIFromStorage();
-
-function switchPage(pageId) {
-    stopAutoplay();
-    currentActivePageId = pageId;
+    currentActivePageId = pageKey;
 
     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    const targetBtn = document.getElementById(`btn-${pageId}`);
-    if (targetBtn) targetBtn.classList.add('active');
+    const activeTab = document.getElementById(`btn-${pageKey}`);
+    if (activeTab) activeTab.classList.add('active');
 
     document.querySelectorAll('.page').forEach(p => {
-        p.style.removeProperty('display'); 
+        p.style.removeProperty('display');
         p.classList.remove('show');
     });
 
-    if (isPracticeModeActive) {
-        document.querySelectorAll('.page').forEach(p => {
-            p.style.setProperty('display', 'none', 'important');
-        });
-        initPracticeGame();
-    } else if (isBuilderModeActive) {
-        document.querySelectorAll('.page').forEach(p => {
-            p.style.setProperty('display', 'none', 'important');
-        });
-        initBuilderGame();
-    } else if (isImageModeActive) {
-        document.querySelectorAll('.page').forEach(p => {
-            p.style.setProperty('display', 'none', 'important');
-        });
-        initImageGame();
-    } else {
-        const targetPage = document.getElementById(`page-${pageId}`);
-        if (targetPage) targetPage.classList.add('show');
-    }
-}
-</script>
+    const activePage = document.getElementById(`page-${pageKey}`);
+    if (activePage) activePage.classList.add('show');
 
+    if (pageKey === 'review') renderReviewPage();
+}
+
+// 初始化 Setup
+window.addEventListener('DOMContentLoaded', () => {
+    const tabsContainer = document.getElementById('tabsContainer');
+    const pagesContainer = document.getElementById('pagesContainer');
+
+    // 重点 review tab
+    const reviewBtn = document.createElement('button');
+    reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
+    reviewBtn.onclick = () => switchPage('review');
+    tabsContainer.appendChild(reviewBtn);
+
+    const reviewPageDiv = document.createElement('div');
+    reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
+    const reviewGridDiv = document.createElement('div');
+    reviewGridDiv.id = 'review-grid';
+    reviewPageDiv.appendChild(reviewGridDiv);
+    pagesContainer.appendChild(reviewPageDiv);
+
+    // 渲染动态场景列表
+    Object.keys(appData).forEach((key) => {
+        const item = appData[key];
+        const btn = document.createElement('button');
+        btn.id = `btn-${key}`; btn.innerText = item.title;
+        btn.onclick = () => switchPage(key);
+        tabsContainer.appendChild(btn);
+
+        const pageDiv = document.createElement('div');
+        pageDiv.id = `page-${key}`; pageDiv.className = 'page';
+
+        const gridDiv = document.createElement('div');
+        gridDiv.className = `grid-${item.layout}`;
+
+        item.items.forEach((data, index) => {
+            const uniqueId = `${key}-${index}`;
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const textToSpeak = item.speakType === 'key' ? data[0] : data[1];
+
+            if (item.layout === 'dialogue') {
+                const row = document.createElement('div');
+                row.className = `dialogue-row ${data[2]}`;
+                const content = document.createElement('div');
+                content.className = 'dialogue-content';
+                const avatar = document.createElement('div');
+                avatar.className = 'chat-avatar';
+                avatar.innerText = data[2] === 'left' ? '女' : '男';
+
+                card.innerHTML = `
+                    <span class="star-icon star-${uniqueId}" onclick="toggleStar(event, '${key}', ${index})">★</span>
+                    <div class='big'>${data[0]}</div>
+                    <div class='small'>${data[1]}</div>
+                `;
+                card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
+
+                content.appendChild(avatar);
+                content.appendChild(card);
+                row.appendChild(content);
+                gridDiv.appendChild(row);
+            } else {
+                const imgUrl = data[2];
+                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
+
+                card.innerHTML = `
+                    <span class="star-icon star-${uniqueId}" onclick="toggleStar(event, '${key}', ${index})">★</span>
+                    ${imgHtml}
+                    <div class='big'>${data[0]}</div>
+                    <div class='small'>${data[1]}</div>
+                `;
+                card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
+                gridDiv.appendChild(card);
+            }
+        });
+
+        pageDiv.appendChild(gridDiv);
+        pagesContainer.appendChild(pageDiv);
+    });
+
+    renderReviewPage();
+    updatePetUI();
+    startHungerTick();
+    resetIdleTimer();
+});
+</script>
 </body>
 </html>
