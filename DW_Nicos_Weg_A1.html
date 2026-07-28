@@ -359,12 +359,334 @@ button:hover { background: var(--card-hover-bg); }
 }
 .celebration-btn:hover { transform: scale(1.05); }
 
-@keyframes bounceIcon {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-10px) scale(1.1); }
+/* ==========================================
+   🐾 陪伴宠物系统专属 CSS 样式 (升级版)
+   ========================================== */
+.pet-container {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+    transition: left 0.8s ease-in-out, top 0.8s ease-in-out, transform 0.3s;
+}
+.pet-container * {
+    pointer-events: auto;
+}
+.pet-dialog {
+    position: relative;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #f59e0b;
+    color: #3b286d;
+    padding: 10px 16px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    margin-bottom: 12px;
+    max-width: 220px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    backdrop-filter: blur(8px);
+}
+.pet-dialog.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+.pet-dialog::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 35px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #f59e0b;
 }
 
-/* 粒子金币动画 */
+.pet-avatar-wrap {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.pet-avatar-wrap:hover {
+    transform: scale(1.08);
+}
+.pet-avatar-wrap:active {
+    transform: scale(0.95);
+}
+
+/* 🐶 金毛犬 SVG/动画宠物主体 (不同阶段尺寸/外观变动) */
+.pet-body {
+    width: 95px;
+    height: 90px;
+    background: linear-gradient(135deg, #fde047, #f59e0b);
+    border-radius: 48% 48% 42% 42%;
+    box-shadow: 0 10px 25px rgba(245, 158, 11, 0.35), inset 0 -6px 12px rgba(0,0,0,0.12);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: petIdle 3.5s ease-in-out infinite;
+    transition: all 0.5s ease;
+}
+
+/* 阶段 1: 幼犬 (小巧) */
+.pet-stage-1 .pet-body { width: 75px; height: 70px; }
+/* 阶段 2: 成长期 (加戴蝴蝶结领结) */
+.pet-stage-2 .pet-body::before {
+    content: '🎀'; position: absolute; bottom: 8px; z-index: 10; font-size: 1.2rem;
+}
+/* 阶段 3: 成年期/大威天龙 (加戴皇冠与金光) */
+.pet-stage-3 .pet-body { width: 110px; height: 105px; box-shadow: 0 0 25px rgba(251, 191, 36, 0.8); }
+.pet-stage-3 .pet-body::after {
+    content: '👑'; position: absolute; top: -22px; z-index: 10; font-size: 1.8rem;
+}
+
+/* 金毛耳朵 */
+.pet-ears {
+    position: absolute;
+    top: -2px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+    box-sizing: border-box;
+}
+.pet-ear {
+    width: 28px;
+    height: 42px;
+    background: linear-gradient(180deg, #d97706, #b45309);
+    border-radius: 40% 40% 60% 60%;
+    transform-origin: top center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.pet-ear.left { transform: rotate(15deg); animation: earWiggleDog 4s ease-in-out infinite; }
+.pet-ear.right { transform: rotate(-15deg); animation: earWiggleDog 4s ease-in-out 0.5s infinite; }
+
+/* 金毛脸部与嘴鼻区 */
+.pet-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 10px;
+}
+.pet-eyes {
+    display: flex;
+    gap: 22px;
+}
+.pet-eye {
+    width: 11px;
+    height: 13px;
+    background: #1e1b4b;
+    border-radius: 50%;
+    position: relative;
+    animation: petBlink 4s infinite;
+}
+.pet-eye::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 4px;
+    height: 4px;
+    background: white;
+    border-radius: 50%;
+}
+
+/* 😴 睡觉姿态：眼睛变成闭眼 💤 */
+.pet-sleeping .pet-eye {
+    height: 3px !important;
+    border-radius: 2px !important;
+    background: #4b5563 !important;
+    animation: none !important;
+}
+.pet-sleeping .pet-eye::after { display: none; }
+.pet-sleeping .pet-body {
+    animation: petSleep 2.5s ease-in-out infinite !important;
+}
+@keyframes petSleep {
+    0%, 100% { transform: translateY(0) scale(1, 0.95); }
+    50% { transform: translateY(4px) scale(1.02, 0.9); }
+}
+
+/* 金毛吻部 */
+.pet-snout {
+    width: 38px;
+    height: 26px;
+    background: #fffbeeb3;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+.pet-nose {
+    width: 13px;
+    height: 9px;
+    background: #1f2937;
+    border-radius: 40% 40% 60% 60%;
+    margin-top: -2px;
+}
+.pet-mouth {
+    width: 14px;
+    height: 6px;
+    border-bottom: 2.5px solid #374151;
+    border-radius: 0 0 10px 10px;
+    position: relative;
+}
+.pet-tongue {
+    width: 8px;
+    height: 8px;
+    background: #fb7185;
+    border-radius: 0 0 50% 50%;
+    position: absolute;
+    bottom: -6px;
+    left: 3px;
+    animation: tongueWiggle 2s ease-in-out infinite;
+}
+
+.pet-tail {
+    position: absolute;
+    bottom: 8px;
+    right: -16px;
+    width: 22px;
+    height: 14px;
+    background: #f59e0b;
+    border-radius: 0 20px 20px 0;
+    transform-origin: left center;
+    animation: tailWag 0.6s ease-in-out infinite alternate;
+}
+
+.pet-cheeks {
+    position: absolute;
+    top: 48px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+.pet-cheek {
+    width: 12px;
+    height: 7px;
+    background: rgba(244, 63, 94, 0.35);
+    border-radius: 50%;
+}
+
+/* 📌 状态面板 (修饰悬浮变白问题) */
+.pet-status-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    border-radius: 18px;
+    padding: 12px;
+    margin-top: 8px;
+    width: 190px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-main);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+.pet-status-card.collapsed .pet-status-body { display: none; }
+.pet-status-card.collapsed { padding: 8px 12px; width: auto; }
+
+.pet-status-header { display: flex; justify-content: space-between; align-items: center; font-weight: bold; gap: 10px; }
+.collapse-btn {
+    background: rgba(0, 0, 0, 0.06); border: none; padding: 2px 6px;
+    border-radius: 8px; font-size: 0.75rem; cursor: pointer; box-shadow: none; color: var(--text-main);
+}
+.collapse-btn:hover { background: rgba(0, 0, 0, 0.12); color: var(--text-main); }
+
+.pet-status-body { display: flex; flex-direction: column; gap: 8px; }
+
+.status-bar-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; margin-top: 3px; }
+.status-bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s ease; }
+.fill-exp { background: linear-gradient(90deg, #6366f1, #a855f7); }
+.fill-hunger { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+
+.pet-btn-group { display: flex; gap: 6px; margin-top: 4px; }
+
+/* 🔧 修复按钮 Hover 悬浮全白字看不见的问题 */
+.feed-btn, .interact-btn, .wander-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff !important;
+    font-weight: bold;
+    border-radius: 12px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+}
+.feed-btn:hover { background: linear-gradient(135deg, #d97706, #b45309) !important; color: #ffffff !important; }
+
+.interact-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+}
+.interact-btn:hover { background: linear-gradient(135deg, #059669, #047857) !important; color: #ffffff !important; }
+
+.wander-btn {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+}
+.wander-btn:hover { background: linear-gradient(135deg, #4f46e5, #4338ca) !important; color: #ffffff !important; }
+
+.wander-btn.active { background: linear-gradient(135deg, #ec4899, #db2777); }
+.feed-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+/* 🐾 跑动动画 (全屏慢跑/加经验) */
+.pet-running .pet-body {
+    animation: dogRunning 0.6s ease-in-out infinite alternate !important;
+}
+@keyframes dogRunning {
+    0% { transform: translateY(0) rotate(-3deg); }
+    100% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@keyframes petIdle {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.02, 0.98); }
+}
+@keyframes earWiggleDog {
+    0%, 90%, 100% { transform: rotate(15deg); }
+    95% { transform: rotate(28deg); }
+}
+@keyframes tailWag { 0% { transform: rotate(0deg); } 100% { transform: rotate(28deg); } }
+@keyframes tongueWiggle { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.3); } }
+@keyframes petBlink { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
+
+.pet-happy-jump { animation: happyJump 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; }
+@keyframes happyJump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-32px) scale(1.15); } }
+
+.pet-shake-head { animation: shakeHead 0.5s ease-in-out !important; }
+@keyframes shakeHead {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px) rotate(-10deg); }
+    75% { transform: translateX(10px) rotate(10deg); }
+}
+
+@keyframes bounceIcon { 0% { transform: translateY(0) scale(1); } 100% { transform: translateY(-10px) scale(1.1); } }
+
 .confetti {
     position: fixed; width: 10px; height: 10px; background-color: #fbbf24;
     border-radius: 50%; pointer-events: none; z-index: 999999;
@@ -375,20 +697,9 @@ button:hover { background: var(--card-hover-bg); }
     100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
 }
 
-@keyframes successPop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.06); }
-    100% { transform: scale(1); opacity: 0.5; }
-}
-@keyframes errorShake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+@keyframes successPop { 0% { transform: scale(1); } 50% { transform: scale(1.06); } 100% { transform: scale(1); opacity: 0.5; } }
+@keyframes errorShake { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
 @media (max-width: 600px) {
     .play-panel { left: 10px; top: 15px; }
@@ -401,6 +712,9 @@ button:hover { background: var(--card-hover-bg); }
     .key-btn { min-width: 26px; height: 38px; font-size: 0.85rem; padding: 0 4px; }
     .key-btn.wide { min-width: 45px; }
     .key-btn.space { min-width: 90px; }
+    .pet-container { right: 15px; bottom: 15px; }
+    .pet-body { width: 80px; height: 75px; }
+    .pet-status-card { width: 160px; padding: 8px; }
 }
 </style>
 </head>
@@ -429,6 +743,66 @@ button:hover { background: var(--card-hover-bg); }
         <div class="celebration-title">SEHR GUT!</div>
         <div class="celebration-subtitle" id="celebrationMsg">你已成功完成本组全部练习！</div>
         <button class="celebration-btn" onclick="closeCelebration()">继续学习</button>
+    </div>
+</div>
+
+<!-- 🐾 悬浮陪伴宠物系统 UI -->
+<div class="pet-container" id="petContainer">
+    <div class="pet-dialog" id="petDialog">Wuff! Ich bin Lucky! 🐶</div>
+    
+    <div class="pet-avatar-wrap" onclick="interactWithPet()">
+        <div class="pet-body" id="petBody">
+            <div class="pet-tail"></div>
+            <div class="pet-ears">
+                <div class="pet-ear left"></div>
+                <div class="pet-ear right"></div>
+            </div>
+            <div class="pet-face">
+                <div class="pet-eyes">
+                    <div class="pet-eye"></div>
+                    <div class="pet-eye"></div>
+                </div>
+                <div class="pet-snout">
+                    <div class="pet-nose"></div>
+                    <div class="pet-mouth">
+                        <div class="pet-tongue"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="pet-cheeks">
+                <div class="pet-cheek"></div>
+                <div class="pet-cheek"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 可收起/展开的状态面板 -->
+    <div class="pet-status-card" id="petStatusCard">
+        <div class="pet-status-header">
+            <span id="petNameTitle">🦮 旺财 (Lv.1)</span>
+            <button class="collapse-btn" onclick="togglePetStatusCollapse()" id="collapseToggleBtn" title="折叠/展开面板">➖</button>
+        </div>
+        <div class="pet-status-body" id="petStatusBody">
+            <div>
+                <span>经验 EXP (<span id="petExpText">0/100</span>)</span>
+                <div class="status-bar-bg"><div class="status-bar-fill fill-exp" id="petExpBar" style="width: 0%;"></div></div>
+            </div>
+            <div>
+                <span>饱食度 (<span id="petHungerText">80/100</span>)</span>
+                <div class="status-bar-bg"><div class="status-bar-fill fill-hunger" id="petHungerBar" style="width: 80%;"></div></div>
+            </div>
+            <div class="pet-btn-group">
+                <button class="feed-btn" id="feedPetBtn" onclick="feedPet()">
+                    <span>🍖 喂食 (<span id="foodCountText">0</span>)</span>
+                </button>
+                <button class="interact-btn" onclick="playWithBall()">
+                    <span>🥏 互动</span>
+                </button>
+            </div>
+            <button class="wander-btn" id="wanderBtn" onclick="toggleWanderMode()">
+                <span>🏃 全屏跑</span>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -763,7 +1137,6 @@ const appData = {
 
 };
 
-
 // 全局状态变量
 let currentActivePageId = 'review'; 
 let isAutoplayRunning = false;
@@ -773,17 +1146,16 @@ let currentPlayIndex = 0;
 let userScore = 0;
 let currentStreak = 0;
 
-// 连连看状态
+// 连连看/拼词/选图状态
 let isPracticeModeActive = false;
-let isAudioMatchMode = false; // 是否开启听音模式
+let isAudioMatchMode = false;
 let practiceItemsAll = []; 
 let practiceGroupIndex = 0;
 let selectedGermanCard = null;
 let selectedTranslationCard = null;
 
-// 🧩 拼词/拼单词模式状态
 let isBuilderModeActive = false;
-let builderDifficulty = 1; // 1: 拼词成句, 2: 看字母拼单词, 3: 盲拼
+let builderDifficulty = 1; 
 let builderItemsAll = [];
 let builderIndex = 0;
 let builderTokensPool = [];
@@ -791,7 +1163,6 @@ let builderSelectedTokens = [];
 let builderExpectedTokens = [];
 let builderErrorCount = 0;
 
-// 🖼️ 听音选图模式状态
 let isImageModeActive = false;
 let imageModeItemsAll = [];
 let imageModeIndex = 0;
@@ -800,7 +1171,285 @@ let isAnimating = false;
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
 
 // ==========================================
-// 🔊 增强型多邻国 Web Audio 音效合成器
+// 🐾 陪伴宠物系统：数值平衡优化 + 互动 + 睡眠系统
+// ==========================================
+let petData = JSON.parse(localStorage.getItem('german_pet_data')) || {
+    level: 1,
+    exp: 0,
+    hunger: 100,
+    food: 5,
+    isCollapsed: false
+};
+
+let isWandering = false;
+let wanderTimer = null;
+let idleTimer = null;
+let hungerTimer = null;
+let isSleeping = false;
+
+// 丰富的互动对白表
+const petDialogueList = {
+    idle: [
+        "Wuff! Wie geht's?",
+        "Lernen wir Deutsch! 📖",
+        "Wuff wuff! 🎾",
+        "Guten Tag, mein Freund!",
+        "Das macht Spaß! 🐶"
+    ],
+    correct: [
+        "Wuff! Sehr gut! (跳跃) ✨",
+        "Toll gemacht! 汪汪！🎉",
+        "Ausgezeichnet! 答对啦！🌟",
+        "Wuff wuff! 你太棒了！💪"
+    ],
+    incorrect: [
+        "Kein Problem! 没关系再试一次！💪",
+        "Wuff... 别灰心，继续加油！",
+        "Fast richtig! 差一点点！"
+    ],
+    sleeping: [
+        "Zzz... (小狗做梦中) 😴",
+        "Zzz... Guten Nacht... 🌙",
+        "Zzz... 汪... 肉骨头..."
+    ]
+};
+
+// 1. 自然饱食度消耗定时器 (每 20 秒自然掉 1 点饱食度)
+function startHungerTick() {
+    if (hungerTimer) clearInterval(hungerTimer);
+    hungerTimer = setInterval(() => {
+        if (!isSleeping) {
+            petData.hunger = Math.max(0, petData.hunger - 1);
+            savePetData();
+        }
+    }, 20000);
+}
+
+// 2. 长时间待机睡眠检测 (45 秒无互动自动入睡)
+function resetIdleTimer() {
+    if (isSleeping) wakeUpPet();
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+        enterSleepMode();
+    }, 45000);
+}
+
+function enterSleepMode() {
+    isSleeping = true;
+    const container = document.getElementById('petContainer');
+    if (container) container.classList.add('pet-sleeping');
+    showPetDialog(petDialogueList.sleeping[Math.floor(Math.random() * petDialogueList.sleeping.length)], false);
+}
+
+function wakeUpPet() {
+    isSleeping = false;
+    const container = document.getElementById('petContainer');
+    if (container) container.classList.remove('pet-sleeping');
+    showPetDialog("Wuff! 我醒啦，继续学习吧！✨", false);
+}
+
+// 监听用户全局交互，重置待机计时器
+['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
+    window.addEventListener(evt, () => resetIdleTimer(), { passive: true });
+});
+
+function savePetData() {
+    localStorage.setItem('german_pet_data', JSON.stringify(petData));
+    updatePetUI();
+}
+
+function updatePetUI() {
+    const levelText = document.getElementById('petNameTitle');
+    const expText = document.getElementById('petExpText');
+    const expBar = document.getElementById('petExpBar');
+    const hungerText = document.getElementById('petHungerText');
+    const hungerBar = document.getElementById('petHungerBar');
+    const foodCount = document.getElementById('foodCountText');
+    const feedBtn = document.getElementById('feedPetBtn');
+    const container = document.getElementById('petContainer');
+
+    if (!levelText) return;
+
+    levelText.innerText = `🦮 旺财 (Lv.${petData.level})`;
+
+    // 数值平衡调整：升级所需经验递增
+    const maxExp = petData.level * 60 + 40;
+    expText.innerText = `${petData.exp}/${maxExp}`;
+    expBar.style.width = `${Math.min(100, (petData.exp / maxExp) * 100)}%`;
+
+    hungerText.innerText = `${petData.hunger}/100`;
+    hungerBar.style.width = `${petData.hunger}%`;
+
+    foodCount.innerText = petData.food;
+    feedBtn.disabled = petData.food <= 0;
+
+    // 不同成长阶段形态展示
+    if (container) {
+        container.classList.remove('pet-stage-1', 'pet-stage-2', 'pet-stage-3');
+        if (petData.level < 3) {
+            container.classList.add('pet-stage-1'); // 幼犬
+        } else if (petData.level < 6) {
+            container.classList.add('pet-stage-2'); // 蝴蝶结领结
+        } else {
+            container.classList.add('pet-stage-3'); // 戴皇冠金光闪闪
+        }
+    }
+
+    // 折叠状态同步
+    const statusCard = document.getElementById('petStatusCard');
+    const collapseBtn = document.getElementById('collapseToggleBtn');
+    if (statusCard && collapseBtn) {
+        if (petData.isCollapsed) {
+            statusCard.classList.add('collapsed');
+            collapseBtn.innerText = "➕";
+        } else {
+            statusCard.classList.remove('collapsed');
+            collapseBtn.innerText = "➖";
+        }
+    }
+}
+
+function togglePetStatusCollapse() {
+    petData.isCollapsed = !petData.isCollapsed;
+    savePetData();
+}
+
+function showPetDialog(text, playVoice = true) {
+    const dialog = document.getElementById('petDialog');
+    if (!dialog) return;
+    dialog.innerText = text;
+    dialog.classList.add('show');
+
+    if (playVoice) {
+        const cleanMsg = text.replace(/[\u4e00-\u9fa5]/g, '').replace(/[^\w\s,'!?]/gi, '');
+        if (cleanMsg.trim().length > 0) speak(cleanMsg);
+    }
+
+    setTimeout(() => { dialog.classList.remove('show'); }, 3200);
+}
+
+function interactWithPet() {
+    resetIdleTimer();
+    const petBody = document.getElementById('petBody');
+    if (petBody) {
+        petBody.classList.remove('pet-happy-jump');
+        void petBody.offsetWidth;
+        petBody.classList.add('pet-happy-jump');
+    }
+    const randomMsg = petDialogueList.idle[Math.floor(Math.random() * petDialogueList.idle.length)];
+    showPetDialog(randomMsg);
+}
+
+function addPetExp(amount) {
+    petData.exp += amount;
+    const maxExp = petData.level * 60 + 40;
+    if (petData.exp >= maxExp) {
+        petData.exp -= maxExp;
+        petData.level++;
+        showPetDialog(`🎉 Level Up! 旺财升级到 Lv.${petData.level} 啦！`, false);
+        playSoundEffect('victory');
+    }
+    savePetData();
+}
+
+function feedPet() {
+    if (petData.food <= 0) return;
+    petData.food--;
+    petData.hunger = Math.min(100, petData.hunger + 30);
+    addPetExp(15);
+    interactWithPet();
+    showPetDialog("Lecker! 🍖 旺财最喜欢吃肉骨头啦！", true);
+}
+
+function playWithBall() {
+    interactWithPet();
+    petData.hunger = Math.max(0, petData.hunger - 5);
+    addPetExp(10);
+    showPetDialog("Wuff! 🎾 扔网球游戏太好玩啦！", false);
+}
+
+// 全屏慢跑 (慢速动画 + 慢速耗消耗饱食度 + 动态累加经验值)
+function toggleWanderMode() {
+    isWandering = !isWandering;
+    const btn = document.getElementById('wanderBtn');
+    const container = document.getElementById('petContainer');
+
+    if (isWandering) {
+        btn.classList.add('active');
+        btn.querySelector('span').innerText = '📌 停下';
+        showPetDialog("Wuff! 慢慢跑，顺便赚经验！🏃‍♂️", false);
+        container.classList.add('pet-running');
+        startWandering();
+    } else {
+        btn.classList.remove('active');
+        btn.querySelector('span').innerText = '🏃 全屏跑';
+        clearInterval(wanderTimer);
+        container.classList.remove('pet-running');
+        container.style.left = '';
+        container.style.top = '';
+        container.style.right = '25px';
+        container.style.bottom = '25px';
+        showPetDialog("呼~ 散步结束，乖乖坐好！🐶", false);
+    }
+}
+
+function startWandering() {
+    const container = document.getElementById('petContainer');
+    const movePet = () => {
+        if (!isWandering) return;
+        const screenW = window.innerWidth - 120;
+        const screenH = window.innerHeight - 180;
+        const targetX = Math.max(20, Math.floor(Math.random() * screenW));
+        const targetY = Math.max(20, Math.floor(Math.random() * screenH));
+
+        container.style.right = 'auto';
+        container.style.bottom = 'auto';
+        container.style.left = `${targetX}px`;
+        container.style.top = `${targetY}px`;
+
+        // 慢跑消耗饱食度 +1，增加经验 +2
+        petData.hunger = Math.max(0, petData.hunger - 1);
+        addPetExp(2);
+    };
+
+    movePet();
+    wanderTimer = setInterval(movePet, 4500); // 调整为慢速位移
+}
+
+function rewardPetFood(amount = 1) {
+    petData.food += amount;
+    savePetData();
+}
+
+// 答题反馈 (答对高激励 + 跳跃 + 丰富对白 + 饱食度扣减更快)
+function petReactToAnswer(isCorrect) {
+    resetIdleTimer();
+    const petBody = document.getElementById('petBody');
+    if (!petBody) return;
+
+    if (isCorrect) {
+        petBody.classList.remove('pet-happy-jump');
+        void petBody.offsetWidth;
+        petBody.classList.add('pet-happy-jump');
+        
+        // 数值平衡：做题饱食度消耗加快 (-3)，但经验奖励大幅提升 (+25)
+        petData.hunger = Math.max(0, petData.hunger - 3);
+        addPetExp(25);
+
+        const msg = petDialogueList.correct[Math.floor(Math.random() * petDialogueList.correct.length)];
+        showPetDialog(msg, false);
+    } else {
+        petBody.classList.remove('pet-shake-head');
+        void petBody.offsetWidth;
+        petBody.classList.add('pet-shake-head');
+
+        const msg = petDialogueList.incorrect[Math.floor(Math.random() * petDialogueList.incorrect.length)];
+        showPetDialog(msg, false);
+    }
+}
+
+// ==========================================
+// 🔊 音效与全局逻辑
 // ==========================================
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -814,8 +1463,8 @@ function playSoundEffect(type) {
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+        osc.frequency.setValueAtTime(523.25, now); 
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); 
         gain.gain.setValueAtTime(0.3, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
         osc.start(now);
@@ -833,8 +1482,7 @@ function playSoundEffect(type) {
         osc.start(now);
         osc.stop(now + 0.25);
     } else if (type === 'victory') {
-        // 🔥 激烈的通关胜利音效（多音阶升调和弦）
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        const notes = [523.25, 659.25, 783.99, 1046.50]; 
         notes.forEach((freq, idx) => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -851,7 +1499,6 @@ function playSoundEffect(type) {
     }
 }
 
-// 🎉 粒子金币飞溅奖励动画
 function triggerConfetti(x, y) {
     const cx = x || window.innerWidth / 2;
     const cy = y || window.innerHeight / 2;
@@ -859,26 +1506,24 @@ function triggerConfetti(x, y) {
         const particle = document.createElement('div');
         particle.className = 'confetti';
         document.body.appendChild(particle);
-        
         const dx = (Math.random() - 0.5) * 260;
         const dy = (Math.random() - 0.5) * 260;
-        
         particle.style.left = `${cx}px`;
         particle.style.top = `${cy}px`;
         particle.style.setProperty('--dx', `${dx}px`);
         particle.style.setProperty('--dy', `${dy}px`);
-        
         const colors = ['#fbbf24', '#22c55e', '#6366f1', '#ec4899', '#3b82f6'];
         particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        
         setTimeout(() => particle.remove(), 800);
     }
 }
 
-// 🎆 显示全屏大反馈通关弹窗
 function showCelebrationModal(msg) {
     playSoundEffect('victory');
     triggerConfetti(window.innerWidth / 2, window.innerHeight / 2);
+    rewardPetFood(2);
+    showPetDialog("Ausgezeichnet! 旺财获得 2 个肉骨头！🍖", false);
+    
     const overlay = document.getElementById('celebrationOverlay');
     const msgEl = document.getElementById('celebrationMsg');
     if (msgEl && msg) msgEl.innerText = msg;
@@ -895,9 +1540,12 @@ function updateScore(points) {
         userScore += points;
         currentStreak++;
         playSoundEffect('success');
+        petReactToAnswer(true);
+        if (currentStreak % 3 === 0) rewardPetFood(1);
     } else {
         currentStreak = 0;
         playSoundEffect('error');
+        petReactToAnswer(false);
     }
     const scoreText = document.getElementById('score-display');
     const streakText = document.getElementById('streak-display');
@@ -914,10 +1562,6 @@ function toggleTheme() {
 function speak(text, callback, onStart) {
     let cleanedText = text;
     if (text.length === 1 && text === text.toUpperCase()) { cleanedText = text.toLowerCase(); }
-    if (cleanedText === 'ä' || cleanedText === 'Ä') cleanedText = 'eh';
-    if (cleanedText === 'ö' || cleanedText === 'Ö') cleanedText = 'öh';
-    if (cleanedText === 'ü' || cleanedText === 'Ü') cleanedText = 'üh';
-    if (cleanedText === 'ß' || cleanedText === 'ẞ') cleanedText = 'esszett';
     
     const u = new SpeechSynthesisUtterance(cleanedText);
     u.lang = "de-DE";
@@ -930,7 +1574,7 @@ function speak(text, callback, onStart) {
     speechSynthesis.speak(u);
 }
 
-function toggleStar(e, pageKey, itemIndex, starEl) {
+function toggleStar(e, pageKey, itemIndex) {
     e.stopPropagation(); 
     const item = appData[pageKey].items[itemIndex];
     const uniqueId = `${pageKey}-${itemIndex}`;
@@ -974,7 +1618,7 @@ function renderReviewPage() {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]}, this)">★</span>
+            <span class="star-icon active star-${fav.id}" onclick="toggleStar(event, '${fav.pageKey}', ${fav.id.split('-')[1]})">★</span>
             ${imgHtml}
             <div class='big'>${fav.data[0]}</div>
             <div class='small'>${fav.data[1]}</div>
@@ -986,14 +1630,34 @@ function renderReviewPage() {
     });
 }
 
-function syncStarUIFromStorage() {
-    starredItems.forEach(fav => {
-        document.querySelectorAll(`.star-${fav.id}`).forEach(el => el.classList.add('active'));
-    });
+function stopAutoplay() {
+    isAutoplayRunning = false;
+    speechSynthesis.cancel();
+    document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
+    const btn = document.getElementById('autoPlayBtn');
+    if(btn) { btn.innerHTML = "▶"; btn.classList.remove('playing'); }
+}
+
+function toggleAutoPlay() {
+    if (isPracticeModeActive) quitPracticeMode();
+    if (isBuilderModeActive) quitBuilderMode();
+    if (isImageModeActive) quitImageMode();
+
+    if (isAutoplayRunning) {
+        stopAutoplay();
+    } else {
+        isAutoplayRunning = true;
+        currentPlayIndex = 0;
+        const btn = document.getElementById('autoPlayBtn');
+        btn.innerHTML = "⏸";
+        btn.classList.add('playing');
+        startAutoplay();
+    }
 }
 
 function startAutoplay() {
     const activePage = document.getElementById(`page-${currentActivePageId}`);
+    if (!activePage) return;
     const cards = activePage.querySelectorAll('.card');
     
     if (currentPlayIndex >= cards.length || cards.length === 0) {
@@ -1025,35 +1689,7 @@ function startAutoplay() {
     });
 }
 
-function stopAutoplay() {
-    isAutoplayRunning = false;
-    speechSynthesis.cancel();
-    document.querySelectorAll('.card').forEach(c => c.classList.remove('playing'));
-    const btn = document.getElementById('autoPlayBtn');
-    btn.innerHTML = "▶";
-    btn.classList.remove('playing');
-}
-
-function toggleAutoPlay() {
-    if (isPracticeModeActive) quitPracticeMode();
-    if (isBuilderModeActive) quitBuilderMode();
-    if (isImageModeActive) quitImageMode();
-
-    if (isAutoplayRunning) {
-        stopAutoplay();
-    } else {
-        isAutoplayRunning = true;
-        currentPlayIndex = 0;
-        const btn = document.getElementById('autoPlayBtn');
-        btn.innerHTML = "⏸";
-        btn.classList.add('playing');
-        startAutoplay();
-    }
-}
-
-// ==========================================
-// 🎮 连连看练习模式
-// ==========================================
+// 连连看 / 拼词 / 选图退出与切换
 function togglePracticeMode() {
     if (isAutoplayRunning) stopAutoplay(); 
     if (isBuilderModeActive) quitBuilderMode();
@@ -1243,9 +1879,7 @@ function checkMatch(event) {
         c1.classList.add('success');
         c2.classList.add('success');
 
-        if (isAudioMatchMode) {
-            c1.innerText = c1.dataset.german;
-        }
+        if (isAudioMatchMode) { c1.innerText = c1.dataset.german; }
 
         updateScore(10);
         if (event) triggerConfetti(event.clientX, event.clientY);
@@ -1290,9 +1924,7 @@ function checkMatch(event) {
     }
 }
 
-// ==========================================
-// 🧩 拼词/拼单词模式（带标点模糊匹配与错三次提示）
-// ==========================================
+// 🧩 拼词逻辑
 function toggleBuilderMode() {
     if (isAutoplayRunning) stopAutoplay();
     if (isPracticeModeActive) quitPracticeMode();
@@ -1386,8 +2018,6 @@ function renderBuilderQuestion() {
     builderBox.id = 'builder-box';
     builderBox.className = 'practice-container';
 
-    const promptDisplay = currentItem.translation;
-
     builderBox.innerHTML = `
         <div class="score-board">
             <span>得分: <span id="score-display">${userScore}</span></span>
@@ -1406,7 +2036,7 @@ function renderBuilderQuestion() {
             </div>
         </div>
         <div class="builder-target-prompt">
-            <span>${promptDisplay}</span>
+            <span>${currentItem.translation}</span>
             <button class="speaker-btn" title="听读音" onclick="speakCurrentTarget()">🔊</button>
         </div>
         <div class="builder-answer-zone" id="builder-answer-zone"></div>
@@ -1431,7 +2061,6 @@ function renderBuilderQuestion() {
     if (builderDifficulty === 3) { speakCurrentTarget(); }
 }
 
-// ⌨️ 生成包含德语特殊字符与逗号句号的德语虚拟键盘
 function renderGermanKeyboardHTML() {
     return `
         <div class="virtual-keyboard">
@@ -1530,7 +2159,6 @@ function clearBuilderSelection() {
     }
 }
 
-// 字符串标准化：转小写 + 忽略常见标点符号
 function normalizeString(str) {
     return str
         .toLowerCase()
@@ -1547,8 +2175,6 @@ function checkBuilderAnswer(event) {
     const currentItem = builderItemsAll[builderIndex];
 
     const rawUserAnswer = builderSelectedTokens.map(t => t.token).join(builderDifficulty === 1 ? ' ' : '');
-    
-    // 灵活处理：忽略标点符号和大小写
     const cleanUserAnswer = normalizeString(rawUserAnswer);
     const cleanCorrectAnswer = normalizeString(currentItem.german);
 
@@ -1577,7 +2203,6 @@ function checkBuilderAnswer(event) {
         answerZone.classList.add('error');
         updateScore(0);
 
-        // 错满三次才显示答案提示框
         if (builderErrorCount >= 3 && hint) { 
             hint.classList.add('show'); 
         }
@@ -1589,9 +2214,7 @@ function checkBuilderAnswer(event) {
     }
 }
 
-// ==========================================
-// 🖼️ 听音选图练习模式
-// ==========================================
+// 🖼️ 选图模式
 function toggleImageMode() {
     if (isAutoplayRunning) stopAutoplay();
     if (isPracticeModeActive) quitPracticeMode();
@@ -1722,10 +2345,7 @@ function checkImageChoice(cardElement, chosenGerman, correctGerman, event) {
     if (chosenGerman === correctGerman) {
         isAnimating = true;
         cardElement.classList.add('success');
-        
-        if (revealSpan) {
-            revealSpan.innerHTML = `<b style="color:#22c55e;">${correctGerman}</b>`;
-        }
+        if (revealSpan) { revealSpan.innerHTML = `<b style="color:#22c55e;">${correctGerman}</b>`; }
 
         updateScore(10);
         if (event) triggerConfetti(event.clientX, event.clientY);
@@ -1752,110 +2372,113 @@ function checkImageChoice(cardElement, chosenGerman, correctGerman, event) {
     }
 }
 
-// ==========================================
-// 初始化 DOM 渲染与页面切换逻辑
-// ==========================================
-const tabsContainer = document.getElementById('tabsContainer');
-const pagesContainer = document.getElementById('pagesContainer');
+// 页面切换与初始化 DOM 渲染
+function switchPage(pageKey) {
+    if (isAutoplayRunning) stopAutoplay();
+    if (isPracticeModeActive) quitPracticeMode();
+    if (isBuilderModeActive) quitBuilderMode();
+    if (isImageModeActive) quitImageMode();
 
-const reviewBtn = document.createElement('button');
-reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
-reviewBtn.onclick = () => switchPage('review');
-tabsContainer.appendChild(reviewBtn);
-
-const reviewPageDiv = document.createElement('div');
-reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
-const reviewGridDiv = document.createElement('div');
-reviewGridDiv.id = 'review-grid';
-reviewPageDiv.appendChild(reviewGridDiv);
-pagesContainer.appendChild(reviewPageDiv);
-
-Object.keys(appData).forEach((key) => {
-    const pageConfig = appData[key];
-    const btn = document.createElement('button');
-    btn.id = `btn-${key}`; btn.innerHTML = pageConfig.title;
-    btn.onclick = () => switchPage(key);
-    tabsContainer.appendChild(btn);
-
-    const pageDiv = document.createElement('div');
-    pageDiv.id = `page-${key}`; pageDiv.className = 'page';
-    
-    const gridDiv = document.createElement('div');
-    const layoutStyle = pageConfig.layout || 'word';
-    gridDiv.className = `grid-${layoutStyle}`;
-
-    pageConfig.items.forEach((item, itemIndex) => {
-        if (layoutStyle === 'dialogue') {
-            const direction = item[2] || 'left'; 
-            const imgUrl = item[3] || '';
-            const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
-            const avatarTxt = direction === 'left' ? '😼' : '🐶';
-            
-            const row = document.createElement('div');
-            row.className = `dialogue-row ${direction}`;
-            row.innerHTML = `
-                <div class="dialogue-content">
-                    <div class="chat-avatar">${avatarTxt}</div>
-                    <div class="card">
-                        <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
-                        ${imgHtml}
-                        <div class='big'>${item[0]}</div>
-                        <div class='small'>${item[1]}</div>
-                    </div>
-                </div>
-            `;
-            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
-            row.querySelector('.card').onclick = () => { stopAutoplay(); speak(textToSpeak); };
-            gridDiv.appendChild(row);
-        } else {
-            const imgUrl = item[2] || '';
-            const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <span class="star-icon star-${key}-${itemIndex}" onclick="toggleStar(event, '${key}', ${itemIndex}, this)">★</span>
-                ${imgHtml}
-                <div class='big'>${item[0]}</div>
-                <div class='small'>${item[1]}</div>
-            `;
-            const textToSpeak = pageConfig.speakType === 'key' ? item[0] : item[1];
-            card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
-            gridDiv.appendChild(card);
-        }
-    });
-    pageDiv.appendChild(gridDiv);
-    pagesContainer.appendChild(pageDiv);
-});
-
-renderReviewPage();
-syncStarUIFromStorage();
-
-function switchPage(pageId) {
-    stopAutoplay();
-    currentActivePageId = pageId;
+    currentActivePageId = pageKey;
 
     document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    const targetBtn = document.getElementById(`btn-${pageId}`);
-    if (targetBtn) targetBtn.classList.add('active');
+    const activeTab = document.getElementById(`btn-${pageKey}`);
+    if (activeTab) activeTab.classList.add('active');
 
-    document.querySelectorAll('.page').forEach(p => { p.style.removeProperty('display'); p.classList.remove('show'); });
+    document.querySelectorAll('.page').forEach(p => {
+        p.style.removeProperty('display');
+        p.classList.remove('show');
+    });
 
-    if (isPracticeModeActive) {
-        document.querySelectorAll('.page').forEach(p => p.style.setProperty('display', 'none', 'important'));
-        initPracticeGame();
-    } else if (isBuilderModeActive) {
-        document.querySelectorAll('.page').forEach(p => p.style.setProperty('display', 'none', 'important'));
-        initBuilderGame();
-    } else if (isImageModeActive) {
-        document.querySelectorAll('.page').forEach(p => p.style.setProperty('display', 'none', 'important'));
-        initImageGame();
-    } else {
-        const targetPage = document.getElementById(`page-${pageId}`);
-        if (targetPage) targetPage.classList.add('show');
-    }
+    const activePage = document.getElementById(`page-${pageKey}`);
+    if (activePage) activePage.classList.add('show');
+
+    if (pageKey === 'review') renderReviewPage();
 }
-</script>
 
+// 初始化 Setup
+window.addEventListener('DOMContentLoaded', () => {
+    const tabsContainer = document.getElementById('tabsContainer');
+    const pagesContainer = document.getElementById('pagesContainer');
+
+    // 重点 review tab
+    const reviewBtn = document.createElement('button');
+    reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
+    reviewBtn.onclick = () => switchPage('review');
+    tabsContainer.appendChild(reviewBtn);
+
+    const reviewPageDiv = document.createElement('div');
+    reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
+    const reviewGridDiv = document.createElement('div');
+    reviewGridDiv.id = 'review-grid';
+    reviewPageDiv.appendChild(reviewGridDiv);
+    pagesContainer.appendChild(reviewPageDiv);
+
+    // 渲染动态场景列表
+    Object.keys(appData).forEach((key) => {
+        const item = appData[key];
+        const btn = document.createElement('button');
+        btn.id = `btn-${key}`; btn.innerText = item.title;
+        btn.onclick = () => switchPage(key);
+        tabsContainer.appendChild(btn);
+
+        const pageDiv = document.createElement('div');
+        pageDiv.id = `page-${key}`; pageDiv.className = 'page';
+
+        const gridDiv = document.createElement('div');
+        gridDiv.className = `grid-${item.layout}`;
+
+        item.items.forEach((data, index) => {
+            const uniqueId = `${key}-${index}`;
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const textToSpeak = item.speakType === 'key' ? data[0] : data[1];
+
+            if (item.layout === 'dialogue') {
+                const row = document.createElement('div');
+                row.className = `dialogue-row ${data[2]}`;
+                const content = document.createElement('div');
+                content.className = 'dialogue-content';
+                const avatar = document.createElement('div');
+                avatar.className = 'chat-avatar';
+                avatar.innerText = data[2] === 'left' ? '女' : '男';
+
+                card.innerHTML = `
+                    <span class="star-icon star-${uniqueId}" onclick="toggleStar(event, '${key}', ${index})">★</span>
+                    <div class='big'>${data[0]}</div>
+                    <div class='small'>${data[1]}</div>
+                `;
+                card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
+
+                content.appendChild(avatar);
+                content.appendChild(card);
+                row.appendChild(content);
+                gridDiv.appendChild(row);
+            } else {
+                const imgUrl = data[2];
+                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
+
+                card.innerHTML = `
+                    <span class="star-icon star-${uniqueId}" onclick="toggleStar(event, '${key}', ${index})">★</span>
+                    ${imgHtml}
+                    <div class='big'>${data[0]}</div>
+                    <div class='small'>${data[1]}</div>
+                `;
+                card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
+                gridDiv.appendChild(card);
+            }
+        });
+
+        pageDiv.appendChild(gridDiv);
+        pagesContainer.appendChild(pageDiv);
+    });
+
+    renderReviewPage();
+    updatePetUI();
+    startHungerTick();
+    resetIdleTimer();
+});
+</script>
 </body>
 </html>
