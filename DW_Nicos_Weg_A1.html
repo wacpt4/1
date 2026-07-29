@@ -104,10 +104,21 @@ body {
 .header { text-align: center; padding: 25px; position: relative; }
 .header p { color: var(--text-sub); margin-top: 5px; }
 
-.theme-toggle {
-    position: absolute; right: 20px; top: 20px; padding: 10px 16px; font-size: 14px;
-    background: var(--btn-bg); color: var(--btn-color); border-radius: 20px; box-shadow: var(--card-shadow);
+/* 右上角按钮栏 */
+.header-actions {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    display: flex;
+    gap: 10px;
 }
+
+.theme-toggle, .pet-toggle {
+    padding: 10px 16px; font-size: 14px;
+    background: var(--btn-bg); color: var(--btn-color); border-radius: 20px; box-shadow: var(--card-shadow);
+    cursor: pointer; border: none; transition: 0.2s;
+}
+.theme-toggle:hover, .pet-toggle:hover { background: var(--card-hover-bg); }
 
 .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; padding: 0 10px; }
 button {
@@ -360,7 +371,7 @@ button:hover { background: var(--card-hover-bg); }
 .celebration-btn:hover { transform: scale(1.05); }
 
 /* ==========================================
-   🐾 陪伴宠物系统专属 CSS 样式 (升级版)
+   🐾 陪伴宠物系统专属 CSS 样式
    ========================================== */
 .pet-container {
     position: fixed;
@@ -371,7 +382,10 @@ button:hover { background: var(--card-hover-bg); }
     flex-direction: column;
     align-items: flex-end;
     pointer-events: none;
-    transition: left 0.8s ease-in-out, top 0.8s ease-in-out, transform 0.3s;
+    transition: left 0.8s ease-in-out, top 0.8s ease-in-out, transform 0.3s, opacity 0.3s ease;
+}
+.pet-container.hide-pet {
+    display: none !important;
 }
 .pet-container * {
     pointer-events: auto;
@@ -423,7 +437,7 @@ button:hover { background: var(--card-hover-bg); }
     transform: scale(0.95);
 }
 
-/* 🐶 金毛犬 SVG/动画宠物主体 (不同阶段尺寸/外观变动) */
+/* 🐶 金毛犬 SVG/动画宠物主体 */
 .pet-body {
     width: 95px;
     height: 90px;
@@ -438,19 +452,18 @@ button:hover { background: var(--card-hover-bg); }
     transition: all 0.5s ease;
 }
 
-/* 阶段 1: 幼犬 (小巧) */
+/* 阶段 1: 幼犬 */
 .pet-stage-1 .pet-body { width: 75px; height: 70px; }
-/* 阶段 2: 成长期 (加戴蝴蝶结领结) */
+/* 阶段 2: 成长期 */
 .pet-stage-2 .pet-body::before {
     content: '🎀'; position: absolute; bottom: 8px; z-index: 10; font-size: 1.2rem;
 }
-/* 阶段 3: 成年期/大威天龙 (加戴皇冠与金光) */
+/* 阶段 3: 成年期 */
 .pet-stage-3 .pet-body { width: 110px; height: 105px; box-shadow: 0 0 25px rgba(251, 191, 36, 0.8); }
 .pet-stage-3 .pet-body::after {
     content: '👑'; position: absolute; top: -22px; z-index: 10; font-size: 1.8rem;
 }
 
-/* 金毛耳朵 */
 .pet-ears {
     position: absolute;
     top: -2px;
@@ -471,7 +484,6 @@ button:hover { background: var(--card-hover-bg); }
 .pet-ear.left { transform: rotate(15deg); animation: earWiggleDog 4s ease-in-out infinite; }
 .pet-ear.right { transform: rotate(-15deg); animation: earWiggleDog 4s ease-in-out 0.5s infinite; }
 
-/* 金毛脸部与嘴鼻区 */
 .pet-face {
     display: flex;
     flex-direction: column;
@@ -502,7 +514,6 @@ button:hover { background: var(--card-hover-bg); }
     border-radius: 50%;
 }
 
-/* 😴 睡觉姿态：眼睛变成闭眼 💤 */
 .pet-sleeping .pet-eye {
     height: 3px !important;
     border-radius: 2px !important;
@@ -518,7 +529,6 @@ button:hover { background: var(--card-hover-bg); }
     50% { transform: translateY(4px) scale(1.02, 0.9); }
 }
 
-/* 金毛吻部 */
 .pet-snout {
     width: 38px;
     height: 26px;
@@ -583,7 +593,6 @@ button:hover { background: var(--card-hover-bg); }
     border-radius: 50%;
 }
 
-/* 📌 状态面板 (修饰悬浮变白问题) */
 .pet-status-card {
     background: var(--card-bg);
     backdrop-filter: blur(12px);
@@ -620,7 +629,6 @@ button:hover { background: var(--card-hover-bg); }
 
 .pet-btn-group { display: flex; gap: 6px; margin-top: 4px; }
 
-/* 🔧 修复按钮 Hover 悬浮全白字看不见的问题 */
 .feed-btn, .interact-btn, .wander-btn {
     flex: 1;
     background: linear-gradient(135deg, #f59e0b, #d97706);
@@ -654,7 +662,6 @@ button:hover { background: var(--card-hover-bg); }
 .wander-btn.active { background: linear-gradient(135deg, #ec4899, #db2777); }
 .feed-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
-/* 🐾 跑动动画 (全屏慢跑/加经验) */
 .pet-running .pet-body {
     animation: dogRunning 0.6s ease-in-out infinite alternate !important;
 }
@@ -730,7 +737,10 @@ button:hover { background: var(--card-hover-bg); }
 <div class="header">
     <h1>🇩🇪 德语学习助手</h1>
     <p>A1</p>
-    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    <div class="header-actions">
+        <button class="pet-toggle" id="petToggleBtn" onclick="togglePetVisibility()" title="切换宠物显示状态">🐶</button>
+        <button class="theme-toggle" onclick="toggleTheme()" title="切换主题">🌓</button>
+    </div>
 </div>
     
 <div class="tabs" id="tabsContainer"></div>
@@ -812,6 +822,672 @@ button:hover { background: var(--card-hover-bg); }
 // ==========================================
 const appData = {
 
+    alphabet: {
+        title: "🔤 ABC",
+        layout: "word",
+        speakType: "key",
+        items: [
+            ["A","a"],
+            ["B","be"],
+            ["C","ce"],
+            ["D","de"],
+            ["E","e"],
+            ["F","ef"],
+            ["G","ge"],
+            ["H","ha"],
+            ["I","i"],
+            ["J","jot"],
+            ["K","ka"],
+            ["L","el"],
+            ["M","em"],
+            ["N","en"],
+            ["O","o"],
+            ["P","pe"],
+            ["Q","ku"],
+            ["R","er"],
+            ["S","es"],
+            ["T","te"],
+            ["U","u"],
+            ["V","fau"],
+            ["W","we"],
+            ["X","iks"],
+            ["Y","ypsilon"],
+            ["Z","tsett"],
+            ["Ä","ä"],
+            ["Ö","ö"],
+            ["Ü","ü"],
+            ["ß","Eszett"]
+        ]
+    },
+
+    numbers_base: {
+        title: "🔢",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["null","0 (Zero)"],
+            ["eins","1 (One)"],
+            ["zwei","2 (Two)"],
+            ["drei","3 (Three)"],
+            ["vier","4 (Four)"],
+            ["fünf","5 (Five)"],
+            ["sechs","6 (Six)"],
+            ["sieben","7 (Seven)"],
+            ["acht","8 (Eight)"],
+            ["neun","9 (Nine)"],
+            ["zehn","10 (Ten)"],
+            ["elf","11 (Eleven)"],
+            ["zwölf","12 (Twelve)"],
+			["dreizehn","13 (Thirteen)"],
+            ["vierzehn","14 (Fourteen)"],
+            ["fünfzehn","15 (Fifteen)"],
+            ["sechzehn","16 (Sixteen)"],
+            ["siebzehn","17 (Seventeen)"],
+            ["achtzehn","18 (Eighteen)"],
+            ["neunzehn","19 (Nineteen)"],
+			["zwanzig","20 (Twenty)"],
+            ["dreißig","30 (Thirty)"],
+            ["vierzig","40 (Forty)"],
+            ["fünfzig","50 (Fifty)"],
+            ["sechzig","60 (Sixty)"],
+            ["siebzig","70 (Seventy)"],
+            ["achtzig","80 (Eighty)"],
+            ["neunzig","90 (Ninety)"],
+            ["einunddreißig","31 (Thirty-one)"],
+            ["zweiunddreißig","32 (Thirty-two)"],
+            ["dreiunddreißig","33 (Thirty-three)"],
+            ["vierunddreißig","34 (Thirty-four)"],
+            ["fünfunddreißig","35 (Thirty-five)"],
+            ["sechsunddreißig","36 (Thirty-six)"],
+            ["siebenunddreißig","37 (Thirty-seven)"],
+            ["achtunddreißig","38 (Thirty-eight)"],
+            ["neununddreißig","39 (Thirty-nine)"],
+        ]
+    },
+
+    numbers_base_sen: {
+        title: "🔢",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["Ich habe zwei Hunde.","I have two dogs."],
+            ["Hast du drei Katzen?","Do you have three cats?"],
+            ["Nein, ich habe nur eins.","No, I only have one."],
+            ["Wir sind fünf Personen.","We are five people."],
+            ["Das Spiel beginnt um sechs Uhr.","The game starts at six o'clock."],
+            ["Hier sind sieben Äpfel.","Here are seven apples."],
+            ["Ich habe acht Euro.","I have eight euros."],
+            ["Das Kind ist neun Jahre alt.","The child is nine years old."],
+            ["Wir brauchen zehn Brötchen.","We need ten bread rolls."],
+            ["Ich schlafe elf Stunden.","I sleep eleven hours."],
+
+            ["Mein Bruder ist dreizehn Jahre alt.","My brother is thirteen years old."],
+            ["Die Klasse hat vierzehn Schüler.","The class has fourteen students."],
+            ["Ich bleibe fünfzehn Minuten.","I stay for fifteen minutes."],
+            ["Sie ist sechzehn Jahre alt.","She is sixteen years old."],
+            ["Der Bus kommt in siebzehn Minuten.","The bus arrives in seventeen minutes."],
+            ["Er ist jetzt achtzehn Jahre alt.","He is now eighteen years old."],
+            ["Das Buch kostet neunzehn Euro.","The book costs nineteen euros."],
+            ["Wir haben noch viele Minuten Zeit.","We still have many minutes of time."],
+
+            ["Das Hemd kostet zwanzig Euro.","The shirt costs twenty euros."],
+            ["Er ist dreißig Jahre alt.","He is thirty years old."],
+            ["Der Zug hat einunddreißig Minuten Verspätung.","The train is thirty-one minutes late."],
+            ["Meine Mutter ist vierzig Jahre alt.","My mother is forty years old."],
+            ["Das T-Shirt kostet fünfzig Euro.","The T-shirt costs fifty euros."],
+            ["Mein Vater ist sechzig Jahre alt.","My father is sixty years old."],
+            ["Oma ist siebzig Jahre alt.","Grandma is seventy years old."],
+            ["Das Buch hat achtzig Seiten.","The book has eighty pages."],
+            ["Opa ist neunzig Jahre alt.","Grandpa is ninety years old."]
+        ]
+    },
+
+    numbers_advanced: {
+        title: "🔢 Scale",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["hundert","100 (One hundred)"],
+            ["hunderteins","101 (One hundred and one)"],
+            ["zweihundert","200 (Two hundred)"],
+            ["tausend","1,000 (One thousand)"],
+            ["eine Million","1,000,000 (One million)"],
+            ["eine Milliarde","1,000,000,000 (One billion)"],
+            ["erste","1st (First)"],
+            ["zweite","2nd (Second)"],
+            ["dritte","3rd (Third)"],
+            ["vierte","4th (Fourth)"],
+
+            ["Das Ticket kostet hundert Euro.","The ticket costs one hundred euros."],
+            ["Hier wohnen tausend Menschen.","One thousand people live here."],
+            ["Heute ist der erste Mai.","Today is the first of May."],
+            ["Das ist mein zweiter Tag hier.","This is my second day here."],
+            ["Wir wohnen im dritten Stock.","We live on the third floor."],
+            ["Das ist die vierte Tasse Kaffee.","That is the fourth cup of coffee."]
+        ]
+    },
+
+    date_expressions: {
+        title: "📅 Dates",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            ["ein halb","A half (1/2)"],
+            ["ein Viertel","A quarter (1/4)"],
+            ["neunzehnhundertneunundneunzig","The year 1999"],
+            ["zweitausendvierzehn","The year 2014"],
+            ["heute ist der erste März","Today is March 1st"],
+            ["Berlin, zwölfter Vierter zweitausendzwei","Berlin, April 12th 2002"],
+
+            ["Ich trinke ein halbes Glas Wasser.","I drink half a glass of water."],
+            ["In ein Viertel Stunde gehen wir.","In a quarter of an hour we leave."],
+            ["Ich bin neunzehnhundertneunundneunzig geboren.","I was born in 1999."],
+            ["Heute ist der erste März.","Today is March 1st."],
+            ["Morgen ist der zweite März.","Tomorrow is March 2nd."],
+            ["Wir treffen uns im März.","We meet in March."]
+        ]
+    },
+
+    uhrzeit: {
+        title: "🕒 Clock",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["null Uhr drei","12:03 AM / 00:03"],
+            ["sieben Uhr fünfzehn","7:15 AM / 07:15"],
+            ["dreizehn Uhr siebzehn","1:17 PM / 13:17"],
+            ["vierundzwanzig Uhr","12:00 AM / Midnight"],
+            ["ein Uhr","1 o'clock"],
+            ["fünf Minuten vor eins","Five minutes to one"],
+            ["fünf Minuten nach eins","Five minutes past one"],
+            ["Viertel vor zwei","Quarter to two"],
+            ["Viertel nach zwei","Quarter past two"],
+            ["halb drei","Half past two (literally: half three)"],
+
+            ["Wie spät ist es?","What time is it?"],
+            ["Es ist ein Uhr.","It is one o'clock."],
+            ["Der Bus kommt um halb drei.","The bus arrives at half past two."],
+            ["Ich stehe um sieben Uhr auf.","I get up at seven o'clock."],
+            ["Es ist Viertel vor zwei.","It is a quarter to two."],
+            ["Treffen wir uns um Viertel nach zwei?","Shall we meet at a quarter past two?"],
+            ["Ja, das passt mir gut.","Yes, that suits me well."],
+            ["Um vierundzwanzig Uhr gehe ich schlafen.","At midnight I go to sleep."]
+        ]
+    },
+
+    zeitangaben: {
+        title: "⏳ Units",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Morgen","The morning","https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-cloud_26c5.png"],
+            ["der Vormittag","The forenoon / morning","https://em-content.zobj.net/source/microsoft-teams/363/sun-with-face_1f31e.png"],
+            ["der Mittag","The noon / midday","https://em-content.zobj.net/source/microsoft-teams/363/sun_2600-fe0f.png"],
+            ["der Nachmittag","The afternoon","https://em-content.zobj.net/source/microsoft-teams/363/sun-behind-small-cloud_1f324-fe0f.png"],
+            ["der Abend","The evening","https://em-content.zobj.net/source/microsoft-teams/363/sunset_1f307.png"],
+            ["die Nacht","The night","https://em-content.zobj.net/source/microsoft-teams/363/crescent-moon_1f319.png"],
+            ["die Sekunde","The second","https://images.pexels.com/photos/8102186/pexels-photo-8102186.jpeg"],
+            ["die Minute","The minute","https://plus.unsplash.com/premium_photo-1725075084469-b9c0272fdcf1?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["die Stunde","The hour","https://plus.unsplash.com/premium_photo-1663126649902-da96ec858a02?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Tag","The day","https://i.imgur.com/x4mY62t.jpeg"],
+            ["die Woche","The week","https://i.imgur.com/qbBKjK3.jpeg"],
+            ["das Jahr","The year","https://i.imgur.com/yBfYvJC.jpeg"],
+
+            ["Guten Morgen! Wie geht es dir?","Good morning! How are you?"],
+            ["Am Vormittag arbeite ich viel.","In the morning I work a lot."],
+            ["Mittags esse ich einen Salat.","At noon I eat a salad."],
+            ["Am Nachmittag trinke ich Kaffee.","In the afternoon I drink coffee."],
+            ["Am Abend sehe ich fern.","In the evening I watch TV."],
+            ["In der Nacht ist es leise.","At night it is quiet."],
+            ["Warte eine Minute bitte!","Wait a minute please!"],
+            ["Ich lerne eine Stunde Deutsch.","I study German for an hour."],
+            ["Ein Tag hat vierundzwanzig Stunden.","A day has twenty-four hours."],
+            ["Eine Woche hat sieben Tage.","A week has seven days."]
+        ]
+    },
+
+    zeitangaben2: {
+        title: "⏳ Week",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Wochentag","The weekday"],
+            ["das Wochenende","The weekend"],
+            ["am Wochenende","At the weekend"],
+            ["der Montag","Monday"],
+            ["der Dienstag","Tuesday"],
+            ["der Mittwoch","Wednesday"],
+            ["der Donnerstag","Thursday"],
+            ["der Freitag","Friday"],
+            ["der Samstag","Saturday"],
+            ["der Sonntag","Sunday"],
+
+            ["Heute ist ein Wochentag.","Today is a weekday."],
+            ["Schönes Wochenende!","Have a nice weekend!"],
+            ["Am Wochenende habe ich frei.","At the weekend I am free."],
+            ["Am Montag arbeite ich.","On Monday I work."],
+            ["Am Dienstag lerne ich Deutsch.","On Tuesday I learn German."],
+            ["Am Mittwoch koche ich.","On Wednesday I cook."],
+            ["Am Donnerstag schwimme ich.","On Thursday I swim."],
+            ["Am Freitag gehe ich einkaufen.","On Friday I go shopping."],
+            ["Am Samstag schlafe ich viel.","On Saturday I sleep a lot."],
+            ["Am Sonntag treffe ich Freunde.","On Sunday I meet friends."]
+        ]
+    },
+
+    seasons: {
+        title: "❄️ Seasons",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Frühling","Spring"],
+            ["der Sommer","Summer"],
+            ["der Herbst","Autumn / Fall"],
+            ["der Winter","Winter"],
+
+            ["Im Frühling blühen die Blumen.","In spring the flowers bloom."],
+            ["Der Sommer ist sehr warm.","Summer is very warm."],
+            ["Im Sommer gehe ich schwimmen.","In summer I go swimming."],
+            ["Im Herbst regnet es oft.","In autumn it rains often."],
+            ["Die Blätter fallen im Herbst.","The leaves fall in autumn."],
+            ["Der Winter ist kalt.","Winter is cold."],
+            ["Im Winter schneit es.","In winter it snows."],
+            ["Welche Jahreszeit magst du?","Which season do you like?"],
+            ["Ich mag den Sommer sehr.","I like summer very much."],
+            ["Der Frühling ist schön.","Spring is beautiful."]
+        ]
+    },
+
+    months: {
+        title: "🗓️ Months",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Januar","January","https://images.unsplash.com/photo-1577863231392-b5de256c3310?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Februar","February","https://images.unsplash.com/photo-1643625747316-5a81ee28ff4a?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der März","March","https://images.unsplash.com/photo-1582647790126-0fd37ff34f98?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der April","April","https://images.unsplash.com/photo-1585305903275-908dd9161f6d?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Mai","May","https://plus.unsplash.com/premium_photo-1684330692531-b15aefe248b7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Juni","June","https://images.unsplash.com/photo-1590482981659-ab837b117a60?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Juli","July","https://plus.unsplash.com/premium_photo-1684402750038-6c25d78fb805?q=80&w=1357&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der August","August","https://plus.unsplash.com/premium_photo-1731622288737-2718b42dc4c8?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der September","September","https://images.unsplash.com/photo-1598770798870-cd6bf7cd6d02?q=80&w=1790&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Oktober","October","https://plus.unsplash.com/premium_photo-1723874499455-8b4724876c88?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der November","November","https://images.unsplash.com/photo-1604440976409-d70080acb7d8?q=80&w=1853&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["der Dezember","December","https://images.unsplash.com/photo-1669748642613-e2aef915983c?q=80&w=1742&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+
+            ["Im Januar ist es sehr kalt.","In January it is very cold."],
+            ["Mein Geburtstag ist im Februar.","My birthday is in February."],
+            ["Im März kommt der Frühling.","Spring comes in March."],
+            ["Der April macht, was er will.","April does what it wants."],
+            ["Im Mai ist das Wetter schön.","In May the weather is nice."],
+            ["Wir fahren im Juli in den Urlaub.","We go on vacation in July."],
+            ["Der August ist heiß.","August is hot."],
+            ["Die Schule beginnt im September.","School begins in September."],
+            ["Im Oktober essen wir Kürbis.","In October we eat pumpkin."],
+            ["Weihnachten ist im Dezember.","Christmas is in December."]
+        ]
+    },
+
+    jahreszeiten_masse: {
+        title: "📏 Measure",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["ein Euro hundert Cent","1 Euro = 100 Cents"],
+            ["ein Meter","One meter (1 m)"],
+            ["ein Zentimeter","One centimeter (1 cm)"],
+            ["ein Meter fünfzehn","One meter fifteen (1.15 m)"],
+            ["zweihundert Kilometer","Two hundred kilometers (200 km)"],
+            ["ein Quadratmeter","One square meter (1 m²)"],
+            ["ein Prozent","One percent (1 %)"],
+            ["ein Liter","One liter (1 l)"],
+            ["ein Gramm","One gram (1 g)"],
+            ["ein Pfund","One pound / 500 grams"],
+            ["ein Kilo","One kilogram (1 kg)"],
+            ["ein Grad unter Null","One degree below zero (-1°)"],
+            ["minus ein Grad","Minus one degree (-1°)"],
+            ["vier Grad über Null","Four degrees above zero (+4°)"],
+            ["plus vier Grad","Plus four degrees (+4°)"],
+
+            ["Ein Euro hat hundert Cent.","One euro has one hundred cents."],
+            ["Der Tisch ist einen Meter lang.","The table is one meter long."],
+            ["Ich wohne zweihundert Kilometer von hier.","I live two hundred kilometers from here."],
+            ["Ich trinke einen Liter Wasser.","I drink one liter of water."],
+            ["Ich kaufe ein Kilo Äpfel.","I buy one kilogram of apples."],
+            ["Wir brauchen ein Pfund Butter.","We need a pound of butter."],
+            ["Heute sind es minus ein Grad.","Today it is minus one degree."],
+            ["Morgen sind es vier Grad über Null.","Tomorrow it is four degrees above zero."]
+        ]
+    },
+
+    animals1: {
+        title: "🐾 Pets",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Hund","The Dog","https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
+            ["die Katze","The Cat","https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
+            ["der Vogel","The Bird","https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
+            ["der Fisch","The Fish","https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
+            ["der Hamster","The Hamster","https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
+            ["das Kaninchen","The Rabbit","https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
+            ["die Kuh","The Cow","https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
+            ["das Schwein","The Pig","https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
+            ["das Pferd","The Horse","https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
+            ["das Schaf","The Sheep","https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
+            ["die Ziege","The Goat","https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
+            ["das Huhn","The Chicken","https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
+            ["die Ente","The Duck","https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"],
+
+            ["Der Hund bellt laut.","The dog barks loudly.","https://em-content.zobj.net/source/microsoft-teams/363/dog_1f415.png"],
+            ["Die Katze schläft hier.","The cat sleeps here.","https://em-content.zobj.net/source/microsoft-teams/363/cat_1f408.png"],
+            ["Der Vogel singt schön.","The bird sings beautifully.","https://em-content.zobj.net/source/microsoft-teams/363/bird_1f426.png"],
+            ["Der Fisch schwimmt im Wasser.","The fish swims in the water.","https://em-content.zobj.net/source/microsoft-teams/363/tropical-fish_1f420.png"],
+            ["Der Hamster frisst viel.","The hamster eats a lot.","https://em-content.zobj.net/source/microsoft-teams/363/hamster_1f439.png"],
+            ["Das Kaninchen frisst Karotten.","The rabbit eats carrots.","https://em-content.zobj.net/source/microsoft-teams/363/rabbit_1f407.png"],
+            ["Die Kuh gibt Milch.","The cow gives milk.","https://em-content.zobj.net/source/microsoft-teams/363/cow_1f404.png"],
+            ["Das Schwein ist rosa.","The pig is pink.","https://em-content.zobj.net/source/microsoft-teams/363/pig-face_1f437.png"],
+            ["Das Pferd läuft schnell.","The horse runs fast.","https://em-content.zobj.net/source/microsoft-teams/363/horse_1f40e.png"],
+            ["Das Schaf frisst Gras.","The sheep eats grass.","https://em-content.zobj.net/source/microsoft-teams/363/ewe_1f411.png"],
+            ["Die Ziege meckert laut.","The goat bleats loudly.","https://em-content.zobj.net/source/microsoft-teams/363/goat_1f410.png"],
+            ["Das Huhn legt ein Ei.","The chicken lays an egg.","https://em-content.zobj.net/source/microsoft-teams/363/chicken_1f414.png"],
+            ["Die Ente schwimmt gern.","The duck likes to swim.","https://em-content.zobj.net/source/microsoft-teams/363/duck_1f986.png"]
+        ]
+    },
+
+    animals2: {
+        title: "🦁 Zoo",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Löwe","The Lion","https://em-content.zobj.net/source/microsoft-teams/363/lion_1f981.png"],
+            ["der Tiger","The Tiger","https://em-content.zobj.net/source/microsoft-teams/363/tiger_1f405.png"],
+            ["der Bär","The Bear","https://em-content.zobj.net/source/microsoft-teams/363/bear_1f43b.png"],
+            ["der Affe","The Monkey","https://em-content.zobj.net/source/microsoft-teams/363/monkey_1f412.png"],
+            ["der Elefant","The Elephant","https://em-content.zobj.net/source/microsoft-teams/363/elephant_1f418.png"],
+            ["die Giraffe","The Giraffe","https://em-content.zobj.net/source/microsoft-teams/363/giraffe_1f992.png"],
+            ["das Zebra","The Zebra","https://em-content.zobj.net/source/microsoft-teams/363/zebra_1f993.png"],
+            ["der Schmetterling","The Butterfly","https://em-content.zobj.net/source/microsoft-teams/363/butterfly_1f98b.png"],
+            ["die Biene","The Bee","https://em-content.zobj.net/source/microsoft-teams/363/honeybee_1f41d.png"],
+            ["der Käfer","The Beetle","https://em-content.zobj.net/source/microsoft-teams/363/beetle_1fab2.png"],
+            ["die Spinne","The Spider","https://em-content.zobj.net/source/microsoft-teams/363/spider_1f577-fe0f.png"],
+            ["die Schnecke","The Snail","https://em-content.zobj.net/source/microsoft-teams/363/snail_1f40c.png"],
+            ["der Delfin","The Dolphin","https://em-content.zobj.net/source/microsoft-teams/363/dolphin_1f42c.png"],
+            ["der Wal","The Whale","https://em-content.zobj.net/source/microsoft-teams/363/whale_1f40b.png"],
+            ["der Hai","The Shark","https://em-content.zobj.net/source/microsoft-teams/363/shark_1f988.png"],
+            ["die Schildkröte","The Turtle","https://em-content.zobj.net/source/microsoft-teams/363/turtle_1f422.png"],
+
+            ["Wir gehen heute in den Zoo.","We are going to the zoo today."],
+            ["Der Löwe schläft unter dem Baum.","The lion is sleeping under the tree."],
+            ["Der Elefant ist sehr groß.","The elephant is very big."],
+            ["Die Giraffe hat einen langen Hals.","The giraffe has a long neck."],
+            ["Der Affe isst eine Banane.","The monkey is eating a banana."],
+            ["Guck mal, da fliegen viele Schmetterlinge!","Look, there are many butterflies flying!"],
+            ["Die Biene fliegt zur Blume.","The bee flies to the flower."],
+            ["Im Meer schwimmt ein Delfin.","A dolphin is swimming in the ocean."],
+            ["Die Schildkröte läuft sehr langsam.","The turtle walks very slowly."],
+            ["Ich mag Tiere wirklich sehr.","I really like animals a lot."]
+        ]
+    },
+
+    german_animals: {
+        title: "🌲 Wildlife",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Hirsch","The Stag","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfRQatYYwJUuGZXWeb7OY64jD4jmKOQeMImIq-yqZi4w&s=10"],
+            ["das Reh","The Roe Deer","https://cdn-ilbamed.nitrocdn.com/cDunbKRFwbKoFAKUGFpmRYmvLJoAWJCm/assets/images/optimized/rev-db8508d/elen-hunting.bg/wp-content/uploads/2024/06/roe-deer.jpg"],
+            ["das Wildschwein","The Wild Boar","https://em-content.zobj.net/source/microsoft-teams/363/boar_1f417.png"],
+            ["der Fuchs","The Fox","https://em-content.zobj.net/source/microsoft-teams/363/fox_1f98a.png"],
+            ["der Igel","The Hedgehog","https://em-content.zobj.net/source/microsoft-teams/363/hedgehog_1f994.png"],
+            ["der Wolf","The Wolf","https://em-content.zobj.net/source/microsoft-teams/363/wolf_1f43a.png"],
+            ["der Biber","The Beaver","https://em-content.zobj.net/source/microsoft-teams/363/beaver_1f9ab.png"],
+            ["das Eichhörnchen","The Squirrel","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWsBcpr3fOLvJGBmR1YuYKUXjxaPn4Z-a5-0OJa4mzPuYbxAwDex6N4EQ&s=10"],
+            ["der Storch","The Stork","https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQoUPh99p297hu7uXC2CaPZCOUyDAXHdrIrnFichSK5bApEXTymKn6oB1SZ-bUPdz-HCUtApxQ5QTZvD3baHWa_mfaqv-OsRFfaOT56CcsZQ&s=10"],
+            ["der Adler","The Eagle","https://em-content.zobj.net/source/microsoft-teams/363/eagle_1f985.png"],
+            ["die Eule","The Owl","https://em-content.zobj.net/source/microsoft-teams/363/owl_1f989.png"],
+            ["der Schwan","The Swan","https://em-content.zobj.net/source/microsoft-teams/363/swan_1f9a2.png"],
+            ["der Frosch","The Frog","https://em-content.zobj.net/source/microsoft-teams/363/frog_1f438.png"],
+            ["der Marienkäfer","The Ladybug","https://em-content.zobj.net/source/microsoft-teams/363/lady-beetle_1f41e.png"],
+
+            ["Im Wald lebt ein Hirsch.","A stag lives in the forest."],
+            ["Das Reh steht auf der Wiese.","The roe deer is standing on the meadow."],
+            ["Der Fuchs ist sehr schlau.","The fox is very clever."],
+            ["Der Igel schläft im Garten.","The hedgehog sleeps in the garden."],
+            ["Das Eichhörnchen sucht Nüsse.","The squirrel searches for nuts."],
+            ["Der Storch baut ein Nest.","The stork builds a nest."],
+            ["Die Eule fliegt in der Nacht.","The owl flies in the night."],
+            ["Der Schwan schwimmt auf dem See.","The swan swims on the lake."],
+            ["Der Frosch springt ins Wasser.","The frog jumps into the water."],
+            ["Ein Marienkäfer sitzt auf meiner Hand.","A ladybug sits on my hand."]
+        ]
+    },
+
+    colors: {
+        title: "🎨 Colors",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["schwarz","Black","https://em-content.zobj.net/source/microsoft-teams/363/black-cat_1f408-200d-2b1b.png"],
+            ["weiß","White","https://em-content.zobj.net/source/microsoft-teams/363/dove_1f54a-fe0f.png"],
+            ["grau","Grey","https://em-content.zobj.net/source/microsoft-teams/363/rock_1faa8.png"],
+            ["rot","Red","https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
+            ["blau","Blue","https://em-content.zobj.net/source/microsoft-teams/363/blue-book_1f4d8.png"],
+            ["gelb","Yellow","https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
+            ["grün","Green","https://em-content.zobj.net/source/microsoft-teams/363/green-apple_1f34f.png"],
+            ["braun","Brown","https://em-content.zobj.net/source/microsoft-teams/363/wood_1fab5.png"],
+
+            ["Das Auto ist schwarz.","The car is black."],
+            ["Der Schnee ist weiß.","The snow is white."],
+            ["Der Elefant ist grau.","The elephant is grey."],
+            ["Die Erdbeere ist rot.","The strawberry is red."],
+            ["Der Himmel ist blau.","The sky is blue."],
+            ["Die Sonne ist gelb.","The sun is yellow."],
+            ["Das Gras ist grün.","The grass is green."],
+            ["Der Hund ist braun.","The dog is brown."],
+            ["Welche Farbe magst du?","Which color do you like?"],
+            ["Ich mag Blau und Grün.","I like blue and green."]
+        ]
+    },
+
+    directions: {
+        title: "➡️ Maps",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["der Norden","The North","https://em-content.zobj.net/source/microsoft-teams/363/up-arrow_2b06-fe0f.png"],
+            ["der Süden","The South","https://em-content.zobj.net/source/microsoft-teams/363/down-arrow_2b07-fe0f.png"],
+            ["der Westen","The West","https://em-content.zobj.net/source/microsoft-teams/363/left-arrow_2b05-fe0f.png"],
+            ["der Osten","The East","https://em-content.zobj.net/source/microsoft-teams/363/right-arrow_27a1-fe0f.png"],
+            ["links","On the left","https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-left_1f448.png"],
+            ["rechts","On the right","https://em-content.zobj.net/source/microsoft-teams/363/backhand-index-pointing-right_1f449.png"],
+
+            ["Hamburg liegt im Norden.","Hamburg is located in the north."],
+            ["München liegt im Süden.","Munich is located in the south."],
+            ["Die Sonne geht im Osten auf.","The sun rises in the east."],
+            ["Die Sonne geht im Westen unter.","The sun sets in the west."],
+            ["Gehen Sie bitte nach links.","Please go to the left."],
+            ["Biegen Sie nach rechts ab.","Turn to the right."],
+            ["Der Supermarkt ist auf der linken Seite.","The supermarket is on the left side."],
+            ["Die Bank ist rechts neben dem Café.","The bank is on the right next to the café."],
+            ["Entschuldigung, wo ist die Post?","Excuse me, where is the post office?"],
+            ["Geradeaus und dann links.","Straight ahead and then left."]
+        ]
+    },
+
+    countries: {
+        title: "🌍 World",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["Deutschland","Germany"],
+            ["deutsch","German (adjective)"],
+            ["der Deutsche","German man"],
+            ["die Deutsche","German woman"],
+            ["Europa","Europe"],
+            ["Europäer","European man / people"],
+            ["europäisch","European (adjective)"],
+            ["die Türkei","Turkey"],
+            ["der Türke","Turkish man"],
+            ["die Türkin","Turkish woman"],
+            ["türkisch","Turkish (adjective)"],
+            ["Finnland","Finland"],
+            ["der Finne","Finnish man"],
+            ["die Finnin","Finnish woman"],
+            ["finnisch","Finnish (adjective)"],
+            ["Mexiko","Mexico"],
+            ["der Mexikaner","Mexican man"],
+            ["die Mexikanerin","Mexican woman"],
+            ["mexikanisch","Mexican (adjective)"],
+
+            ["Ich wohne in Deutschland.","I live in Germany."],
+            ["Sprechen Sie Deutsch?","Do you speak German?"],
+            ["Er ist ein Deutscher.","He is a German."],
+            ["Sie ist eine Deutsche.","She is a German."],
+            ["Deutschland liegt in Europa.","Germany lies in Europe."],
+            ["Wir reisen in die Türkei.","We are traveling to Turkey."],
+            ["Ich esse gerne türkisches Essen.","I like to eat Turkish food."],
+            ["Finnland ist sehr schön.","Finland is very beautiful."],
+            ["Mein Freund kommt aus Mexiko.","My friend comes from Mexico."],
+            ["Ich mag mexikanisches Essen.","I like Mexican food."]
+        ]
+    },
+
+    family: {
+        title: "🌳 Family",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["die Familie","the family"],
+            ["die Eltern","the parents (plural)"],
+            ["der Vater","the father"],
+            ["die Mutter","the mother"],
+            ["der Sohn","the son"],
+            ["die Tochter","the daughter"],
+            ["der Bruder","the brother"],
+            ["die Schwester","the sister"],
+            ["die Großeltern","the grandparents (plural)"],
+            ["der Großvater","the grandfather"],
+            ["die Großmutter","the grandmother"],
+            ["der Onkel","the uncle"],
+            ["die Tante","the aunt"],
+            ["der Cousin","the cousin (male)"],
+            ["die Cousine","the cousin (female)"],
+
+            ["Meine Familie ist groß.","My family is big."],
+            ["Das sind meine Eltern.","These are my parents."],
+            ["Mein Vater heißt Thomas.","My father's name is Thomas."],
+            ["Meine Mutter kocht gut.","My mother cooks well."],
+            ["Ich habe einen Bruder.","I have a brother."],
+            ["Meine Schwester studiert.","My sister is studying."],
+            ["Mein Opa erzählt Geschichten.","My grandpa tells stories."],
+            ["Meine Tante wohnt in Berlin.","My aunt lives in Berlin."]
+        ]
+    },
+
+
+    Food_vocabulary: {
+        title: "🍎 Food & Drinks",
+        layout: "phrase",
+        speakType: "key",
+        items: [
+            ["das Obst","fruit (general)","https://i.imgur.com/XNhuXf6.jpeg"],
+            ["der Apfel, die Äpfel","apple, apples","https://em-content.zobj.net/source/microsoft-teams/363/red-apple_1f34e.png"],
+            ["die Birne, die Birnen","pear, pears","https://em-content.zobj.net/source/microsoft-teams/363/pear_1f350.png"],
+            ["die Banane, die Bananen","banana, bananas","https://em-content.zobj.net/source/microsoft-teams/363/banana_1f34c.png"],
+            ["die Orange, die Orangen","orange, oranges","https://em-content.zobj.net/source/microsoft-teams/363/tangerine_1f34a.png"],
+            ["die Zitrone, die Zitronen","lemon, lemons","https://em-content.zobj.net/source/microsoft-teams/363/lemon_1f34b.png"],
+            ["das Gemüse","vegetables (general)","https://cdn-icons-png.flaticon.com/512/2153/2153788.png"],
+            ["die Tomate, die Tomaten","tomato, tomatoes","https://em-content.zobj.net/source/microsoft-teams/363/tomato_1f345.png"],
+            ["die Kartoffel, die Kartoffeln","potato, potatoes","https://em-content.zobj.net/source/microsoft-teams/363/potato_1f954.png"],
+            ["der Salat, die Salate","salad / lettuce","https://i.imgur.com/ZgRLQCV.jpeg"],
+            ["die Zwiebel, die Zwiebeln","onion, onions","https://em-content.zobj.net/source/microsoft-teams/363/onion_1f9c5.png"],
+            ["das Fleisch","meat (general)","https://em-content.zobj.net/source/microsoft-teams/363/cut-of-meat_1f969.png"],
+            ["das Hähnchen, die Hähnchen","chicken, chickens","https://em-content.zobj.net/source/microsoft-teams/363/poultry-leg_1f357.png"],
+            ["der Schinken, die Schinken","ham, hams","https://cdn-icons-png.flaticon.com/512/706/706880.png"],
+            ["die Wurst, die Würste","sausage, sausages","https://em-content.zobj.net/source/microsoft-teams/363/hot-dog_1f32d.png"],
+            ["der Fisch, die Fische","fish, fishes","https://em-content.zobj.net/source/microsoft-teams/363/fish_1f41f.png"],
+            ["das Brot, die Brote","bread, breads","https://em-content.zobj.net/source/microsoft-teams/363/bread_1f35e.png"],
+            ["das Brötchen, die Brötchen","bread roll, bread rolls","https://em-content.zobj.net/source/microsoft-teams/363/baguette-bread_1f956.png"],
+            ["der Kuchen, die Kuchen","cake, cakes","https://em-content.zobj.net/source/microsoft-teams/363/shortcake_1f370.png"],
+            ["die Reis","rice","https://em-content.zobj.net/source/microsoft-teams/363/cooked-rice_1f35a.png"],
+            ["die Nudeln","pasta / noodles (plural)","https://em-content.zobj.net/source/microsoft-teams/363/spaghetti_1f35d.png"],
+            ["die Pommes frites","french fries (plural)","https://em-content.zobj.net/source/microsoft-teams/363/french-fries_1f35f.png"],
+            ["die Milch","milk","https://em-content.zobj.net/source/microsoft-teams/363/glass-of-milk_1f95b.png"],
+            ["die Butter","butter","https://em-content.zobj.net/source/microsoft-teams/363/butter_1f9c8.png"],
+            ["der Käse","cheese","https://em-content.zobj.net/source/microsoft-teams/363/cheese-wedge_1f9c0.png"],
+            ["das Ei, die Eier","egg, eggs","https://em-content.zobj.net/source/microsoft-teams/363/egg_1f95a.png"],
+            ["das Öl, die Öle","oil, oils","https://i.imgur.com/HeYV02C.jpeg"],
+            ["das Salz, die Salze","salt, salts","https://em-content.zobj.net/source/microsoft-teams/363/salt_1f9c2.png"],
+            ["der Zucker","sugar","https://i.imgur.com/b6Jmfbg.png"],
+            ["das Getränk, die Getränke","drink / beverage","https://cdn-icons-png.flaticon.com/512/3050/3050130.png"],
+            ["das Wasser","water","https://i.imgur.com/kT6ndSN.jpeg"],
+            ["der Kaffee, die Kaffees","coffee, coffees","https://cdn-icons-png.flaticon.com/512/924/924514.png"],
+            ["der Tee, die Tees","tea, teas","https://em-content.zobj.net/source/microsoft-teams/363/teacup-without-handle_1f375.png"],
+            ["der Saft, die Säfte","juice, juices","https://em-content.zobj.net/source/microsoft-teams/363/beverage-box_1f9c3.png"],
+            ["das Bier, die Biere","beer, beers","https://em-content.zobj.net/source/microsoft-teams/363/beer-mug_1f37a.png"],
+            ["der Wein, die Weine","wine, wines","https://em-content.zobj.net/source/microsoft-teams/363/wine-glass_1f377.png"],
+            ["die Flasche, die Flaschen","bottle, bottles","https://i.imgur.com/xo5xbwU.jpeg"],
+            ["die Lebensmittel","groceries (plural)","https://em-content.zobj.net/source/microsoft-teams/363/shopping-bags_1f6cd-fe0f.png"],
+            ["der Hunger","hunger","https://i.imgur.com/jGhqDlg.gif"],
+            ["der Durst","thirst","https://i.imgur.com/onocppi.jpeg"],
+            ["das Café, die Cafés","café, cafés","https://i.imgur.com/Zrjx6Jp.jpeg"],
+            ["das Restaurant, die Restaurants","restaurant","https://images.pexels.com/photos/34252330/pexels-photo-34252330.jpeg"],
+            ["das Essen","food / meal","https://i.imgur.com/OTFbqSm.gif"],
+            ["die Speisekarte, die Speisekarten","menu, menus","https://i.imgur.com/HFZd6ti.jpeg"],
+            ["der Kühlschrank, die Kühlschränke","fridge, fridges","https://images.pexels.com/photos/27301775/pexels-photo-27301775.jpeg"],
+            ["essen","to eat","https://i.imgur.com/oUkmh6s.gif"],
+            ["trinken","to drink","https://i.imgur.com/1ty3uwx.jpeg"],
+            ["kochen","to cook","https://i.imgur.com/AnPpWSF.gif"],
+            ["grillen","to grill","https://i.imgur.com/FF6RDNm.jpeg"],
+            ["schmecken","to taste","https://i.imgur.com/rmi2VFB.gif"],
+            ["kaufen","to buy","https://cdn-icons-png.flaticon.com/512/1170/1170678.png"],
+            ["bestellen","to order","https://i.imgur.com/l5r970P.jpeg"],
+            ["lecker","delicious / tasty","https://i.imgur.com/sFbB9tL.gif"],
+            ["frisch","fresh","https://i.imgur.com/CGwwJWT.jpeg"],
+            ["süß","sweet","https://i.imgur.com/GWn5hC7.jpeg"],
+            ["bitter","bitter","https://images.unsplash.com/photo-1739903760973-4731a8e79a03?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"],
+            ["kalt","cold","https://i.imgur.com/O0belfd.gif"],
+            ["heiß","hot","https://i.imgur.com/zLNyIAh.gif"],
+            ["gut","good","https://i.imgur.com/Gr4od64.gif"]
+        ]
+    },
+
+    Food_vocabulary_story: {
+        title: "🍎 Short Conversations",
+        layout: "sentence",
+        speakType: "key",
+        items: [
+            // 场景 1：饿了 / 看冰箱
+            ["Ich habe Hunger!", "I am hungry!"],
+            ["Ich habe Durst!", "I am thirsty!"],
+            ["Was ist im Kühlschrank?", "What's in the fridge?"],
+            ["Nur Wasser, Milch und Käse.", "Only water, milk and cheese."],
+
+            // 场景 2：去超市采购
+            ["Wir kaufen Lebensmittel!", "Let's buy groceries!"],
+            ["Ich kaufe Obst und Gemüse.", "I buy fruit and vegetables."],
+            ["Brauchst du Kartoffeln?", "Do you need potatoes?"],
+            ["Ja, und zwei Äpfel.", "Yes, and two apples."],
+
+            // 场景 3：做饭与准备
+            ["Was kochen wir?", "What are we cooking?"],
+            ["Wir kochen Nudeln mit Tomaten.", "We cook pasta with tomatoes."],
+            ["Isst du Fleisch?", "Do you eat meat?"],
+            ["Nein, lieber Fisch.", "No, I prefer fish."],
+
+            // 场景 4：餐厅/咖啡馆就餐与评价
+            ["Die Speisekarte, bitte!", "The menu, please!"],
+            ["Ich bestelle einen Kaffee.", "I'll order a coffee."],
+            ["Möchtest du auch Kuchen?", "Would you like cake too?"],
+            ["Nein, ein Bier bitte.", "No, a beer please."],
+            ["Guten Appetit!", "Enjoy your meal!"],
+            ["Das Essen ist sehr lecker!", "The food is very delicious!"]
+        ]
+    },
+
+
     scene_01: {
         title: "💬 Greetings",
         layout: "dialogue",
@@ -834,8 +1510,6 @@ const appData = {
             ["Und Ihnen?","Man: And you?","right"]
         ]
     },
-	
-
 
     greetings: {
         title: "📚 Begrüßungen",
@@ -888,7 +1562,6 @@ const appData = {
             ["Er küsst sie auf die Wange.", "He kisses her on the cheek."]
         ]
     },
-
 
     scene_02: {
         title: "💬 HowAreYou",
@@ -943,7 +1616,6 @@ const appData = {
             ["Hey, stopp!","Nico: Hey, stop!","right"]
         ]
     },
-
 
     KeinProblem: {
         title: "📚 Kein Problem!",
@@ -1006,7 +1678,6 @@ const appData = {
             ["Auf Wiedersehen, Frau Scholl.","Man: Goodbye, Ms. Scholl.","right"]
         ]
     },
-
 
 	scene_06: {
         title: "💬 Help",
@@ -1132,9 +1803,7 @@ const appData = {
             ["offen", "open / welcoming"],
             ["dauern", "to take (time) / to last"]
         ]
-    },
-
-
+    }
 };
 
 // 全局状态变量
@@ -1171,14 +1840,15 @@ let isAnimating = false;
 let starredItems = JSON.parse(localStorage.getItem('german_helper_stars')) || [];
 
 // ==========================================
-// 🐾 陪伴宠物系统：数值平衡优化 + 互动 + 睡眠系统
+// 🐾 陪伴宠物系统
 // ==========================================
 let petData = JSON.parse(localStorage.getItem('german_pet_data')) || {
     level: 1,
     exp: 0,
     hunger: 100,
     food: 5,
-    isCollapsed: false
+    isCollapsed: false,
+    visible: true
 };
 
 let isWandering = false;
@@ -1187,7 +1857,6 @@ let idleTimer = null;
 let hungerTimer = null;
 let isSleeping = false;
 
-// 丰富的互动对白表
 const petDialogueList = {
     idle: [
         "Wuff! Wie geht's?",
@@ -1197,7 +1866,7 @@ const petDialogueList = {
         "Das macht Spaß! 🐶"
     ],
     correct: [
-        "Wuff! Sehr gut! (跳跃) ✨",
+        "Wuff! Sehr gut! ✨",
         "Toll gemacht! 汪汪！🎉",
         "Ausgezeichnet! 答对啦！🌟",
         "Wuff wuff! 你太棒了！💪"
@@ -1214,7 +1883,26 @@ const petDialogueList = {
     ]
 };
 
-// 1. 自然饱食度消耗定时器 (每 20 秒自然掉 1 点饱食度)
+function initPetVisibility() {
+    const container = document.getElementById('petContainer');
+    const toggleBtn = document.getElementById('petToggleBtn');
+    if (!container || !toggleBtn) return;
+    
+    if (petData.visible === false) {
+        container.classList.add('hide-pet');
+        toggleBtn.style.opacity = '0.5';
+    } else {
+        container.classList.remove('hide-pet');
+        toggleBtn.style.opacity = '1';
+    }
+}
+
+function togglePetVisibility() {
+    petData.visible = !(petData.visible !== false);
+    savePetData();
+    initPetVisibility();
+}
+
 function startHungerTick() {
     if (hungerTimer) clearInterval(hungerTimer);
     hungerTimer = setInterval(() => {
@@ -1225,7 +1913,6 @@ function startHungerTick() {
     }, 20000);
 }
 
-// 2. 长时间待机睡眠检测 (45 秒无互动自动入睡)
 function resetIdleTimer() {
     if (isSleeping) wakeUpPet();
     clearTimeout(idleTimer);
@@ -1248,7 +1935,6 @@ function wakeUpPet() {
     showPetDialog("Wuff! 我醒啦，继续学习吧！✨", false);
 }
 
-// 监听用户全局交互，重置待机计时器
 ['click', 'mousemove', 'keydown', 'touchstart'].forEach(evt => {
     window.addEventListener(evt, () => resetIdleTimer(), { passive: true });
 });
@@ -1272,7 +1958,6 @@ function updatePetUI() {
 
     levelText.innerText = `🦮 旺财 (Lv.${petData.level})`;
 
-    // 数值平衡调整：升级所需经验递增
     const maxExp = petData.level * 60 + 40;
     expText.innerText = `${petData.exp}/${maxExp}`;
     expBar.style.width = `${Math.min(100, (petData.exp / maxExp) * 100)}%`;
@@ -1283,19 +1968,17 @@ function updatePetUI() {
     foodCount.innerText = petData.food;
     feedBtn.disabled = petData.food <= 0;
 
-    // 不同成长阶段形态展示
     if (container) {
         container.classList.remove('pet-stage-1', 'pet-stage-2', 'pet-stage-3');
         if (petData.level < 3) {
-            container.classList.add('pet-stage-1'); // 幼犬
+            container.classList.add('pet-stage-1');
         } else if (petData.level < 6) {
-            container.classList.add('pet-stage-2'); // 蝴蝶结领结
+            container.classList.add('pet-stage-2');
         } else {
-            container.classList.add('pet-stage-3'); // 戴皇冠金光闪闪
+            container.classList.add('pet-stage-3');
         }
     }
 
-    // 折叠状态同步
     const statusCard = document.getElementById('petStatusCard');
     const collapseBtn = document.getElementById('collapseToggleBtn');
     if (statusCard && collapseBtn) {
@@ -1315,6 +1998,7 @@ function togglePetStatusCollapse() {
 }
 
 function showPetDialog(text, playVoice = true) {
+    if (petData.visible === false) return;
     const dialog = document.getElementById('petDialog');
     if (!dialog) return;
     dialog.innerText = text;
@@ -1368,7 +2052,6 @@ function playWithBall() {
     showPetDialog("Wuff! 🎾 扔网球游戏太好玩啦！", false);
 }
 
-// 全屏慢跑 (慢速动画 + 慢速耗消耗饱食度 + 动态累加经验值)
 function toggleWanderMode() {
     isWandering = !isWandering;
     const btn = document.getElementById('wanderBtn');
@@ -1407,13 +2090,12 @@ function startWandering() {
         container.style.left = `${targetX}px`;
         container.style.top = `${targetY}px`;
 
-        // 慢跑消耗饱食度 +1，增加经验 +2
         petData.hunger = Math.max(0, petData.hunger - 1);
         addPetExp(2);
     };
 
     movePet();
-    wanderTimer = setInterval(movePet, 4500); // 调整为慢速位移
+    wanderTimer = setInterval(movePet, 4500);
 }
 
 function rewardPetFood(amount = 1) {
@@ -1421,7 +2103,6 @@ function rewardPetFood(amount = 1) {
     savePetData();
 }
 
-// 答题反馈 (答对高激励 + 跳跃 + 丰富对白 + 饱食度扣减更快)
 function petReactToAnswer(isCorrect) {
     resetIdleTimer();
     const petBody = document.getElementById('petBody');
@@ -1432,7 +2113,6 @@ function petReactToAnswer(isCorrect) {
         void petBody.offsetWidth;
         petBody.classList.add('pet-happy-jump');
         
-        // 数值平衡：做题饱食度消耗加快 (-3)，但经验奖励大幅提升 (+25)
         petData.hunger = Math.max(0, petData.hunger - 3);
         addPetExp(25);
 
@@ -1687,6 +2367,120 @@ function startAutoplay() {
         currentPlayIndex++;
         setTimeout(() => { if (isAutoplayRunning) startAutoplay(); }, 1400); 
     });
+}
+
+// 页面搭建与初始化
+function switchPage(pageId) {
+    if (isAutoplayRunning) stopAutoplay();
+    currentActivePageId = pageId;
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.id === pageId);
+    });
+
+    document.querySelectorAll('.page').forEach(p => {
+        p.classList.remove('show');
+        p.style.display = 'none';
+    });
+
+    const targetPage = document.getElementById(`page-${pageId}`);
+    if (targetPage) {
+        targetPage.classList.add('show');
+        targetPage.style.display = 'block';
+    }
+
+    if (pageId === 'review') renderReviewPage();
+}
+
+function initApp() {
+    const tabsContainer = document.getElementById('tabsContainer');
+    const pagesContainer = document.getElementById('pagesContainer');
+
+    // 默认添加“复习”标签
+    const reviewBtn = document.createElement('button');
+    reviewBtn.className = 'tab-btn active';
+    reviewBtn.dataset.id = 'review';
+    reviewBtn.innerText = '⭐ 收藏复习';
+    reviewBtn.onclick = () => switchPage('review');
+    tabsContainer.appendChild(reviewBtn);
+
+    const reviewPage = document.createElement('div');
+    reviewPage.id = 'page-review';
+    reviewPage.className = 'page show';
+    reviewPage.innerHTML = '<div id="review-grid"></div>';
+    pagesContainer.appendChild(reviewPage);
+
+    // 遍历数据源生成页面与标签
+    Object.keys(appData).forEach(key => {
+        const group = appData[key];
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn';
+        btn.dataset.id = key;
+        btn.innerText = group.title;
+        btn.onclick = () => switchPage(key);
+        tabsContainer.appendChild(btn);
+
+        const page = document.createElement('div');
+        page.id = `page-${key}`;
+        page.className = 'page';
+
+        let gridClass = 'grid-sentence';
+        if (group.layout === 'word') gridClass = 'grid-word';
+        else if (group.layout === 'phrase') gridClass = 'grid-phrase';
+        else if (group.layout === 'long-sentence') gridClass = 'grid-long-sentence';
+        else if (group.layout === 'dialogue') gridClass = 'grid-dialogue';
+
+        const grid = document.createElement('div');
+        grid.className = gridClass;
+
+        group.items.forEach((item, idx) => {
+            const uniqueId = `${key}-${idx}`;
+            const isStarred = starredItems.some(x => x.id === uniqueId);
+            
+            if (group.layout === 'dialogue') {
+                const row = document.createElement('div');
+                row.className = `dialogue-row ${item[2] || 'left'}`;
+                
+                const avatarChar = (item[2] === 'right') ? '👨' : '👩';
+                const imgHtml = item[3] ? `<img src="${item[3]}" class="card-img" alt="img">` : '';
+
+                row.innerHTML = `
+                    <div class="dialogue-content">
+                        <div class="chat-avatar">${avatarChar}</div>
+                        <div class="card">
+                            <span class="star-icon ${isStarred ? 'active' : ''} star-${uniqueId}" onclick="toggleStar(event, '${key}', ${idx})">★</span>
+                            ${imgHtml}
+                            <div class="big">${item[0]}</div>
+                            <div class="small">${item[1]}</div>
+                        </div>
+                    </div>
+                `;
+                row.querySelector('.card').onclick = () => { stopAutoplay(); speak(item[0]); };
+                grid.appendChild(row);
+            } else {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const imgHtml = item[2] ? `<img src="${item[2]}" class="card-img" alt="img">` : '';
+
+                card.innerHTML = `
+                    <span class="star-icon ${isStarred ? 'active' : ''} star-${uniqueId}" onclick="toggleStar(event, '${key}', ${idx})">★</span>
+                    ${imgHtml}
+                    <div class="big">${item[0]}</div>
+                    <div class="small">${item[1]}</div>
+                `;
+                card.onclick = () => { stopAutoplay(); speak(item[0]); };
+                grid.appendChild(card);
+            }
+        });
+
+        page.appendChild(grid);
+        pagesContainer.appendChild(page);
+    });
+
+    initPetVisibility();
+    updatePetUI();
+    startHungerTick();
+    switchPage('review');
 }
 
 // 连连看 / 拼词 / 选图退出与切换
@@ -2352,14 +3146,14 @@ function checkImageChoice(cardElement, chosenGerman, correctGerman, event) {
 
         setTimeout(() => {
             if (imageModeIndex + 1 >= imageModeItemsAll.length) {
-                showCelebrationModal("🎉 恭喜！听音选图全部通关！");
+                showCelebrationModal("🎉 恭喜！你已完成本组听音选图测试！");
                 quitImageMode();
             } else {
                 imageModeIndex++;
                 isAnimating = false;
                 renderImageQuestion();
             }
-        }, 1500);
+        }, 1200);
     } else {
         isAnimating = true;
         cardElement.classList.add('error');
@@ -2372,113 +3166,8 @@ function checkImageChoice(cardElement, chosenGerman, correctGerman, event) {
     }
 }
 
-// 页面切换与初始化 DOM 渲染
-function switchPage(pageKey) {
-    if (isAutoplayRunning) stopAutoplay();
-    if (isPracticeModeActive) quitPracticeMode();
-    if (isBuilderModeActive) quitBuilderMode();
-    if (isImageModeActive) quitImageMode();
-
-    currentActivePageId = pageKey;
-
-    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
-    const activeTab = document.getElementById(`btn-${pageKey}`);
-    if (activeTab) activeTab.classList.add('active');
-
-    document.querySelectorAll('.page').forEach(p => {
-        p.style.removeProperty('display');
-        p.classList.remove('show');
-    });
-
-    const activePage = document.getElementById(`page-${pageKey}`);
-    if (activePage) activePage.classList.add('show');
-
-    if (pageKey === 'review') renderReviewPage();
-}
-
-// 初始化 Setup
-window.addEventListener('DOMContentLoaded', () => {
-    const tabsContainer = document.getElementById('tabsContainer');
-    const pagesContainer = document.getElementById('pagesContainer');
-
-    // 重点 review tab
-    const reviewBtn = document.createElement('button');
-    reviewBtn.id = 'btn-review'; reviewBtn.innerHTML = "⭐ 重点"; reviewBtn.className = "active";
-    reviewBtn.onclick = () => switchPage('review');
-    tabsContainer.appendChild(reviewBtn);
-
-    const reviewPageDiv = document.createElement('div');
-    reviewPageDiv.id = 'page-review'; reviewPageDiv.className = 'page show';
-    const reviewGridDiv = document.createElement('div');
-    reviewGridDiv.id = 'review-grid';
-    reviewPageDiv.appendChild(reviewGridDiv);
-    pagesContainer.appendChild(reviewPageDiv);
-
-    // 渲染动态场景列表
-    Object.keys(appData).forEach((key) => {
-        const item = appData[key];
-        const btn = document.createElement('button');
-        btn.id = `btn-${key}`; btn.innerText = item.title;
-        btn.onclick = () => switchPage(key);
-        tabsContainer.appendChild(btn);
-
-        const pageDiv = document.createElement('div');
-        pageDiv.id = `page-${key}`; pageDiv.className = 'page';
-
-        const gridDiv = document.createElement('div');
-        gridDiv.className = `grid-${item.layout}`;
-
-        item.items.forEach((data, index) => {
-            const uniqueId = `${key}-${index}`;
-            const card = document.createElement('div');
-            card.className = 'card';
-
-            const textToSpeak = item.speakType === 'key' ? data[0] : data[1];
-
-            if (item.layout === 'dialogue') {
-                const row = document.createElement('div');
-                row.className = `dialogue-row ${data[2]}`;
-                const content = document.createElement('div');
-                content.className = 'dialogue-content';
-                const avatar = document.createElement('div');
-                avatar.className = 'chat-avatar';
-                avatar.innerText = data[2] === 'left' ? '女' : '男';
-
-                card.innerHTML = `
-                    <span class="star-icon star-${uniqueId}" onclick="toggleStar(event, '${key}', ${index})">★</span>
-                    <div class='big'>${data[0]}</div>
-                    <div class='small'>${data[1]}</div>
-                `;
-                card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
-
-                content.appendChild(avatar);
-                content.appendChild(card);
-                row.appendChild(content);
-                gridDiv.appendChild(row);
-            } else {
-                const imgUrl = data[2];
-                const imgHtml = imgUrl ? `<img src="${imgUrl}" class="card-img" alt="illustration">` : '';
-
-                card.innerHTML = `
-                    <span class="star-icon star-${uniqueId}" onclick="toggleStar(event, '${key}', ${index})">★</span>
-                    ${imgHtml}
-                    <div class='big'>${data[0]}</div>
-                    <div class='small'>${data[1]}</div>
-                `;
-                card.onclick = () => { stopAutoplay(); speak(textToSpeak); };
-                gridDiv.appendChild(card);
-            }
-        });
-
-        pageDiv.appendChild(gridDiv);
-        pagesContainer.appendChild(pageDiv);
-    });
-
-    renderReviewPage();
-    updatePetUI();
-    startHungerTick();
-    resetIdleTimer();
-});
+// 页面加载完毕自动初始化
+window.onload = initApp;
 </script>
 </body>
 </html>
