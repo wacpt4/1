@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>德国生活英语口语随身卡</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- 顶部导航与标题 -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-10 px-4 py-3 shadow-xs">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <h1 class="text-lg font-bold text-gray-900">🇩🇪 德国生活英语闪卡</h1>
+            <span id="favCount" class="text-xs bg-indigo-50 text-indigo-600 font-medium px-2.5 py-1 rounded-full">⭐ 已收藏 0</span>
+        </div>
+        <!-- 分类标签栏 (可横向滚动) -->
+        <div class="max-w-md mx-auto mt-3 overflow-x-auto no-scrollbar flex gap-2 pb-1 text-sm">
+            <button onclick="filterCategory('all')" class="cat-btn bg-gray-900 text-white px-3 py-1.5 rounded-full shrink-0 transition">全部</button>
+            <button onclick="filterCategory('error')" class="cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition">高频纠错</button>
+            <button onclick="filterCategory('grammar')" class="cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition">核心语法</button>
+            <button onclick="filterCategory('travel')" class="cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition">飞行旅游</button>
+            <button onclick="filterCategory('apartment')" class="cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition">找房德国</button>
+            <button onclick="filterCategory('smalltalk')" class="cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition">Small Talk</button>
+            <button onclick="filterCategory('favorites')" class="cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition">⭐ 我的收藏</button>
+        </div>
+    </header>
+
+    <!-- 卡片列表容器 -->
+    <main class="max-w-md mx-auto p-4 w-full flex-1 flex flex-col gap-3.5 mb-10" id="cardContainer">
+        <!-- 动态生成 -->
+    </main>
+
+    <!-- 底部简易提示 -->
+    <footer class="text-center py-4 text-xs text-gray-400">
+        点击卡片显示/隐藏英文 · 点击喇叭朗读发音
+    </footer>
+
+    <script>
+        // 核心数据源（基于你的复习笔记提取）
+        const cardsData = [
+            // 高频错误
+            { id: 1, category: 'error', zh: '我们自2023年起一直住在一起。', en: 'We’ve lived together since 2023.', note: 'since + 现在完成时' },
+            { id: 2, category: 'error', zh: '我去德国之后……', en: 'After I went to Germany...', note: '国家名是 Germany，不是 German' },
+            { id: 3, category: 'error', zh: '我成功租到了一套公寓。', en: 'I was able to get an apartment.', note: 'success不能做动词，可用 was able to 或 succeeded in' },
+            { id: 4, category: 'error', zh: '电动摩托车/电单车', en: 'e-bike / electric bike / e-motorbike', note: '注意：electric ≠ electricity' },
+            { id: 5, category: 'error', zh: '让我做个简单的自我介绍。', en: 'Let me tell you a little bit about myself.', note: '固定表达' },
+            { id: 6, category: 'error', zh: '直飞航班', en: 'take a direct flight / fly direct', note: '不说 fly straight' },
+            { id: 7, category: 'error', zh: '我两周前来到这里。', en: 'I came here two weeks ago. / I’ve been here for two weeks.', note: 'ago 不和 for 连用' },
+            { id: 8, category: 'error', zh: '转机等待时间', en: 'layover / transit time', note: '比 waiting time 更自然' },
+            { id: 9, category: 'error', zh: '在土耳其转机', en: 'have a layover in Turkey', note: '比 transfer 更地道' },
+            { id: 10, category: 'error', zh: '经停/经过法兰克福', en: 'fly through Frankfurt / fly via Frankfurt', note: '不说 fly over' },
+            { id: 11, category: 'error', zh: '飞行花了大约18个小时。', en: 'The flight took about 18 hours.', note: '过去时用 took' },
+            { id: 12, category: 'error', zh: '我适应得非常快。', en: 'I adapted really quickly.', note: 'quickly 是副词' },
+            { id: 13, category: 'error', zh: '我开始担心。', en: 'I started to worry.', note: 'start + to do / doing，不加 worried' },
+            { id: 14, category: 'error', zh: '找公寓不容易。', en: 'It’s not easy to rent an apartment.', note: '动词不定式用 to rent' },
+
+            // 语法核心
+            { id: 15, category: 'grammar', zh: '我来德国已经两个星期了。', en: 'I’ve been in Germany for two weeks.', note: 'for + 一段时间' },
+            { id: 16, category: 'grammar', zh: '我从九月份就在德国了。', en: 'I’ve been in Germany since September.', note: 'since + 时间点' },
+            { id: 17, category: 'grammar', zh: '我三个月前搬到了德国。', en: 'I moved to Germany three months ago.', note: 'ago = 过去发生的时间点' },
+            { id: 18, category: 'grammar', zh: '我开始担心找房子。', en: 'I started to worry about finding an apartment.', note: 'start 后面接 to do 或 doing 均可' },
+
+            // 飞行旅游
+            { id: 19, category: 'travel', zh: '我们坐了从广州到德国的航班。', en: 'We took a flight from Guangzhou to Germany.', note: 'take a flight' },
+            { id: 20, category: 'travel', zh: '我们在伊斯坦布尔转机4小时。', en: 'We had a four-hour layover in Istanbul.', note: 'have a layover' },
+            { id: 21, category: 'travel', zh: '我们经由伊斯坦布尔飞往德国。', en: 'We flew to Germany via Istanbul.', note: 'fly via...' },
+            { id: 22, category: 'travel', zh: '我很快就适应了时差。', en: 'I adapted to the jet lag pretty quickly.', note: '适应时差实用句' },
+
+            // 德国生活找房
+            { id: 23, category: 'apartment', zh: '我在科特布斯找公寓。', en: 'I’m trying to find an apartment in Cottbus.', note: '日常找房表达' },
+            { id: 24, category: 'apartment', zh: '租金包含暖气吗？', en: 'Does the rent include heating?', note: '租房高频提问' },
+            { id: 25, category: 'apartment', zh: '电费包含在内吗？', en: 'Is electricity included?', note: '租房高频提问' },
+            { id: 26, category: 'apartment', zh: '我最后总算租到了一套房。', en: 'I was able to get an apartment in the end.', note: '实用成果表达' },
+
+            // Small Talk
+            { id: 27, category: 'smalltalk', zh: '你今天过得怎么样？', en: 'How was your day?', note: '⭐⭐⭐ 一天结束时最自然的问候' },
+            { id: 28, category: 'smalltalk', zh: '你要去哪里？（旅行/路上）', en: 'Where are you headed?', note: '旅行途中常用' },
+            { id: 29, category: 'smalltalk', zh: '你来德国多久了？', en: 'How long have you been in Germany?', note: '破冰高频句' },
+            { id: 30, category: 'smalltalk', zh: '你目前对德国感觉怎么样？', en: 'How do you like Germany so far?', note: '聊感受必备' },
+            { id: 31, category: 'smalltalk', zh: '你这周末有什么安排吗？', en: 'Do you have any plans for the weekend?', note: '周末闲聊' },
+            { id: 32, category: 'smalltalk', zh: '什么时候一起去喝杯咖啡吧？', en: 'Do you want to grab a coffee sometime?', note: '拉近关系约咖啡' },
+	{ id: 33, category: 'smalltalk', zh: '你要去上课吗？', en: 'Are you heading to class?', note: '比 going to class 更口语' },
+    { id: 34, category: 'smalltalk', zh: '这也是你的课吗？', en: 'Is this your class, too?', note: '课堂破冰提问' },
+    { id: 35, category: 'smalltalk', zh: '你以前去过柏林吗？', en: 'Have you been to Berlin before?', note: '旅游话题经典开场' },
+    { id: 36, category: 'smalltalk', zh: '你是什么时候去的？', en: 'When did you go there?', note: '询问具体时间' },
+    { id: 37, category: 'smalltalk', zh: '你觉得那里怎么样？', en: 'How did you like it?', note: '⭐⭐ 询问对方感受的万能句' },
+    { id: 38, category: 'smalltalk', zh: '你最近去过德国其他城市吗？', en: 'Have you been to any other cities in Germany recently?', note: '扩展旅游话题' },
+    { id: 39, category: 'smalltalk', zh: '你去过学校食堂了吗？', en: 'Have you tried the Mensa yet?', note: '校园生活闲聊' },
+    { id: 40, category: 'smalltalk', zh: '真的吗？听起来真不错！', en: 'Oh, really? That sounds cool!', note: 'Small Talk 完美回应（React）' }
+        ];
+
+        let currentFilter = 'all';
+        let favorites = JSON.parse(localStorage.getItem('english_favs')) || [];
+
+        // 初始化加载
+        window.onload = function() {
+            renderCards();
+            updateFavCount();
+        };
+
+        // 渲染卡片核心函数
+        function renderCards() {
+            const container = document.getElementById('cardContainer');
+            container.innerHTML = '';
+
+            let filtered = cardsData;
+            if (currentFilter === 'favorites') {
+                filtered = cardsData.filter(item => favorites.includes(item.id));
+            } else if (currentFilter !== 'all') {
+                filtered = cardsData.filter(item => item.category === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-gray-400 text-sm">
+                        这里空空如也，快去收藏几张卡片吧！⭐
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const isFav = favorites.includes(item.id);
+                const card = document.createElement('div');
+                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-xs transition hover:shadow-md relative flex flex-col gap-3";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-semibold px-2.5 py-0.5 bg-gray-100 text-gray-500 rounded-md">${getCategoryName(item.category)}</span>
+                        <button onclick="toggleFavorite(${item.id})" class="text-xl focus:outline-none transition transform active:scale-125">
+                            ${isFav ? '⭐' : '☆'}
+                        </button>
+                    </div>
+
+                    <!-- 中文提示 (点击卡片主体显示/隐藏英文) -->
+                    <div onclick="toggleEnglish(this)" class="cursor-pointer py-1">
+                        <p class="text-base font-medium text-gray-900">${item.zh}</p>
+                        <p class="text-xs text-gray-400 mt-1">💡 提示：${item.note}</p>
+                    </div>
+
+                    <!-- 英文答案 (默认隐藏或轻柔展示) -->
+                    <div class="english-box hidden bg-indigo-50/60 border border-indigo-100 rounded-xl p-3 flex items-center justify-between gap-2 mt-1">
+                        <p class="text-indigo-900 font-semibold text-base tracking-wide">${item.en}</p>
+                        <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="bg-indigo-600 text-white p-2 rounded-full shrink-0 shadow-xs hover:bg-indigo-700 active:scale-95 transition">
+                            🔊
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 切换显示英文
+        function toggleEnglish(element) {
+            const box = element.nextElementSibling;
+            box.classList.toggle('hidden');
+        }
+
+        // 朗读英文 (Web Speech API)
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // 停止上一次发音
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9; // 语速稍慢一点，适合练习
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的浏览器不支持语音朗读功能');
+            }
+        }
+
+        // 收藏切换
+        function toggleFavorite(id) {
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem('english_favs', JSON.stringify(favorites));
+            updateFavCount();
+            renderCards();
+        }
+
+        // 更新收藏数
+        function updateFavCount() {
+            document.getElementById('favCount').innerText = `⭐ 已收藏 ${favorites.length}`;
+        }
+
+        // 分类切换
+        function filterCategory(category) {
+            currentFilter = category;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full shrink-0 transition";
+            });
+            event.target.className = "cat-btn bg-gray-900 text-white px-3 py-1.5 rounded-full shrink-0 transition";
+            renderCards();
+        }
+
+        function getCategoryName(cat) {
+            const map = {
+                'error': '高频纠错',
+                'grammar': '核心语法',
+                'travel': '飞行旅游',
+                'apartment': '找房德国',
+                'smalltalk': 'Small Talk'
+            };
+            return map[cat] || '日常';
+        }
+    </script>
+</body>
+</html>
